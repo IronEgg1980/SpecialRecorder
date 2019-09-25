@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:id="@+id/show_details"
+        android:title="@string/bottom_show_detail_string"
+        android:icon="@mipmap/show_white_24dp"/>
+    <item android:id="@+id/show_alldata"
+        android:title="@string/bottom_show_alldata_string"
+        android:icon="@mipmap/showtotal2_white_24dp"/>
+    <item android:id="@+id/input"
+        android:title="@string/bottom_input_string"
+        android:icon="@mipmap/input_white_24dp"/>
+    <item android:id="@+id/merge_data"
+        android:title="@string/bottom_merge_string"
+        android:icon="@mipmap/merge2_white_24dp"/>
+    <item android:id="@+id/setup"
+        android:title="@string/bottom_setup_string"
+        android:icon="@mipmap/settings_white_24dp"/>
+</menu>

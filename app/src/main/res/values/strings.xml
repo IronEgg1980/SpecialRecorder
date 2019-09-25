@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">计算器</string>
+    <string name="bottom_input_string">数据录入</string>
+    <string name="bottom_show_detail_string">详细记录</string>
+    <string name="bottom_show_alldata_string">汇总记录</string>
+    <string name="bottom_merge_string">合并数据</string>
+    <string name="bottom_setup_string">设置</string>
+    <string name="confirm">确定</string>
+    <string name="last_month">上一月</string>
+    <string name="next_month">下一月</string>
+    <string name="import_files">导入外部文件</string>
+    <string name="import_record">导入本机记录</string>
+    <string name="clear_imported_files">清除已接收文件</string>
+    <string name="title_activity_recorder">RecorderActivity</string>
+    <string name="newPWD">输入新密码</string>
+    <string name="confirmPWD">确认新密码</string>
+
+</resources>

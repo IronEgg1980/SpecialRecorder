@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="殷宗旺" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
+  <component name="AvailableLibraryUpdateStorage">
+    <library-updates>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>appcompat-v7</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>design</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.hjq</group-id>
+        <name>xxpermissions</name>
+        <version>1.6</version>
+        <repository>JCenter</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.hjq</group-id>
+        <name>library</name>
+        <version>1.6</version>
+        <repository>JCenter</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support</group-id>
+        <name>support-v4</name>
+        <version>28.0.0</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.constraint</group-id>
+        <name>constraint-layout</name>
+        <version>2.0.0-beta2</version>
+        <repository>Google</repository>
+      </library-update>
+      <library-update>
+        <group-id>junit</group-id>
+        <name>junit</name>
+        <version>4.13-beta-3</version>
+        <repository>JCenter</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test</group-id>
+        <name>runner</name>
+        <version>1.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+      <library-update>
+        <group-id>com.android.support.test.espresso</group-id>
+        <name>espresso-core</name>
+        <version>3.0.2</version>
+        <repository>Google,Android Repository</repository>
+      </library-update>
+    </library-updates>
+    <last-search-timestamp>1563162266114</last-search-timestamp>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fd67952c-31a1-403d-9b45-7e50c050bdf1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/AppUpdater.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/LoadingDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/UpdateActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_info_cyan_800_18dp.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/loading_dialog_layout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/update_activity_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/caches/gradle_models.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/ActivityManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/ActivityManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/RecorderActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/RecorderActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/SetupFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/SetupFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/Tools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/Tools.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/setup_layout2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/setup_layout2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/touch_input_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/touch_input_item.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/UpdateActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="52" column="38" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/TouchInputDataFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="539">
+              <caret line="177" column="35" selection-start-line="177" selection-start-column="35" selection-end-line="177" selection-end-column="35" />
+              <folding>
+                <element signature="e#1672#1681#0" />
+                <element signature="method#onCreateView#0;class#TouchInputDataFragment#0" />
+                <element signature="e#3855#3905#1" />
+                <element signature="e#3911#3959#1" />
+                <element signature="e#4005#4061#0" />
+                <element signature="e#4487#4623#1" />
+                <element signature="e#4629#4741#1" />
+                <element signature="e#4778#5127#1" />
+                <element signature="e#4852#5024#1" />
+                <element signature="e#5030#5109#1" />
+                <element signature="e#5167#5222#1" />
+                <element signature="e#5251#5316#1" />
+                <element signature="e#5802#5863#1" />
+                <element signature="e#5869#5931#1" />
+                <element signature="method#onCreateOptionsMenu#0;class#TouchInputDataFragment#0" />
+                <element signature="method#onOptionsItemSelected#0;class#TouchInputDataFragment#0" />
+                <element signature="e#6441#6641#1" />
+                <element signature="method#showInfoCenter#0;class#TouchInputDataFragment#0" />
+                <element signature="e#7420#7623#1" />
+                <element signature="e#7718#7792#1" />
+                <element signature="method#onContextItemSelected#0;class#TouchInputDataFragment#0" />
+                <element signature="e#7945#8129#0" />
+                <element signature="method#selectDate#0;class#TouchInputDataFragment#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MyPoPWin.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="385">
+              <caret line="41" column="22" lean-forward="true" selection-end-line="62" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
+  </component>
+  <component name="GenerateSignedApkSettings">
+    <option name="KEY_STORE_PATH" value="D:\Android\MyApp\my_jks_file.jks" />
+    <option name="KEY_ALIAS" value="key0" />
+    <option name="REMEMBER_PASSWORDS" value="true" />
+    <option name="BUILD_TARGET_KEY" value="apk" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/../../MyApplication2/app/src/main/java/com/example/myapplication/Tools.java" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/LoadingDialog.java" />
+        <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/setup_layout2.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/AppUpdater.java" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/touch_input_item.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/Tools.java" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/update_activity_layout.xml" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/loading_dialog_layout.xml" />
+        <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/SetupFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/ActivityManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MainActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/RecorderActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/UpdateActivity.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="260" />
+    <option name="y" value="20" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="SpecialRecorder" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+            </path>
+            <path>
+              <item name="SpecialRecorder" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="SpecialRecorder" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="specialrecorder" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SpecialRecorder" type="1abcf292:AndroidViewProjectNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="AndroidTargetDevices" value="BNU5T17A17000386" />
+    <property name="ExportApk.ApkPath" value="D:\Android\MyApp\SpecialRecorder\app" />
+    <property name="ExportApk.BuildVariants" value="release" />
+    <property name="ExportApk.SignV1" value="true" />
+    <property name="ExportApk.SignV2" value="true" />
+    <property name="android.sdk.path" value="D:/AndroidSDK" />
+    <property name="device.picker.selection" value="192.168.96.102:5555" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/SpecialRecorder31.update" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="PsdUISettings">
+    <option name="MODULE_TAB" value="Default Config" />
+    <option name="BUILD_VARIANTS_TAB" value="Flavors" />
+    <option name="LAST_EDITED_BUILD_TYPE" value="release" />
+  </component>
+  <component name="RecentsManager">
+    <key name="android.template.packageName">
+      <recent name="th.yzw.specialrecorder" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fd67952c-31a1-403d-9b45-7e50c050bdf1" name="Default Changelist" comment="" />
+      <created>1562857515384</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1562857515384</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.32995737" />
+      <window_info id="Structure" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info id="Build Variants" order="4" side_tool="true" />
+      <window_info id="Image Layers" order="5" />
+      <window_info id="Designer" order="6" />
+      <window_info id="Resources Explorer" order="7" />
+      <window_info id="Capture Tool" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="0" />
+      <window_info anchor="bottom" id="Logcat" order="1" weight="0.329718" />
+      <window_info anchor="bottom" id="TODO" order="2" weight="0.329718" />
+      <window_info anchor="bottom" id="Terminal" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.50053304" side_tool="true" weight="0.3264642" />
+      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49946696" weight="0.32502708" />
+      <window_info anchor="bottom" id="Android Profiler" order="6" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="7" />
+      <window_info anchor="bottom" id="Debug" order="8" />
+      <window_info anchor="bottom" id="Find" order="9" />
+      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" weight="0.32995737" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Gradle" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="right" id="Preview" order="5" />
+    </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/../build.gradle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../settings.gradle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/xml/filepaths.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../MyApplication2/app/src/main/java/com/example/myapplication/Tools.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="825">
+          <caret line="82" column="5" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="82" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../MyApplication2/app/src/main/java/com/example/myapplication/LoadingDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="693">
+          <caret line="54" column="5" lean-forward="true" selection-start-line="18" selection-start-column="4" selection-end-line="54" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../MyApplication2/app/src/main/res/layout/loading_dialog_layout.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="37" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/LoadingDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="627">
+          <caret line="51" column="41" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../MyApplication2/app/src/main/java/com/example/myapplication/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="788">
+          <caret line="615" column="13" lean-forward="true" selection-start-line="612" selection-start-column="12" selection-end-line="615" selection-end-column="13" />
+          <folding>
+            <element signature="method#unZipFile#0;class#MainActivity#0" />
+            <element signature="method#getZipFile#0;class#MainActivity#0" />
+            <element signature="method#showWarningDialog#0;class#MainActivity#0" />
+            <element signature="e#20088#20140#0" />
+            <element signature="e#20204#20677#1" />
+            <element signature="e#20262#20320#0" />
+            <element signature="e#20352#20412#0" />
+            <element signature="e#20512#20571#0" />
+            <element signature="e#20603#20663#0" />
+            <element signature="e#20681#20762#1" />
+            <element signature="e#20790#20871#1" />
+            <element signature="e#21132#21384#1" />
+            <element signature="e#21154#21212#0" />
+            <element signature="e#21244#21304#0" />
+            <element signature="method#onProgressUpdate#0;class#Loading#0;class#MainActivity#0" />
+            <element signature="e#21533#22383#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/setup_layout.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="616">
+          <caret line="28" column="30" selection-start-line="28" selection-start-column="30" selection-end-line="28" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/setup_layout2.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="337" column="40" selection-start-line="337" selection-start-column="40" selection-end-line="337" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/menu/toolbar_to_input.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/touch_input_item.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/loading_dialog_layout.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="755">
+          <caret line="35" column="49" selection-start-line="35" selection-start-column="49" selection-end-line="35" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/update_activity_layout.xml">
+      <provider selected="true" editor-type-id="android-designer2" />
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="12" column="40" selection-start-line="12" selection-start-column="40" selection-end-line="12" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="31" selection-start-line="31" selection-end-line="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/Tools.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3036">
+          <caret line="318" column="5" selection-start-line="318" selection-start-column="5" selection-end-line="318" selection-end-column="5" />
+          <folding>
+            <element signature="method#getMonthStartAndEnd#0;class#Tools#0" />
+            <element signature="method#getDayStartAndEnd#0;class#Tools#0" />
+            <element signature="method#getYearStartAndMonth#0;class#Tools#0" />
+            <element signature="method#getDouble#0;class#Tools#0" />
+            <element signature="method#getRandomString#0;class#Tools#0" />
+            <element signature="docComment;method#isAppInstall#0;class#Tools#0" />
+            <element signature="method#isAppInstall#0;class#Tools#0" />
+            <element signature="docComment;method#checkFileUriExposure#0;class#Tools#0" />
+            <element signature="method#checkFileUriExposure#0;class#Tools#0" />
+            <element signature="docComment;method#encryptPassword#0;class#Tools#0" />
+            <element signature="method#encryptPassword#0;class#Tools#0" />
+            <element signature="docComment;method#decryptPassword#0;class#Tools#0" />
+            <element signature="method#decryptPassword#0;class#Tools#0" />
+            <element signature="method#writeFile#0;class#Tools#0" />
+            <element signature="method#readFile#0;class#Tools#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/ActivityManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="e#352#353#0" expanded="true" />
+            <element signature="e#397#398#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="682">
+          <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
+          <folding>
+            <element signature="method#initialData#0;class#MainActivity#0" />
+            <element signature="class#NumberOnClick#0;class#MainActivity#0" />
+            <element signature="docComment;method#NumberOnClick#0;class#NumberOnClick#0;class#MainActivity#0" />
+            <element signature="method#onClick#0;class#NumberOnClick#0;class#MainActivity#0" />
+            <element signature="class#CalOnClick#0;class#MainActivity#0" />
+            <element signature="method#onClick#0;class#CalOnClick#0;class#MainActivity#0" />
+            <element signature="docComment;class#Calculate#0;class#MainActivity#0" />
+            <element signature="class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#Calculate#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="docComment;method#midToAfter#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#midToAfter#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="docComment;method#youxianji#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#youxianji#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="docComment;method#matchWitch#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#matchWitch#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="docComment;method#singleEval#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#singleEval#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#countHouzhui#0;class#Calculate#0;class#MainActivity#0" />
+            <element signature="method#eval#0;class#Calculate#0;class#MainActivity#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/SetupFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2706">
+          <caret line="234" column="33" selection-start-line="234" selection-start-column="18" selection-end-line="234" selection-end-column="33" />
+          <folding>
+            <element signature="e#2353#2362#0" />
+            <element signature="e#2556#2645#1" />
+            <element signature="e#4131#4546#0" />
+            <element signature="e#5151#5560#0" />
+            <element signature="class#6423:7294" />
+            <element signature="method#onProgressChanged#0;class#6423:7294" />
+            <element signature="method#onStartTrackingTouch#0;class#6423:7294" />
+            <element signature="method#onStopTrackingTouch#0;class#6423:7294" />
+            <element signature="e#6929#7078#1" />
+            <element signature="e#8034#8132#1" />
+            <element signature="e#8138#8239#1" />
+            <element signature="e#10184#10424#0" />
+            <element signature="e#10430#11764#0" />
+            <element signature="e#10538#11650#1" />
+            <element signature="e#10660#10796#1" />
+            <element signature="e#10718#10782#1" />
+            <element signature="e#10902#11520#1" />
+            <element signature="e#10992#11135#1" />
+            <element signature="e#11176#11280#1" />
+            <element signature="e#11526#11640#1" />
+            <element signature="e#11656#11757#1" />
+            <element signature="e#11770#12953#0" />
+            <element signature="e#11893#11925#1" />
+            <element signature="e#11931#12947#1" />
+            <element signature="class#12070:12935" />
+            <element signature="method#hasPermission#0;class#12070:12935" />
+            <element signature="e#12249#12321#1" />
+            <element signature="method#noPermission#0;class#12070:12935" />
+            <element signature="e#12509#12738#1" />
+            <element signature="e#12742#12887#1" />
+            <element signature="e#12959#13467#0" />
+            <element signature="e#13105#13142#1" />
+            <element signature="e#13148#13440#1" />
+            <element signature="e#13196#13395#1" />
+            <element signature="e#13473#17444#0" />
+            <element signature="e#13582#17331#1" />
+            <element signature="e#13746#13939#1" />
+            <element signature="e#13784#13925#1" />
+            <element signature="e#14151#17160#0" />
+            <element signature="e#14199#14275#1" />
+            <element signature="e#14281#14337#1" />
+            <element signature="e#14385#14464#1" />
+            <element signature="e#14470#14528#1" />
+            <element signature="e#14573#17029#1" />
+            <element signature="e#14632#15291#1" />
+            <element signature="e#14812#15151#1" />
+            <element signature="e#15297#15352#1" />
+            <element signature="e#15411#16169#1" />
+            <element signature="e#15621#16028#1" />
+            <element signature="e#16175#16230#1" />
+            <element signature="e#17035#17146#1" />
+            <element signature="e#17181#17321#0" />
+            <element signature="e#17337#17438#1" />
+            <element signature="e#17449#18630#0" />
+            <element signature="e#17568#17601#1" />
+            <element signature="e#17607#18624#1" />
+            <element signature="class#17746:18612" />
+            <element signature="method#hasPermission#0;class#17746:18612" />
+            <element signature="e#17925#17998#1" />
+            <element signature="method#noPermission#0;class#17746:18612" />
+            <element signature="e#18186#18415#1" />
+            <element signature="e#18419#18564#1" />
+            <element signature="e#18636#25962#0" />
+            <element signature="e#18746#25848#1" />
+            <element signature="e#18891#18945#1" />
+            <element signature="e#18951#19672#1" />
+            <element signature="e#19072#19134#1" />
+            <element signature="e#19140#19658#1" />
+            <element signature="e#19254#19416#1" />
+            <element signature="e#19304#19394#1" />
+            <element signature="e#19468#19538#1" />
+            <element signature="e#19544#19640#1" />
+            <element signature="e#19704#25732#1" />
+            <element signature="e#21705#24452#0" />
+            <element signature="e#21781#22833#1" />
+            <element signature="e#22050#22658#1" />
+            <element signature="e#22839#23079#1" />
+            <element signature="e#23155#24175#1" />
+            <element signature="e#23425#24129#1" />
+            <element signature="e#24181#24410#1" />
+            <element signature="e#24473#24581#0" />
+            <element signature="e#24590#24695#0" />
+            <element signature="e#25738#25838#1" />
+            <element signature="e#25854#25955#1" />
+            <element signature="e#25968#27152#0" />
+            <element signature="e#26088#26122#1" />
+            <element signature="e#26128#27146#1" />
+            <element signature="class#26267:27134" />
+            <element signature="method#hasPermission#0;class#26267:27134" />
+            <element signature="e#26446#26520#1" />
+            <element signature="method#noPermission#0;class#26267:27134" />
+            <element signature="e#26708#26937#1" />
+            <element signature="e#26941#27086#1" />
+            <element signature="e#27158#29631#0" />
+            <element signature="e#27312#27482#1" />
+            <element signature="e#28295#28433#1" />
+            <element signature="e#28504#28668#1" />
+            <element signature="e#28759#28925#1" />
+            <element signature="e#28930#29260#1" />
+            <element signature="e#29637#30116#0" />
+            <element signature="e#29779#29896#1" />
+            <element signature="e#29928#30086#1" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/ShowDataActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="303">
+          <caret line="350" selection-start-line="350" selection-end-line="350" />
+          <folding>
+            <element signature="method#setFileName#0;class#ShowDataActivity#0" />
+            <element signature="method#showToast#0;class#ShowDataActivity#0" />
+            <element signature="method#getPermission#0;class#ShowDataActivity#0" />
+            <element signature="e#2788#2824#1" />
+            <element signature="e#2830#3874#1" />
+            <element signature="class#3004:3834" />
+            <element signature="method#hasPermission#0;class#3004:3834" />
+            <element signature="method#noPermission#0;class#3004:3834" />
+            <element signature="e#3421#3641#1" />
+            <element signature="e#3647#3786#1" />
+            <element signature="method#readFile#0;class#ShowDataActivity#0" />
+            <element signature="e#3984#8187#1" />
+            <element signature="e#5392#5499#1" />
+            <element signature="e#5503#5724#1" />
+            <element signature="e#5757#7304#0" />
+            <element signature="e#5885#5988#1" />
+            <element signature="e#6266#7078#1" />
+            <element signature="e#6484#6984#1" />
+            <element signature="e#7082#7274#1" />
+            <element signature="e#7329#7520#0" />
+            <element signature="e#7544#7736#0" />
+            <element signature="e#7744#7819#0" />
+            <element signature="method#clear#0;class#ShowDataActivity#0" />
+            <element signature="e#8660#9899#0" />
+            <element signature="e#8732#9496#1" />
+            <element signature="e#8843#9330#1" />
+            <element signature="e#8979#9090#1" />
+            <element signature="e#9147#9296#1" />
+            <element signature="e#9918#10043#0" />
+            <element signature="method#updateList#0;class#ShowDataActivity#0" />
+            <element signature="e#10200#10249#1" />
+            <element signature="e#10311#10528#1" />
+            <element signature="method#showInfo#0;class#ShowDataActivity#0" />
+            <element signature="e#10757#10812#1" />
+            <element signature="e#10842#10952#1" />
+            <element signature="e#10958#11019#1" />
+            <element signature="method#closeFile#0;class#ShowDataActivity#0" />
+            <element signature="method#changeEditMode#0;class#ShowDataActivity#0" />
+            <element signature="e#11226#11791#1" />
+            <element signature="e#11579#11781#1" />
+            <element signature="e#11797#12120#1" />
+            <element signature="method#showMenu#0;class#ShowDataActivity#0" />
+            <element signature="e#12371#12579#1" />
+            <element signature="e#12583#12633#1" />
+            <element signature="e#12874#14172#0" />
+            <element signature="method#clearFiles#0;class#ShowDataActivity#0" />
+            <element signature="method#delFiles#0;class#ShowDataActivity#0" />
+            <element signature="e#14933#15878#1" />
+            <element signature="e#15054#15361#1" />
+            <element signature="e#15150#15221#1" />
+            <element signature="e#15258#15347#1" />
+            <element signature="e#15443#15650#1" />
+            <element signature="e#15480#15636#1" />
+            <element signature="method#showSelectItem#0;class#ShowDataActivity#0" />
+            <element signature="e#16158#16313#1" />
+            <element signature="method#onCreate#0;class#ShowDataActivity#0" />
+            <element signature="method#onStart#0;class#ShowDataActivity#0" />
+            <element signature="method#selectFile#0;class#ShowDataActivity#0" />
+            <element signature="e#18890#21911#1" />
+            <element signature="e#19080#19261#1" />
+            <element signature="e#19176#19247#1" />
+            <element signature="e#19310#19364#1" />
+            <element signature="e#19370#20645#1" />
+            <element signature="e#19491#19553#1" />
+            <element signature="e#19559#20631#1" />
+            <element signature="e#19676#20383#1" />
+            <element signature="e#19732#19786#0" />
+            <element signature="e#20067#20337#1" />
+            <element signature="e#20220#20311#1" />
+            <element signature="e#20438#20508#1" />
+            <element signature="e#20514#20613#1" />
+            <element signature="e#20677#21841#1" />
+            <element signature="e#21044#21220#1" />
+            <element signature="e#21113#21202#1" />
+            <element signature="e#21847#21901#1" />
+            <element signature="method#editData#0;class#ShowDataActivity#0" />
+            <element signature="class#22168:22661" />
+            <element signature="method#onDismiss#0;class#22168:22661" />
+            <element signature="e#22308#22493#1" />
+            <element signature="method#onDismiss#1;class#22168:22661" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/RecorderActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="73" column="6" selection-start-line="73" selection-start-column="6" selection-end-line="73" selection-end-column="6" />
+          <folding>
+            <element signature="e#1044#3350#0" expanded="true" />
+            <element signature="e#3349#3350#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/AppUpdater.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="849">
+          <caret line="246" column="32" selection-start-line="246" selection-start-column="32" selection-end-line="246" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/UpdateActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="52" column="38" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/TouchInputDataFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="539">
+          <caret line="177" column="35" selection-start-line="177" selection-start-column="35" selection-end-line="177" selection-end-column="35" />
+          <folding>
+            <element signature="e#1672#1681#0" />
+            <element signature="method#onCreateView#0;class#TouchInputDataFragment#0" />
+            <element signature="e#3855#3905#1" />
+            <element signature="e#3911#3959#1" />
+            <element signature="e#4005#4061#0" />
+            <element signature="e#4487#4623#1" />
+            <element signature="e#4629#4741#1" />
+            <element signature="e#4778#5127#1" />
+            <element signature="e#4852#5024#1" />
+            <element signature="e#5030#5109#1" />
+            <element signature="e#5167#5222#1" />
+            <element signature="e#5251#5316#1" />
+            <element signature="e#5802#5863#1" />
+            <element signature="e#5869#5931#1" />
+            <element signature="method#onCreateOptionsMenu#0;class#TouchInputDataFragment#0" />
+            <element signature="method#onOptionsItemSelected#0;class#TouchInputDataFragment#0" />
+            <element signature="e#6441#6641#1" />
+            <element signature="method#showInfoCenter#0;class#TouchInputDataFragment#0" />
+            <element signature="e#7420#7623#1" />
+            <element signature="e#7718#7792#1" />
+            <element signature="method#onContextItemSelected#0;class#TouchInputDataFragment#0" />
+            <element signature="e#7945#8129#0" />
+            <element signature="method#selectDate#0;class#TouchInputDataFragment#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/th/yzw/specialrecorder/MyPoPWin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="41" column="22" lean-forward="true" selection-end-line="62" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

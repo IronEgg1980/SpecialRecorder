@@ -1,0 +1,98 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Transparent" parent="AppTheme">　　
+        <item name="android:windowBackground">@color/activityBG</item>        　　
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
+    <style name="PopWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/pop_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_out</item>
+    </style>
+
+    <style name="PopWindow3Animation">
+        <item name="android:windowEnterAnimation">@anim/pop3_in</item>
+        <item name="android:windowExitAnimation">@anim/pop3_out</item>
+    </style>
+
+    <style name="PopWindowAnimation2">
+        <item name="android:windowEnterAnimation">@anim/pop2_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_out</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TitleTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="GroupShape">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/setup_group_shape</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+
+    <style name="GroupTitle">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">8dp</item>
+    </style>
+
+    <style name="SetupSwitch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/switch_paddingLR</item>
+        <item name="android:paddingRight">@dimen/switch_paddingLR</item>
+        <item name="android:paddingTop">@dimen/switch_paddingTB</item>
+    </style>
+
+    <style name="SummaryTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">@dimen/switch_paddingTB</item>
+        <item name="android:paddingLeft">@dimen/switch_paddingLR</item>
+        <item name="android:paddingRight">@dimen/switch_paddingLR</item>
+    </style>
+
+    <style name="CommonDialogAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_anim_exit</item>
+    </style>
+
+    <style name="SelectDialogAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/select_dialog_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/select_dialog_anim_exit</item>
+    </style>
+
+    <style name="EditDialogAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/edit_dialog_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/edit_dialog_anim_exit</item>
+    </style>
+</resources>

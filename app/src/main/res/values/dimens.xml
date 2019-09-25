@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="head_top">20dp</dimen>
+    <dimen name="switch_paddingLR">32dp</dimen>
+    <dimen name="switch_paddingTB">12dp</dimen>
+</resources>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <RadioGroup
+        android:id="@+id/addActivity2RadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioButton
+            android:id="@+id/isOftenUse_radio"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="60dp"
+            android:layout_weight="1"
+            android:background="@drawable/left_button_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:text="常用项目"
+            android:textColor="@drawable/text_selector" />
+
+        <RadioButton
+            android:id="@+id/isNotOftenUse_radio"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="60dp"
+            android:layout_weight="1"
+            android:background="@drawable/right_button_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:text="不常用项目"
+            android:textColor="@drawable/text_selector" />
+    </RadioGroup>
+
+    <RelativeLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+
+        <TextView
+            android:id="@+id/add_activity2_dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="2019年7月31日"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/changeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:background="@drawable/mergedata_button_selector"
+            android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="选择日期"
+            android:textColor="@color/colorPrimary" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="点击列表内的按钮添加记录（点击一次数量 +1）"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/add_activity2_recycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/addActivity2RadioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+    <th.yzw.specialrecorder.view.common.SideIndexBarView
+        app:radius="6dp"
+        app:textSize="9sp"
+        app:pressedBGColor="@color/pop2_center"
+        android:focusable="true"
+        android:clickable="true"
+        android:id="@+id/sideBar"
+        android:layout_width="12dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="4dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@color/activityBG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/indexToastTV"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/index_infotexview_shape"
+        android:gravity="center"
+        android:text="#"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="当前合并月份：2019年7月"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateTextView">
+        <RelativeLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="1dp"
+            android:background="@color/background">
+            <Button
+                android:layout_alignParentTop="true"
+                android:id="@+id/merge_data_begin"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/mergedata_button_selector"
+                android:text="开始合并数据"
+                android:textColor="@color/textColor"
+                android:textSize="14sp" />
+
+            <Button
+                android:layout_below="@+id/merge_data_begin"
+                android:id="@+id/merge_data_importrecord"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/mergedata_button_selector"
+                android:text="@string/import_record"
+                android:textColor="@color/textColor"
+                android:textSize="14sp" />
+
+            <Button
+                android:layout_below="@id/merge_data_importrecord"
+                android:id="@+id/merge_data_importfiles"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/mergedata_button_selector"
+                android:text="@string/import_files"
+                android:textColor="@color/textColor"
+                android:textSize="14sp" />
+            <Button
+                android:layout_alignParentBottom="true"
+                android:id="@+id/merge_data_clearfiles"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/mergedata_button_selector"
+                android:text="@string/clear_imported_files"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="80dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginRight="1dp"-->
+<!--            android:background="@color/background"-->
+<!--            android:orientation="vertical">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/merge_data_begin"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:background="@drawable/mergedata_button_selector"-->
+<!--                android:text="开始合并数据"-->
+<!--                android:textColor="@color/textColor"-->
+<!--                android:textSize="14sp" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/merge_data_importrecord"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:background="@drawable/mergedata_button_selector"-->
+<!--                android:text="@string/import_record"-->
+<!--                android:textColor="@color/textColor"-->
+<!--                android:textSize="14sp" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/merge_data_importfiles"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:background="@drawable/mergedata_button_selector"-->
+<!--                android:text="@string/import_files"-->
+<!--                android:textColor="@color/textColor"-->
+<!--                android:textSize="14sp" />-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"/>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/merge_data_clearfiles"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:background="@drawable/mergedata_button_selector"-->
+<!--                android:text="@string/clear_imported_files"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="14sp" />-->
+
+<!--        </LinearLayout>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/merge_data_recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/background"
+            android:padding="8dp" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
