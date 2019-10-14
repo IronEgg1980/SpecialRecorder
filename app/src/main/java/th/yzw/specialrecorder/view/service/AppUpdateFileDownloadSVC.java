@@ -19,6 +19,7 @@ import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.ReceiveEmailHelper;
 
 public final class AppUpdateFileDownloadSVC extends IntentService {
+//    private String TAG = "殷宗旺";
     private ReceiveEmailHelper receiveEmailHelper;
 
     public AppUpdateFileDownloadSVC() {
@@ -41,15 +42,10 @@ public final class AppUpdateFileDownloadSVC extends IntentService {
                     int index = title.lastIndexOf("_") + 1;
                     long emailAppVersion = Long.valueOf(title.substring(index));
                     long downloadVersion = AppSetupOperator.getDownloadAppVersion();
-//                    long downloadVersion = 1;
                     if (emailAppVersion > downloadVersion) {
                         String filePath = getFilesDir().getAbsolutePath() + File.separator + "UpdateFiles" + File.separator + "VersionCode" + emailAppVersion;
                         FileTools.createPath(filePath);
                         FileTools.clearFiles(filePath);
-//                        StringBuilder contentBuilder = new StringBuilder();
-//                        receiveEmailHelper.getMailTextContent(msg, contentBuilder);
-//                        String content = contentBuilder.toString();
-//                        FileTools.writeTxtFile(content, filePath, "content.txt");
                         receiveEmailHelper.saveAttachment(msg, filePath);
                         AppSetupOperator.setDownloadAppVersion(emailAppVersion);
                         if (title.startsWith("forced")) {

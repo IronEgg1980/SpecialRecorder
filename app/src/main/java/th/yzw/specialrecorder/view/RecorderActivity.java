@@ -13,6 +13,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,6 +43,8 @@ import th.yzw.specialrecorder.view.show_total.ShowTotalDataFragment;
 import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
 
 public class RecorderActivity extends AppCompatActivity {
+    private String TAG = "殷宗旺";
+
     private FragmentManager fragmentManager;
     private long firstTouch;
     private android.support.v7.widget.Toolbar toolbar;
@@ -80,8 +83,9 @@ public class RecorderActivity extends AppCompatActivity {
                 //force update
                 showForceUpdateDialog();
             }
-        } else
+        } else {
             textView.setVisibility(View.INVISIBLE);
+        }
     }
 
     private File getAppUpdateFile() {
@@ -185,6 +189,7 @@ public class RecorderActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 showUpdateInfo();
+                Log.d(TAG, "onReceive: recoderactivity");
             }
         };
         Broadcasts.bindBroadcast(this, receiver, Broadcasts.APP_UPDATEFILE_DOWNLOAD_SUCCESS);

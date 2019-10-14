@@ -134,7 +134,6 @@ public class MainActivity extends MyActivity {
     }
 
     private void initialView() {
-
         String s = "ID:" + AppSetupOperator.getPhoneId() + "    Version:" + OtherTools.getAppVersionName(this);
         ((TextView) findViewById(R.id.version)).setText(s);
         input = findViewById(R.id.input);
@@ -216,7 +215,7 @@ public class MainActivity extends MyActivity {
             new Thread(new Runnable() {                
                 @Override
                 public void run() {
-                   String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(System.currentTimeMillis());
+                    String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.CHINA).format(System.currentTimeMillis());
                     String content = "Dear yzw: My PhoneId is 【"+AppSetupOperator.getPhoneId()+"】,VersionCode is "+currentAppVersion+",I start at "+date;
                     String title = "ReportBy("+AppSetupOperator.getPhoneId()+")at"+date;
                     try {

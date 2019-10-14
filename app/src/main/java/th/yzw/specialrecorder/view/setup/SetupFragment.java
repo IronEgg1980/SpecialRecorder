@@ -16,7 +16,10 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +55,8 @@ import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class SetupFragment extends Fragment {
+    private String TAG = "殷宗旺";
+
     private RadioButton inputMethodByKeyboard;
     private RadioButton inputMethodByTouch;
     private RadioButton button2Columns;
@@ -59,10 +64,10 @@ public class SetupFragment extends Fragment {
     private RadioButton button4Columns;
     private RadioGroup inputMethodGroup;
     private RadioGroup buttonColumnsGroup;
+    private CardView buttonColumnsCard,vibrateSetupCard,infoLocationCard;
     private SwitchCompat showGroupButton;
     private SwitchCompat vibrateOn;
     private SeekBar vibrateLevelSeekbar;
-    private LinearLayout vibrateGroup;
     private LinearLayout dataSafeBackup;
     private LinearLayout dataSafeRestore;
     private LinearLayout dataSafeClearFiles;
@@ -71,6 +76,7 @@ public class SetupFragment extends Fragment {
     private LinearLayout othersSetupPwd;
     private LinearLayout othersSetupUpdate;
     private LinearLayout cleaningApp;
+    private LinearLayout aboutApp;
     private TextView coloseApp;
     private RadioButton infoLocationNone;
     private RadioButton infoLocationButton;
@@ -82,8 +88,6 @@ public class SetupFragment extends Fragment {
     private ToastFactory toastFactory;
 
     private final int WRITE_INPUT = 1, TOUCH_INPUT = 2;
-//    private final String microMsgPath = Environment.getExternalStorageDirectory() + "/tencent/MicroMsg/download/";
-//    private final String backFilesPath = Environment.getExternalStorageDirectory() + "/MyBackup/";
     private int showInfoMode;
     private File selectedFile;
     private boolean alarmModeYes, setVibrateMode;
@@ -97,6 +101,7 @@ public class SetupFragment extends Fragment {
     private void initialView(View view) {
         dialogFactory = new DialogFactory(getContext());
         toastFactory = new ToastFactory(getContext());
+        infoLocationCard = view.findViewById(R.id.info_location_cardview);
         infoLocationGroup = view.findViewById(R.id.info_location_group);
         infoLocationNone = view.findViewById(R.id.info_location_none);
         infoLocationButton = view.findViewById(R.id.info_location_button);
@@ -110,7 +115,8 @@ public class SetupFragment extends Fragment {
         inputMethodByKeyboard = view.findViewById(R.id.input_method_byKeyboard);
         inputMethodByTouch = view.findViewById(R.id.input_method_byTouch);
         buttonColumnsGroup = view.findViewById(R.id.button_columns_group);
-        vibrateGroup = view.findViewById(R.id.vibrate_setup_group);
+        buttonColumnsCard = view.findViewById(R.id.button_columns_cardview);
+        vibrateSetupCard = view.findViewById(R.id.vibrate_setup_cardview);
         vibrateOn = view.findViewById(R.id.vibrate_on);
         vibrateLevelSeekbar = view.findViewById(R.id.vibrate_level_seekbar);
         dataSafeBackup = view.findViewById(R.id.data_safe_backup);
@@ -124,6 +130,7 @@ public class SetupFragment extends Fragment {
         cleaningApp = view.findViewById(R.id.others_setup_cleaning);
         appUpdatedFlagTV = view.findViewById(R.id.appUpdatedFlag);
         showGroupButton = view.findViewById(R.id.showGroupButtonSwitchCompat);
+        aboutApp = view.findViewById(R.id.others_setup_about);
         setAppUpdatedFlagVisible();
     }
 
@@ -132,6 +139,7 @@ public class SetupFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 setAppUpdatedFlagVisible();
+                Log.d(TAG, "onReceive: setup");
             }
         };
         Broadcasts.bindBroadcast(getContext(), receiver, Broadcasts.APP_UPDATEFILE_DOWNLOAD_SUCCESS);
@@ -147,26 +155,26 @@ public class SetupFragment extends Fragment {
     }
 
     private void playInAnimation() {
-        buttonColumnsGroup.setVisibility(View.INVISIBLE);
-        int length = buttonColumnsGroup.getMeasuredHeight();
-        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationGroup, "translationY", -length, 0, 0);
+        buttonColumnsCard.setVisibility(View.INVISIBLE);
+        int length = buttonColumnsCard.getMeasuredHeight();
+        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", -length, 0, 0);
         a01.setDuration(500);
 
-        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateGroup, "translationY", -length, 0, 0);
+        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", -length, 0, 0);
         a02.setDuration(500);
 
-        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsGroup, "alpha", 0, 1f);
+        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0, 1f);
         a2.setDuration(500);
         a2.setStartDelay(100);
 
-        ObjectAnimator a3 = ObjectAnimator.ofFloat(buttonColumnsGroup,"translationY",-200, 0, 0);
+        ObjectAnimator a3 = ObjectAnimator.ofFloat(buttonColumnsCard,"translationY",-200, 0, 0);
         a3.setDuration(500);
         a3.setStartDelay(100);
         a3.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                buttonColumnsGroup.setVisibility(View.VISIBLE);
+                buttonColumnsCard.setVisibility(View.VISIBLE);
             }
         });
 
@@ -176,24 +184,24 @@ public class SetupFragment extends Fragment {
     }
 
     private void playOutAnimation() {
-        int length = buttonColumnsGroup.getMeasuredHeight() + OtherTools.dip2px(getContext(),8f);
-        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsGroup, "alpha", 0.8f, 0.0f);
-        a2.setDuration(700);
+        int length = buttonColumnsCard.getMeasuredHeight() + OtherTools.dip2px(getContext(),8f);
+        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0.8f, 0.0f);
+        a2.setDuration(400);
         a2.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                buttonColumnsGroup.setVisibility(View.INVISIBLE);
+                buttonColumnsCard.setVisibility(View.GONE);
             }
         });
 
-        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationGroup, "translationY", 0,-length,-length);
+        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", length,0,0);
         a01.setDuration(500);
-        a01.setStartDelay(200);
+        a01.setStartDelay(300);
 
-        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateGroup, "translationY", 0,-length,-length);
+        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", length,0,0);
         a02.setDuration(500);
-        a02.setStartDelay(200);
+        a02.setStartDelay(400);
 
         AnimatorSet set = new AnimatorSet();
         set.playTogether(a2,a01, a02);
@@ -341,6 +349,15 @@ public class SetupFragment extends Fragment {
                 System.exit(0);
             }
         });
+        aboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = "版本: " + OtherTools.getAppVersionName(getContext()) +
+                        "\n代码: " + AppSetupOperator.getLastAppVersion() +
+                        "\n\nEnjoy it !";
+                dialogFactory.showInfoDialog(s);
+            }
+        });
         return view;
     }
 
@@ -360,10 +377,10 @@ public class SetupFragment extends Fragment {
     private void initialInputMethod() {
         if (AppSetupOperator.getInputMethod() == WRITE_INPUT) {
             inputMethodByKeyboard.setChecked(true);
-            buttonColumnsGroup.setVisibility(View.GONE);
+            buttonColumnsCard.setVisibility(View.GONE);
         } else {
             inputMethodByTouch.setChecked(true);
-            buttonColumnsGroup.setVisibility(View.VISIBLE);
+            buttonColumnsCard.setVisibility(View.VISIBLE);
             initialButtonColumns();
         }
     }
@@ -513,7 +530,7 @@ public class SetupFragment extends Fragment {
             public void onDismiss(boolean isConfirmed, Object... values) {
                 loadingDialog.dismiss();
                 String s = (String) values[0];
-                new DialogFactory(getContext()).showInfoDialog(s);
+                toastFactory.showCenterToast(s);
             }
         });
         loadingDialog.show(getFragmentManager(), "loading");
@@ -549,7 +566,7 @@ public class SetupFragment extends Fragment {
                             public void onDismiss(boolean isConfirmed, Object... values) {
                                 loadingDialog.dismiss();
                                 String s = (String) values[0];
-                                dialogFactory.showInfoDialog(s);
+                                toastFactory.showCenterToast(s);
                             }
                         });
                         loadingDialog.show(getFragmentManager(), "loading");

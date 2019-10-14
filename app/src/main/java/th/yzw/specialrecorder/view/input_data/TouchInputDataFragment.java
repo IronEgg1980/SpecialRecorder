@@ -203,9 +203,6 @@ public class TouchInputDataFragment extends Fragment {
                         String name = adapter.getItemsList().get(k).getName();
                         if (name.startsWith(text.toLowerCase())) {
                             // 滚动指定的项目到顶部可见位置
-//                            TopSmoothScroller scroller = new TopSmoothScroller(getContext());
-//                            scroller.setTargetPosition(k);
-//                            gridLayoutManager.startSmoothScroll(scroller);
                             gridLayoutManager.scrollToPositionWithOffset(k,0);
                             break;
                         }

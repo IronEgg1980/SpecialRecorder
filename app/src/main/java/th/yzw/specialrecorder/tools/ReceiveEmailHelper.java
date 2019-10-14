@@ -30,8 +30,6 @@ import javax.mail.internet.MimeUtility;
 public final class ReceiveEmailHelper {
     private final String username = "specialrecorder@163.com";
     private final String password = "Erke4187657";
-    private final String fromAdress = "specialrecorder@163.com";
-    private final String toAdress = "yinzongwang@163.com";
 
     private static ReceiveEmailHelper emailHelper = null;
     public static ReceiveEmailHelper getInstance(){
