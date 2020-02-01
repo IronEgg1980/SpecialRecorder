@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
-import th.yzw.specialrecorder.model.RecordEntity;
 
 public class EditPopWindow extends PopupWindow {
     private Context mContext;

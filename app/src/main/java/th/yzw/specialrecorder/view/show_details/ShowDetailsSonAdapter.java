@@ -11,11 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.model.RecordEntity;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.EditDataDialogFragment;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
@@ -37,7 +40,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     private Context mContext;
     private ShowDetailsFatherAdapter fatherAdapter;
     private TranslateAnimation showAnim;
-    private DialogFactory dialogFactory;
+//    private DialogFactory dialogFactory;
 
     public ShowDetailsSonAdapter(List<RecordEntity> list, Context context, AppCompatActivity activity, ShowDetailsFatherAdapter fatherAdapter) {
         this.mList = list;
@@ -45,7 +48,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         this.mActivity = activity;
         this.fatherAdapter = fatherAdapter;
         this.preIndex = -1;
-        dialogFactory = new DialogFactory(context);
+//        dialogFactory = new DialogFactory(context);
         initialAnim();
     }
     private void initialAnim(){
@@ -117,26 +120,58 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         click(position);
     }
 
-    protected void delData(final int position) {
+    protected void delData(View view,final int position) {
         final RecordEntity r = mList.get(position);
-        dialogFactory.showDefaultConfirmDialog("是否删除【" + r.getName() + "】的记录？", new DialogInterface.OnClickListener() {
+//        dialogFactory.showDefaultConfirmDialog("是否删除【" + r.getName() + "】的记录？", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                RecordEntityOperator.del(r);
+//                ItemStatisticalInformationOperator.del(r.getName(),r.getCount());
+//                mList.remove(position);
+//                if (getItemCount() > 0) {
+//                    fatherAdapter.flushCurrent();
+//                    preIndex = -1;
+//                } else {
+//                    fatherAdapter.noData();
+//                }
+//            }
+//        });
+
+        ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(mContext,"是否删除【" + r.getName() + "】的记录？");
+        confirmPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                RecordEntityOperator.del(r);
-                ItemStatisticalInformationOperator.del(r.getName(),r.getCount());
-                mList.remove(position);
-                if (getItemCount() > 0) {
-                    fatherAdapter.flushCurrent();
-                    preIndex = -1;
-                } else {
-                    fatherAdapter.noData();
+            public void onDismiss() {
+                darkenBackground(1.0f);
+            }
+        });
+        confirmPopWindow.show(view, new IDialogDismiss() {
+            @Override
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                if (isConfirmed){
+                    RecordEntityOperator.del(r);
+                    ItemStatisticalInformationOperator.del(r.getName(),r.getCount());
+                    mList.remove(position);
+                    if (getItemCount() > 0) {
+                        fatherAdapter.flushCurrent();
+                        preIndex = -1;
+                    } else {
+                        fatherAdapter.noData();
+                    }
                 }
             }
         });
         click(position);
+        darkenBackground(0.5f);
     }
 
-    @NonNull
+    private void darkenBackground(Float bgcolor) {
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
+    }
+
+        @NonNull
     @Override
     public SonViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.show_details_item, viewGroup, false);
@@ -144,26 +179,27 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final SonViewHolder sonViewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final SonViewHolder sonViewHolder, int i) {
+        final int index = sonViewHolder.getAdapterPosition();
         sonViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                click(i);
+                click(index);
             }
         });
         sonViewHolder.showItemEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editData(i,sonViewHolder.showItemEdit);
+                editData(index,sonViewHolder.showItemEdit);
             }
         });
         sonViewHolder.showItemDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delData(i);
+                delData(sonViewHolder.showItemDel,index);
             }
         });
-        RecordEntity entity = mList.get(i);
+        RecordEntity entity = mList.get(index);
         sonViewHolder.showItemName.setText(entity.getName());
         sonViewHolder.showItemCount.setText(String.valueOf(entity.getCount()));
         if (entity.isSelected()) {
