@@ -17,21 +17,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            android:text="快速选择"/>
-        <TextView
+            android:background="@drawable/mergedata_button_selector"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="4dp"
             android:id="@+id/month1"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:gravity="center"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -39,11 +33,15 @@
             android:textColor="@color/textColor"
             android:text="2019年7月份"/>
         <TextView
+            android:background="@drawable/mergedata_button_selector"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:id="@+id/month2"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:gravity="center"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -51,11 +49,15 @@
             android:textColor="@color/textColor"
             android:text="2019年6月份"/>
         <TextView
+            android:background="@drawable/mergedata_button_selector"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
             android:id="@+id/month3"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:gravity="center"
-            android:layout_gravity="center"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -63,10 +65,6 @@
             android:textColor="@color/textColor"
             android:text="2019年6月份"/>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorAccent"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -86,7 +84,7 @@
             android:calendarViewShown="false"
             android:datePickerMode="spinner"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:id="@+id/start_date"/>
     </LinearLayout>
     <LinearLayout
@@ -107,14 +105,10 @@
             android:calendarViewShown="false"
             android:datePickerMode="spinner"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:id="@+id/end_date"
             android:textSize="16sp"/>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorAccent"/>
     <LinearLayout
         android:padding="12dp"
         android:layout_width="match_parent"

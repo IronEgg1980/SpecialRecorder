@@ -38,6 +38,7 @@ import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.input_data.InputDataFragment;
 import th.yzw.specialrecorder.view.merge_data.MergeDataFragment;
 import th.yzw.specialrecorder.view.setup.SetupFragment;
+import th.yzw.specialrecorder.view.setup.ShowAppUpdateInfomationDialog;
 import th.yzw.specialrecorder.view.show_details.ShowDetailsFragment;
 import th.yzw.specialrecorder.view.show_total.ShowTotalDataFragment;
 import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
@@ -82,6 +83,8 @@ public class RecorderActivity extends AppCompatActivity {
             if (AppSetupOperator.isForceUpdate()) {
                 //force update
                 showForceUpdateDialog();
+            }else{
+                showUpdateDialog();
             }
         } else {
             textView.setVisibility(View.INVISIBLE);
@@ -119,6 +122,24 @@ public class RecorderActivity extends AppCompatActivity {
         });
         loadingDialog.show(fragmentManager, "loading");
         updater.execute();
+    }
+
+    private void showUpdateDialog(){
+        String filePath = getFilesDir().getAbsolutePath() + File.separator +
+                "UpdateFiles" + File.separator + "VersionCode" +
+                AppSetupOperator.getDownloadAppVersion();
+        ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = ShowAppUpdateInfomationDialog.newInstant(filePath);
+        showAppUpdateInfomationDialog.setOnDismiss(new IDialogDismiss() {
+            @Override
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                if (isConfirmed) {
+                    String zipFilePath = (String) values[0];
+                    File zipFile = new File(zipFilePath);
+                    openUpdater(zipFile);
+                }
+            }
+        });
+        showAppUpdateInfomationDialog.show(getSupportFragmentManager(), "showUpdateInfo");
     }
 
     private void showForceUpdateDialog() {

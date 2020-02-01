@@ -8,7 +8,7 @@
             android:pivotY="80%"
             android:toDegrees="45">
             <shape android:shape="rectangle">
-                <solid android:color="@color/bg_header" />
+                <solid android:color="@color/detailsBG" />
                 <size
                     android:width="16dp"
                     android:height="16dp" />

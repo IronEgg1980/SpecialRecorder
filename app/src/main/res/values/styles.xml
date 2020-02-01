@@ -40,17 +40,18 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@android:color/white</item>
+        <item name="android:drawablePadding">12dp</item>
     </style>
 
     <style name="GroupShape">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">12dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:padding">4dp</item>
+<!--        <item name="android:layout_marginTop">4dp</item>-->
+<!--        <item name="android:layout_marginBottom">4dp</item>-->
+<!--        <item name="android:layout_marginLeft">8dp</item>-->
+<!--        <item name="android:layout_marginRight">8dp</item>-->
     </style>
 
     <style name="GroupTitle">
@@ -93,5 +94,28 @@
     <style name="EditDialogAnim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/edit_dialog_anim_enter</item>
         <item name="android:windowExitAnimation">@anim/edit_dialog_anim_exit</item>
+    </style>
+
+    <style name="NumImageViewGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
+    <style name="NumImageView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+    <style name="PopWindowAnim">
+        <item name="android:windowEnterAnimation">@anim/dialog_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_anim_exit</item>
     </style>
 </resources>

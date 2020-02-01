@@ -148,7 +148,7 @@ public class ShowTotalDataFragment extends Fragment {
         Dialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle("删除确认")
                 .setMessage("确定删除吗？\n（注意：如果没有备份数据，删除数据后将不能恢复！建议立即备份数据，再执行删除操作。）")
-                .setIcon(R.drawable.ic_warning_24dp)
+                .setIcon(R.drawable.ic_warning_18dp)
                 .setNegativeButton("取消", null)
                 .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override

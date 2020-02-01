@@ -28,6 +28,7 @@ import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.EditDataDialogFragment;
+import th.yzw.specialrecorder.view.common.EditPopWindow;
 
 public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAdapter.SonViewHolder> {
     private List<RecordEntity> mList;
@@ -80,13 +81,13 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         preIndex = position;
     }
 
-    protected void editData(final int position) {
+    protected void editData(final int position,View view) {
         final RecordEntity r = mList.get(position);
-        EditDataDialogFragment fragment = EditDataDialogFragment.newInstant(r.getName(), r.getCount());
-        fragment.setOnDissmissListener(new IDialogDismiss() {
+        EditPopWindow editPopWindow = new EditPopWindow(mContext,r.getName(),r.getCount());
+        editPopWindow.show(view, new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object...values) {
-                if (isConfirmed) {
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                if(isConfirmed){
                     int value =(int)values[0];
                     int changeValue = value -  r.getCount();
                     RecordEntityOperator.update(r,value);
@@ -97,7 +98,22 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                 }
             }
         });
-        fragment.show(mActivity.getSupportFragmentManager(), "edit");
+//        EditDataDialogFragment fragment = EditDataDialogFragment.newInstant(r.getName(), r.getCount());
+//        fragment.setOnDissmissListener(new IDialogDismiss() {
+//            @Override
+//            public void onDismiss(boolean isConfirmed, Object...values) {
+//                if (isConfirmed) {
+//                    int value =(int)values[0];
+//                    int changeValue = value -  r.getCount();
+//                    RecordEntityOperator.update(r,value);
+//                    ItemStatisticalInformationOperator.update(r.getName(),changeValue);
+//                    r.setSelected(false);
+//                    preIndex = -1;
+//                    notifyItemChanged(position);
+//                }
+//            }
+//        });
+//        fragment.show(mActivity.getSupportFragmentManager(), "edit");
         click(position);
     }
 
@@ -138,7 +154,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         sonViewHolder.showItemEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editData(i);
+                editData(i,sonViewHolder.showItemEdit);
             }
         });
         sonViewHolder.showItemDel.setOnClickListener(new View.OnClickListener() {
