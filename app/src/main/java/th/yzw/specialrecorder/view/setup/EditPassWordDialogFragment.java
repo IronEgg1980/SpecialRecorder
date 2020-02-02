@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.R;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class EditPassWordDialogFragment extends DialogFragment {

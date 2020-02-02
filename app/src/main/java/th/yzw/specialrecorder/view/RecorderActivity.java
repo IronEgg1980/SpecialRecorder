@@ -36,6 +36,7 @@ import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.input_data.InputDataFragment;
+import th.yzw.specialrecorder.view.input_data.KeyboardInputFragment;
 import th.yzw.specialrecorder.view.merge_data.MergeDataFragment;
 import th.yzw.specialrecorder.view.setup.SetupFragment;
 import th.yzw.specialrecorder.view.setup.ShowAppUpdateInfomationDialog;
@@ -171,7 +172,7 @@ public class RecorderActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.input_white_24dp));
                 Fragment fragment = null;
                 if (AppSetupOperator.getInputMethod() == 1) {
-                    fragment = new InputDataFragment();
+                    fragment = new KeyboardInputFragment();
                 } else {
                     fragment = new TouchInputDataFragment();
                 }

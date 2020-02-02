@@ -24,7 +24,6 @@ import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
-import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class UpdateActivity extends AppCompatActivity {
     private LoadingDialog loadingDialog;

@@ -1,10 +1,6 @@
 package th.yzw.specialrecorder.view.show_details;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -29,8 +23,6 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
-import th.yzw.specialrecorder.view.common.DialogFactory;
-import th.yzw.specialrecorder.view.common.EditDataDialogFragment;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 
 public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAdapter.SonViewHolder> {
@@ -87,7 +79,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     protected void editData(final int position,View view) {
         final RecordEntity r = mList.get(position);
         EditPopWindow editPopWindow = new EditPopWindow(mContext,r.getName(),r.getCount());
-        editPopWindow.show(view, new IDialogDismiss() {
+        editPopWindow.show(mActivity, new IDialogDismiss() {
             @Override
             public void onDismiss(boolean isConfirmed, Object... values) {
                 if(isConfirmed){
@@ -138,13 +130,8 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
 //        });
 
         ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(mContext,"是否删除【" + r.getName() + "】的记录？");
-        confirmPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                darkenBackground(1.0f);
-            }
-        });
-        confirmPopWindow.show(view, new IDialogDismiss() {
+
+        confirmPopWindow.show(mActivity, new IDialogDismiss() {
             @Override
             public void onDismiss(boolean isConfirmed, Object... values) {
                 if (isConfirmed){
@@ -161,14 +148,6 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
             }
         });
         click(position);
-        darkenBackground(0.5f);
-    }
-
-    private void darkenBackground(Float bgcolor) {
-        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
-        lp.alpha = bgcolor;
-        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        mActivity.getWindow().setAttributes(lp);
     }
 
         @NonNull

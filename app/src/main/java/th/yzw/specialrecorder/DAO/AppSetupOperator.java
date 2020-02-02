@@ -116,7 +116,7 @@ public final class AppSetupOperator {
     }
 
     public static int getInputMethod(){
-        return getSetupValue("inputmethod",2);
+        return getSetupValue("inputmethod",1);
     }
 
     public static void setInputMethod(int method){

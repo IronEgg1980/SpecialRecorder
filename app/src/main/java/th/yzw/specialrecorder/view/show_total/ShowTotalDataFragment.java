@@ -54,9 +54,9 @@ import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.RecorderActivity;
+import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
-import th.yzw.specialrecorder.view.common.SelectDateRangeDialogFragment;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class ShowTotalDataFragment extends Fragment {
@@ -120,11 +120,26 @@ public class ShowTotalDataFragment extends Fragment {
     private String phoneId;
 
     private void selectDateRange() {
-        SelectDateRangeDialogFragment dateRangeDialogFragment = new SelectDateRangeDialogFragment();
-        dateRangeDialogFragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+//        SelectDateRangeDialogFragment dateRangeDialogFragment = new SelectDateRangeDialogFragment();
+//        dateRangeDialogFragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+//            @Override
+//            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
+//                if (isConfirm) {
+//                    start = timeInMillis[0];
+//                    end = timeInMillis[1];
+//                    adapter.updateList(start, end);
+//                    showInfo();
+//                }
+//            }
+//        });
+//        dateRangeDialogFragment.show(getFragmentManager(), "selectDateRange");
+
+        DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(activity);
+
+        dateRangePopWindow.show(changeDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-                if (isConfirm) {
+                if(isConfirm){
                     start = timeInMillis[0];
                     end = timeInMillis[1];
                     adapter.updateList(start, end);
@@ -132,7 +147,6 @@ public class ShowTotalDataFragment extends Fragment {
                 }
             }
         });
-        dateRangeDialogFragment.show(getFragmentManager(), "selectDateRange");
     }
 
     private void showInfo() {

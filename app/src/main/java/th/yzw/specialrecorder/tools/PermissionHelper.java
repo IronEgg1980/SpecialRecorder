@@ -9,7 +9,9 @@ import com.hjq.permissions.XXPermissions;
 
 import java.util.List;
 
-import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 
 public final class PermissionHelper {
     public interface OnResult{
@@ -45,23 +47,36 @@ public final class PermissionHelper {
                     if(isAll)
                         onResult.hasPermission();
                     else
-                        new DialogFactory(mContext).showInfoDialog("您已拒绝授予部分权限，可能会影响正常使用，已取消操作。",cancel);
+                        new InfoPopWindow(mContext,"您已拒绝授予部分权限，可能会影响正常使用，已取消操作。")
+                                .show(mActivity);
+//                        new DialogFactory1(mContext).showInfoDialog("您已拒绝授予部分权限，可能会影响正常使用，已取消操作。",cancel);
                 }
 
                 @Override
                 public void noPermission(List<String> denied, boolean quick) {
                     if(quick) {
-                        new DialogFactory(mContext).showWarningDialog("注意",
-                                "您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。",
-                                "去设置",
-                                new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                XXPermissions.gotoPermissionSettings(mContext,true);
-                            }
-                        },"",cancel);
+                        new ConfirmPopWindow(mContext,"您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。")
+                                .show(mActivity, new IDialogDismiss() {
+                                    @Override
+                                    public void onDismiss(boolean isConfirmed, Object... values) {
+                                        if(isConfirmed){
+                                            XXPermissions.gotoPermissionSettings(mContext,true);
+                                        }
+                                    }
+                                });
+//                        new DialogFactory1(mContext).showWarningDialog("注意",
+//                                "您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。",
+//                                "去设置",
+//                                new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                XXPermissions.gotoPermissionSettings(mContext,true);
+//                            }
+//                        },"",cancel);
                     }else
-                        new DialogFactory(mContext).showInfoDialog("您已拒绝授权，不能使用该功能，已取消操作。",cancel);
+                        new InfoPopWindow(mContext,"您已拒绝授权，不能使用该功能，已取消操作。")
+                                .show(mActivity);
+//                        new DialogFactory1(mContext).showInfoDialog("您已拒绝授权，不能使用该功能，已取消操作。",cancel);
                 }
             });
         }

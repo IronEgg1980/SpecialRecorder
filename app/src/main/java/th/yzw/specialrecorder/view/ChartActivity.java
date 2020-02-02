@@ -42,12 +42,14 @@ import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.JSON.ItemStatisticJSONHelper;
 import th.yzw.specialrecorder.JSON.JSONHelper;
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemStatisticalInformation;
 import th.yzw.specialrecorder.tools.DataTool;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class ChartActivity extends AppCompatActivity {
@@ -475,12 +477,20 @@ public class ChartActivity extends AppCompatActivity {
                     toastFactory.showCenterToast("没有统计数据");
                     return;
                 }
-                dialogFactory.showDefaultConfirmDialog("重置统计数据将无法恢复，请谨慎选择！", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        showSelectList(names);
-                    }
-                });
+                new ConfirmPopWindow(ChartActivity.this,"重置统计数据将无法恢复，请谨慎选择！")
+                        .show(ChartActivity.this, new IDialogDismiss() {
+                            @Override
+                            public void onDismiss(boolean isConfirmed, Object... values) {
+                                if(isConfirmed)
+                                    showSelectList(names);
+                            }
+                        });
+//                dialogFactory.showDefaultConfirmDialog("重置统计数据将无法恢复，请谨慎选择！", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        showSelectList(names);
+//                    }
+//                });
             }
         });
         initialPieChart();

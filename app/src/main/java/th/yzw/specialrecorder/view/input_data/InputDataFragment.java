@@ -32,18 +32,17 @@ import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
-import th.yzw.specialrecorder.interfaces.OnSelectDialogConfirmClick;
 import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.view.RecorderActivity;
+import th.yzw.specialrecorder.view.common.DatePopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
-import th.yzw.specialrecorder.view.common.SelectDateDialogFragment;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class InputDataFragment extends Fragment {
     private long date;
     private TextView dateTextView;
-    private TextView name;
+    private TextView name,selectDate;
     private EditText count;
     private SimpleDateFormat dateformat;
     private MyPopupWin2 popupWin2;
@@ -80,7 +79,7 @@ public class InputDataFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_layout, container, false);
         dateTextView = view.findViewById(R.id.add_activity_dateTextView);
-        TextView selectDate = view.findViewById(R.id.changeDate);
+        selectDate = view.findViewById(R.id.changeDate);
         dateTextView.setFocusable(true);
         dateTextView.setText(dateformat.format(date));
         selectDate.setOnClickListener(new View.OnClickListener() {
@@ -267,8 +266,8 @@ public class InputDataFragment extends Fragment {
 
     private void selectDate(View view) {
         dateTextView.requestFocus();
-        SelectDateDialogFragment fragment = new SelectDateDialogFragment();
-        fragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+        DatePopWindow datePopWindow = new DatePopWindow(getActivity(),date);
+        datePopWindow.show(selectDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
                 if (isConfirm) {
@@ -280,9 +279,23 @@ public class InputDataFragment extends Fragment {
                 // 打开键盘
                 imm.showSoftInput(count, 1);
             }
-
         });
-        fragment.show(getFragmentManager(), "selectDate");
+//        SelectDateDialogFragment fragment = new SelectDateDialogFragment();
+//        fragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+//            @Override
+//            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
+//                if (isConfirm) {
+//                    date = timeInMillis[0];
+//                    dateTextView.setText(dateformat.format(date));
+//                }
+//                count.requestFocus();
+//                count.selectAll();
+//                // 打开键盘
+//                imm.showSoftInput(count, 1);
+//            }
+//
+//        });
+//        fragment.show(getFragmentManager(), "selectDate");
     }
 
 }

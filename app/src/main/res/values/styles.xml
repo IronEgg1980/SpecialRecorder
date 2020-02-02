@@ -118,4 +118,9 @@
         <item name="android:windowEnterAnimation">@anim/dialog_anim_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_anim_exit</item>
     </style>
+
+    <style name="DateRangePopWindowAnim">
+        <item name="android:windowEnterAnimation">@anim/daterange_show</item>
+        <item name="android:windowExitAnimation">@anim/daterange_hide</item>
+    </style>
 </resources>

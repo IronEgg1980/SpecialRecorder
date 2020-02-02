@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+
+        <TextView
+            android:id="@+id/add_activity_dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="2019年7月31日"/>
+
+        <TextView
+            android:id="@+id/changeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:background="@drawable/select_date_bg"
+            android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="选择日期"
+            android:textColor="@color/colorPrimary" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:layout_below="@id/relativelayout">
+
+
+        <LinearLayout
+            android:id="@+id/name_group"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:text="名称："
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+            <TextView
+                android:id="@+id/keyboad_input_name_TV"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+            <!--<Spinner-->
+            <!--android:id="@+id/add_activity_spninner"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:layout_weight="3"-->
+            <!--android:spinnerMode="dialog" />-->
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/recyclerviewGroup"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/keyboad_input_recyclerview"/>
+            <th.yzw.specialrecorder.view.common.SideIndexBarView
+                android:layout_alignParentEnd="true"
+                app:radius="6dp"
+                app:textSize="12sp"
+                app:pressedBGColor="@color/pop2_center"
+                android:focusable="true"
+                android:clickable="true"
+                android:id="@+id/sideBar"
+                android:layout_width="12dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/activityBG" />
+        </RelativeLayout>
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:text="数量："
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/keyboad_input_count_TV"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/keyboard_group_relativelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linearLayout0"
+                style="@style/NumImageViewGroup"
+                android:layout_alignParentTop="true">
+
+                <ImageView
+                    android:id="@+id/num1_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_1" />
+
+                <ImageView
+                    android:id="@+id/num2_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_2" />
+
+                <ImageView
+                    android:id="@+id/num3_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                style="@style/NumImageViewGroup"
+                android:layout_below="@id/linearLayout0">
+
+                <ImageView
+                    android:id="@+id/num4_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_4" />
+
+                <ImageView
+                    android:id="@+id/num5_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_5" />
+
+                <ImageView
+                    android:id="@+id/num6_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_6" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                style="@style/NumImageViewGroup"
+                android:layout_below="@id/linearLayout3">
+
+                <ImageView
+                    android:id="@+id/num7_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_7" />
+
+                <ImageView
+                    android:id="@+id/num8_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_8" />
+
+                <ImageView
+                    android:id="@+id/num9_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_9" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                style="@style/NumImageViewGroup"
+                android:layout_below="@id/linearLayout4">
+
+                <ImageView
+                    android:id="@+id/num0_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/num_0" />
+
+                <ImageView
+                    android:id="@+id/backspace_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/ic_backspace_24dp" />
+
+                <ImageView
+                    android:id="@+id/ok_IV"
+                    style="@style/NumImageView"
+                    android:src="@drawable/confirm" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/indexToastTV"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/index_infotexview_shape"
+        android:gravity="center"
+        android:text="#"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+</RelativeLayout>

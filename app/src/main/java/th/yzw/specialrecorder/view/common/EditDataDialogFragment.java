@@ -29,7 +29,7 @@ public class EditDataDialogFragment extends DialogFragment {
     private int mOldValue,newValue;
     private IDialogDismiss onDissmissListener;
     private EditText editText;
-    private boolean isConfirm;
+    private boolean isConfirm ;
 
 
     public void setOnDissmissListener(IDialogDismiss onDissmissListener) {

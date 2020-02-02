@@ -1,19 +1,15 @@
 package th.yzw.specialrecorder.view.input_data;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,12 +22,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
 
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ItemNameOperator;
@@ -41,10 +33,8 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
 import th.yzw.specialrecorder.interfaces.OnIndexBarPressedListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
-import th.yzw.specialrecorder.model.ItemName;
-import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.RecorderActivity;
-import th.yzw.specialrecorder.view.common.SelectDateDialogFragment;
+import th.yzw.specialrecorder.view.common.DatePopWindow;
 import th.yzw.specialrecorder.view.common.SideIndexBarView;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
@@ -214,30 +204,6 @@ public class TouchInputDataFragment extends Fragment {
                     toastTV.setVisibility(View.GONE);
                 }
             });
-
-
-//            final RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
-//            sideBar.setLayoutManager(manager);
-//            final SideBarAdapter sideBarAdapter = new SideBarAdapter();
-//            sideBarAdapter.setItemClicker(new MyClickListener() {
-//                @Override
-//                public void OnClick(View view, Object o) {
-//                    String letter = o.toString();
-//                    for (int k = 0; k < adapter.getItemCount(); k++) {
-//                        String name = adapter.getItemsList().get(k).getName();
-//                        if (name.startsWith(letter.toLowerCase())) {
-//                            // 滚动指定的项目到顶部可见位置
-//                            TopSmoothScroller scroller = new TopSmoothScroller(getContext());
-//                            scroller.setTargetPosition(k);
-//                            gridLayoutManager.startSmoothScroll(scroller);
-//                            timer.cancel();
-//                            timer.start();
-//                            break;
-//                        }
-//                    }
-//                }
-//            });
-//            sideBar.setAdapter(sideBarAdapter);
         }
     }
 
@@ -267,7 +233,7 @@ public class TouchInputDataFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.to_keyboad_input) {
-            InputDataFragment fragment = new InputDataFragment();
+            Fragment fragment = new KeyboardInputFragment();
             getFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
             return true;
         }
@@ -339,16 +305,27 @@ public class TouchInputDataFragment extends Fragment {
     }
 
     public void selectDate(View view) {
-        SelectDateDialogFragment fragment = new SelectDateDialogFragment();
-        fragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+        DatePopWindow datePopWindow = new DatePopWindow(activity,date);
+        datePopWindow.show(selectDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-                if (isConfirm) {
+                if(isConfirm){
                     date = timeInMillis[0];
                     dateTextView.setText(dateFormat.format(date));
                 }
             }
         });
-        fragment.show(getFragmentManager(), "selectDate");
+
+//        SelectDateDialogFragment fragment = new SelectDateDialogFragment();
+//        fragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
+//            @Override
+//            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
+//                if (isConfirm) {
+//                    date = timeInMillis[0];
+//                    dateTextView.setText(dateFormat.format(date));
+//                }
+//            }
+//        });
+//        fragment.show(getFragmentManager(), "selectDate");
     }
 }

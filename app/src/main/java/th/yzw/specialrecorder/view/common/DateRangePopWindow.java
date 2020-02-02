@@ -1,19 +1,13 @@
 package th.yzw.specialrecorder.view.common;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.util.DisplayMetrics;
+import android.app.Activity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -23,20 +17,15 @@ import java.util.Locale;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 
-public class SelectDateRangeDialogFragment extends DialogFragment {
+public class DateRangePopWindow extends PopupWindow {
     private OnSelectDateRangeDismiss onSelectDateRangeDismiss;
     private Calendar calendar;
-    private TextView[] quickSelectTextViews;
+    private TextView[] quickSelectTextViews = new TextView[3];
     private DatePicker startDatePicker, endDatePicker;
     private long startDay, endDay;
-    private boolean isConfirm;
-    private int[] textViewId;
-    private int[] y, m, max;
-
-
-    public void setOnSelectDateRangeDismiss(OnSelectDateRangeDismiss onSelectDateRangeDismiss) {
-        this.onSelectDateRangeDismiss = onSelectDateRangeDismiss;
-    }
+    private boolean isConfirm = false;
+    private int[] textViewId = {R.id.month1, R.id.month2, R.id.month3};
+    private int[]  y = new int[3], m = new int[3],max = new int[3];
 
     private void initialView(View view) {
         startDatePicker = view.findViewById(R.id.start_date);
@@ -101,47 +90,45 @@ public class SelectDateRangeDialogFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        quickSelectTextViews = new TextView[3];
-        textViewId = new int[]{R.id.month1, R.id.month2, R.id.month3};
-        calendar = new GregorianCalendar(Locale.CHINA);
-        y = new int[3];
-        m = new int[3];
-        max = new int[3];
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.select_startdate_endddate, container, false);
+    public DateRangePopWindow(Activity activity){
+        this.calendar = new GregorianCalendar(Locale.CHINA);
+        View view = LayoutInflater.from(activity).inflate(R.layout.select_startdate_endddate,null);
         initialView(view);
-        return view;
+        setContentView(view);
+        setFocusable(true);
+        setTouchable(true);
+        setOutsideTouchable(true);
+        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setAnimationStyle(R.style.DateRangePopWindowAnim);
+//        setOnDismissListener(new OnDismissListener() {
+//            @Override
+//            public void onDismiss() {
+//                darkenBackground(1f);
+//            }
+//        });
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            DisplayMetrics dm = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            int width = (int) (dm.widthPixels * 0.85);
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            dialog.setCanceledOnTouchOutside(false);
-            Window window = dialog.getWindow();
-            if (window!=null) {
-                window.setWindowAnimations(R.style.CommonDialogAnim);
-                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                window.setLayout(width, height);
-            }
-        }
+    public void dismiss() {
+        if(onSelectDateRangeDismiss != null)
+            onSelectDateRangeDismiss.onDissmiss(isConfirm, startDay, endDay);
+        super.dismiss();
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        onSelectDateRangeDismiss.onDissmiss(isConfirm, startDay, endDay);
+    public void show(View parent, OnSelectDateRangeDismiss onSelectDateRangeDismiss){
+        this.onSelectDateRangeDismiss = onSelectDateRangeDismiss;
+        int[] location = new int[2];
+        parent.getLocationOnScreen(location);
+//        showAsDropDown(parent,0,0);
+        showAtLocation(parent,Gravity.NO_GRAVITY,location[0],location[1]);
     }
+//    private void darkenBackground(Float bgcolor) {
+//        if(mActivity == null)
+//            return;
+//        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+//        lp.alpha = bgcolor;
+//        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+//        mActivity.getWindow().setAttributes(lp);
+//    }
 }

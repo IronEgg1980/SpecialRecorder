@@ -4,12 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -17,7 +20,9 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 
 public class ConfirmPopWindow extends PopupWindow {
-    private IDialogDismiss dialogDismiss;
+    private IDialogDismiss dialogDismiss = null;
+    private boolean confirmFlag = false;
+    private Activity mActivity = null;
 //    private View contentView;
 //    private ObjectAnimator enterAnim,exitAnim;
 
@@ -29,6 +34,12 @@ public class ConfirmPopWindow extends PopupWindow {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.PopWindowAnim);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                darkenBackground(1.0f);
+            }
+        });
     }
 
 //    private void createAnim(int height){
@@ -57,16 +68,13 @@ public class ConfirmPopWindow extends PopupWindow {
         view.findViewById(R.id.cancelTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogDismiss != null)
-                    dialogDismiss.onDismiss(false);
                 dismiss();
             }
         });
         view.findViewById(R.id.confirmTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogDismiss != null)
-                    dialogDismiss.onDismiss(true);
+                confirmFlag = true;
                 dismiss();
             }
         });
@@ -82,9 +90,28 @@ public class ConfirmPopWindow extends PopupWindow {
         setContentView(view);
     }
 
-    public void show(View parent,IDialogDismiss dialogDismiss){
+    public void show(Activity activity,IDialogDismiss dialogDismiss){
         this.dialogDismiss = dialogDismiss;
-        showAtLocation(parent, Gravity.BOTTOM,0,0);
-//        enterAnim.start();
+        this.mActivity =activity;
+        Window window = activity.getWindow();
+        showAtLocation(window.getDecorView(), Gravity.BOTTOM,0,-200);
+        darkenBackground(0.5f);
+
+    }
+
+    private void darkenBackground(Float bgcolor) {
+        if(mActivity == null)
+            return;
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public void dismiss() {
+        if(dialogDismiss != null)
+            dialogDismiss.onDismiss(confirmFlag);
+        super.dismiss();
     }
 }

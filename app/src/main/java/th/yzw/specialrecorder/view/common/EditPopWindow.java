@@ -1,5 +1,6 @@
 package th.yzw.specialrecorder.view.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -8,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class EditPopWindow extends PopupWindow {
     private StringBuilder stringBuilder;
     private IDialogDismiss dialogDismiss;
     private TextView numTextView, infoTextView;
+    private Activity mActivity;
 
     public EditPopWindow(Context context, String name, int count) {
         this.mContext = context;
@@ -41,6 +44,12 @@ public class EditPopWindow extends PopupWindow {
         setAnimationStyle(R.style.PopWindowAnim);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                darkenBackground(1f);
+            }
+        });
     }
 
     private View createView() {
@@ -77,11 +86,11 @@ public class EditPopWindow extends PopupWindow {
         view.findViewById(R.id.ok_IV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(numTextView.getText())) {
-                    infoTextView.setText("请输入有效数字");
+                if (stringBuilder == null || stringBuilder.length() == 0) {
+                    infoTextView.setText("请输入数字");
                     return;
                 }
-                String count_s = numTextView.getText().toString().trim();
+                String count_s = stringBuilder.toString().trim();
                 int count = 0;
                 try {
                     count = Integer.parseInt(count_s);
@@ -133,9 +142,21 @@ public class EditPopWindow extends PopupWindow {
         showInfo();
     }
 
-    public void show(View parent, IDialogDismiss dialogDismiss) {
+    public void show(Activity activity, IDialogDismiss dialogDismiss) {
         this.dialogDismiss = dialogDismiss;
+        this.mActivity = activity;
         showInfo();
-        showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
+        darkenBackground(0.5f);
+
+    }
+
+    private void darkenBackground(Float bgcolor) {
+        if(mActivity == null)
+            return;
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
     }
 }

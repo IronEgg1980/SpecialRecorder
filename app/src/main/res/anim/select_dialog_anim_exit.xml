@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="100"
     android:interpolator="@android:interpolator/accelerate_decelerate">
    <scale android:fromXScale="100%"
        android:toXScale="100%"
        android:fromYScale="100%"
        android:toYScale="0%"
        android:pivotX="50%"
-       android:pivotY="20%"
-       android:duration = "200"/>
+       android:pivotY="50%"/>
 </set>

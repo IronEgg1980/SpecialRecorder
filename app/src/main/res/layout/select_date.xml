@@ -3,18 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/select_date_bg"
     android:orientation="vertical">
 
     <TextView
         style="@style/TitleTextView"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
         android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
         android:text="选择日期" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorAccent" />
     <DatePicker
         android:id="@+id/date"
         android:layout_width="wrap_content"
@@ -40,7 +38,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="取消"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/confirm"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +53,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:text="确定"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
