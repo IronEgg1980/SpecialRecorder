@@ -44,7 +44,6 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         android:layout_below="@id/relativelayout">
 
@@ -61,7 +60,6 @@
                 android:layout_height="match_parent"
                 android:gravity="end|center_vertical"
                 android:text="名称："
-                android:textColor="@color/textColor"
                 android:textSize="18sp" />
             <TextView
                 android:id="@+id/keyboad_input_name_TV"
@@ -71,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:text=""
                 android:textColor="@color/textColor"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
             <!--<Spinner-->
             <!--android:id="@+id/add_activity_spninner"-->
             <!--android:layout_width="0dp"-->
@@ -103,11 +101,12 @@
                 android:layout_width="12dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:background="@color/activityBG" />
         </RelativeLayout>
         <LinearLayout
+            android:id="@+id/keyboad_input_count_group"
             android:background="@color/white"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -118,7 +117,6 @@
                 android:layout_height="match_parent"
                 android:gravity="end|center_vertical"
                 android:text="数量："
-                android:textColor="@color/textColor"
                 android:textSize="18sp" />
 
             <TextView
@@ -129,7 +127,7 @@
                 android:gravity="center_vertical"
                 android:text=""
                 android:textColor="@color/textColor"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
 
         </LinearLayout>
         <RelativeLayout

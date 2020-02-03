@@ -35,7 +35,6 @@ import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
-import th.yzw.specialrecorder.view.input_data.InputDataFragment;
 import th.yzw.specialrecorder.view.input_data.KeyboardInputFragment;
 import th.yzw.specialrecorder.view.merge_data.MergeDataFragment;
 import th.yzw.specialrecorder.view.setup.SetupFragment;

@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.input_data;
+package th.yzw.specialrecorder.unuse;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -38,6 +38,9 @@ import th.yzw.specialrecorder.view.RecorderActivity;
 import th.yzw.specialrecorder.view.common.DatePopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.ToastFactory;
+import th.yzw.specialrecorder.view.input_data.MyPopWindow3;
+import th.yzw.specialrecorder.view.input_data.MyPopupWin2;
+import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
 
 public class InputDataFragment extends Fragment {
     private long date;

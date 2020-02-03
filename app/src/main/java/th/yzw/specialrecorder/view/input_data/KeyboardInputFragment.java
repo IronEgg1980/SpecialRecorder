@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,6 +52,8 @@ import th.yzw.specialrecorder.view.common.SideIndexBarView;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class KeyboardInputFragment extends Fragment {
+    private String TAG = "殷宗旺";
+
     private long date;
     private RecyclerView recyclerView;
     private RelativeLayout keyboardGroup;
@@ -67,8 +71,8 @@ public class KeyboardInputFragment extends Fragment {
     private List<ItemName> list;
     private ItemNameAdapter adapter;
     private StringBuilder stringBuilder;
-    private SideIndexBarView sideBarIndex;
     private RelativeLayout recyclerViewGroup;
+    private LinearLayout countGroup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,11 +101,10 @@ public class KeyboardInputFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.keyboard_input_layout, container, false);
         recyclerView = view.findViewById(R.id.keyboad_input_recyclerview);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
         recyclerView.setAdapter(adapter);
         recyclerViewGroup = view.findViewById(R.id.recyclerviewGroup);
         keyboardGroup = view.findViewById(R.id.keyboard_group_relativelayout);
-        keyboardGroup.setVisibility(View.GONE);
         for(int i = 0;i<10;i++){
             numIVs[i] = view.findViewById(ids[i]);
             final int finalI = i;
@@ -116,6 +119,14 @@ public class KeyboardInputFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 backSpace();
+            }
+        });
+        view.findViewById(R.id.backspace_IV).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                stringBuilder.delete(0,stringBuilder.length());
+                countTextView.setText(stringBuilder);
+                return true;
             }
         });
         final LinearLayout linearLayout = view.findViewById(R.id.name_group);
@@ -142,6 +153,7 @@ public class KeyboardInputFragment extends Fragment {
                 showItemList();
             }
         });
+        countGroup = view.findViewById(R.id.keyboad_input_count_group);
         countTextView = view.findViewById(R.id.keyboad_input_count_TV);
         countTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +171,7 @@ public class KeyboardInputFragment extends Fragment {
     }
 
     private void initialSideBar(View view) {
-        sideBarIndex = view.findViewById(R.id.sideBar);
+        SideIndexBarView sideBarIndex = view.findViewById(R.id.sideBar);
         toastTV = view.findViewById(R.id.indexToastTV);
         if (!AppSetupOperator.getShowGroupButtonStatus()) {
             String[] letters = ItemNameOperator.getItemNameFirstLetters();
@@ -187,9 +199,67 @@ public class KeyboardInputFragment extends Fragment {
         }
     }
 
+    private ObjectAnimator hideView(final View view){
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,"scaleY",1f,0f);
+        objectAnimator.setDuration(200);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setVisibility(View.GONE);
+            }
+        });
+        return objectAnimator;
+    }
+
+    private ObjectAnimator showView(final View view){
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,"scaleY",0f,1f);
+        objectAnimator.setDuration(200);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                view.setVisibility(View.VISIBLE);
+            }
+        });
+        return objectAnimator;
+    }
+
+    private ObjectAnimator translateView(final View view, boolean isUp, boolean hide){
+        int height = recyclerViewGroup.getHeight();
+        ObjectAnimator animator;
+        if(isUp) {
+            animator = ObjectAnimator.ofFloat(view,"translationY",height,0);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
+        }else{
+            animator = ObjectAnimator.ofFloat(view, "translationY", -height, 0);
+            if(hide) {
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        view.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }
+        animator.setDuration(200);
+        return animator;
+    }
+
     private void showItemList(){
-        keyboardGroup.setVisibility(View.GONE);
-        recyclerViewGroup.setVisibility(View.VISIBLE);
+        ObjectAnimator animator1 = showView(recyclerViewGroup);
+        ObjectAnimator animator2 = translateView(keyboardGroup,false,true);
+        ObjectAnimator animator3 = translateView(countGroup,false,false);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animator1,animator2,animator3);
+        animatorSet.start();
         adapter.notifyDataSetChanged();
     }
 
@@ -202,8 +272,14 @@ public class KeyboardInputFragment extends Fragment {
     }
 
     private void showKeyboard(){
-        keyboardGroup.setVisibility(View.VISIBLE);
-        recyclerViewGroup.setVisibility(View.GONE);
+        ObjectAnimator animator1 = hideView(recyclerViewGroup);
+        ObjectAnimator animator2 = translateView(keyboardGroup,true,false);
+        ObjectAnimator animator3 = translateView(countGroup,true,false);
+        animator3.setDuration(200);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animator2).with(animator3).after(animator1);
+        animatorSet.start();
+
     }
 
     private void backSpace(){
@@ -214,11 +290,11 @@ public class KeyboardInputFragment extends Fragment {
     }
 
     private void initialAnimation() {
-        translateAnimation = new TranslateAnimation(-10f,10f,0,0);
+        translateAnimation = new TranslateAnimation(-20f,20f,0,0);
         translateAnimation.setInterpolator(new OvershootInterpolator());
         translateAnimation.setDuration(50);
         translateAnimation.setRepeatMode(Animation.RESTART);
-        translateAnimation.setRepeatCount(2);
+        translateAnimation.setRepeatCount(3);
     }
 
     private void numClick(int num){
