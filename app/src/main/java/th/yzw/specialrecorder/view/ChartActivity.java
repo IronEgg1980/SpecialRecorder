@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.ArrayMap;
 import android.view.View;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -32,7 +33,9 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -50,6 +53,7 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class ChartActivity extends AppCompatActivity {
@@ -59,7 +63,6 @@ public class ChartActivity extends AppCompatActivity {
     private BarChart barChart;
     private TextView phoneIdTV;
     private int selectTimesColor, totalQuantityColor;
-    private DialogFactory dialogFactory;
     private String phoneId;
     private ToastFactory toastFactory;
     private List<ItemStatisticalInformation> ordredDataList;
@@ -74,10 +77,10 @@ public class ChartActivity extends AppCompatActivity {
                 return i1.compareTo(i2);
             }
         });//排序
-        ArrayMap<String ,Integer> result = new ArrayMap<>();
-        for(ItemStatisticalInformation information:list){
-            String type =DataTool.getItemTypeString(information.getItemType());
-            result.put(type,result.getOrDefault(type,0)+information.getTotalQuantity());//利用map集合key不能重复去重，同时计算数量
+        ArrayMap<String, Integer> result = new ArrayMap<>();
+        for (ItemStatisticalInformation information : list) {
+            String type = DataTool.getItemTypeString(information.getItemType());
+            result.put(type, result.getOrDefault(type, 0) + information.getTotalQuantity());//利用map集合key不能重复去重，同时计算数量
         }
         return result;
     }
@@ -92,9 +95,9 @@ public class ChartActivity extends AppCompatActivity {
             }
         });//排序
         ArrayMap<String, Integer> formalationPieMap = new ArrayMap<>();
-        for(ItemStatisticalInformation information:list){
+        for (ItemStatisticalInformation information : list) {
             String formalation = DataTool.getItemFomalationString(information.getFormalation());
-            formalationPieMap.put(formalation,formalationPieMap.getOrDefault(formalation,0) + information.getTotalQuantity()); //利用map集合key不能重复去重，同时计算数量
+            formalationPieMap.put(formalation, formalationPieMap.getOrDefault(formalation, 0) + information.getTotalQuantity()); //利用map集合key不能重复去重，同时计算数量
         }
         return formalationPieMap;
     }
@@ -104,20 +107,39 @@ public class ChartActivity extends AppCompatActivity {
         if (temp == null || temp.length == 0) {
             toastFactory.showCenterToast("没有数据文件");
         } else {
-            final String[] files = new String[temp.length + 1];
-            files[0] = "本机数据";
-            System.arraycopy(temp, 0, files, 1, temp.length);
-            dialogFactory.showSingleSelect(files, new SelectDialogClicker() {
+            final List<String> list = new ArrayList<>();
+            list.add("本机数据");
+            list.addAll(Arrays.asList(temp));
+            SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, false);
+            popWindow.show(new IDialogDismiss() {
                 @Override
-                public void click(int checkedItem) {
-                    if (checkedItem == 0) {
-                        showMyData();
-                        return;
+                public void onDismiss(boolean isConfirmed, Object... values) {
+                    if (isConfirmed) {
+                        int index = (int) values[0];
+                        if (index == 0) {
+                            showMyData();
+                            return;
+                        }
+                        File file = new File(microMsgPath, list.get(index));
+                        showFileData(file);
                     }
-                    File file = new File(microMsgPath, files[checkedItem]);
-                    showFileData(file);
                 }
             });
+
+//            final String[] files = new String[temp.length + 1];
+//            files[0] = "本机数据";
+//            System.arraycopy(temp, 0, files, 1, temp.length);
+//            dialogFactory.showSingleSelect(files, new SelectDialogClicker() {
+//                @Override
+//                public void click(int checkedItem) {
+//                    if (checkedItem == 0) {
+//                        showMyData();
+//                        return;
+//                    }
+//                    File file = new File(microMsgPath, files[checkedItem]);
+//                    showFileData(file);
+//                }
+//            });
         }
     }
 
@@ -134,7 +156,7 @@ public class ChartActivity extends AppCompatActivity {
     private void showData(List<ItemStatisticalInformation> list) {
         String s = "ID:" + phoneId;
         phoneIdTV.setText(s);
-        if(ordredDataList == null)
+        if (ordredDataList == null)
             ordredDataList = new ArrayList<>();
         ordredDataList.clear();
         ordredDataList.addAll(list);
@@ -142,11 +164,11 @@ public class ChartActivity extends AppCompatActivity {
         setPieChartData(list);
     }
 
-    private void sortDataList(boolean orderBySelectTimes){
+    private void sortDataList(boolean orderBySelectTimes) {
 //        List<ItemStatisticalInformation> orderedList = new ArrayList<>(list);
         Comparator<ItemStatisticalInformation> comparator;
-        if(orderBySelectTimes){
-            comparator =  new Comparator<ItemStatisticalInformation>() {
+        if (orderBySelectTimes) {
+            comparator = new Comparator<ItemStatisticalInformation>() {
                 @Override
                 public int compare(ItemStatisticalInformation o1, ItemStatisticalInformation o2) {
                     int diff = o2.getSelectedTimes() - o1.getSelectedTimes();
@@ -164,8 +186,8 @@ public class ChartActivity extends AppCompatActivity {
                     }
                 }
             };
-        }else{
-            comparator =  new Comparator<ItemStatisticalInformation>() {
+        } else {
+            comparator = new Comparator<ItemStatisticalInformation>() {
                 @Override
                 public int compare(ItemStatisticalInformation o1, ItemStatisticalInformation o2) {
                     int diff = o2.getTotalQuantity() - o1.getTotalQuantity();
@@ -184,7 +206,7 @@ public class ChartActivity extends AppCompatActivity {
                 }
             };
         }
-        Collections.sort(ordredDataList,comparator);
+        Collections.sort(ordredDataList, comparator);
 //        return orderedList;
     }
 
@@ -366,18 +388,51 @@ public class ChartActivity extends AppCompatActivity {
         return description;
     }
 
-    private void showSelectList(final String[] names) {
-        dialogFactory.showMultiSelect(names, new SelectDialogClicker() {
+    private void resetData(final List<String> names) {
+        ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(ChartActivity.this, "重置后数据无法恢复，确定继续吗？");
+        confirmPopWindow.show(ChartActivity.this, new IDialogDismiss() {
             @Override
-            public void click(boolean[] checkedItems) {
-                for (int i = checkedItems.length - 1; i > -1; i--) {
-                    if (checkedItems[i]) {
-                        ItemStatisticalInformationOperator.del(names[i]);
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                if (isConfirmed) {
+                    for (int i = 0; i<names.size(); i++) {
+                        ItemStatisticalInformationOperator.del(names.get(i));
                     }
+                    showMyData();
                 }
-                showMyData();
             }
         });
+    }
+
+    private void showSelectList(final String[] names) {
+        final List<String> list = new ArrayList<>(Arrays.asList(names));
+        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, true);
+        popWindow.isResumeAlpha = false;
+        popWindow.show(new IDialogDismiss() {
+            @Override
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                if (isConfirmed) {
+                    final boolean[] selectedFlag = (boolean[]) values[0];
+                    List<String> list1 = new ArrayList<>();
+                    for (int i = selectedFlag.length - 1; i > -1; i--) {
+                        if(selectedFlag[i])
+                            list1.add(list.get(i));
+                    }
+                    resetData(list1);
+                }
+            }
+        });
+
+//        dialogFactory.showMultiSelect(names, new SelectDialogClicker() {
+//            @Override
+//            public void click(boolean[] checkedItems) {
+//                for (int i = checkedItems.length - 1; i > -1; i--) {
+//                    if (checkedItems[i]) {
+//                        ItemStatisticalInformationOperator.del(names[i]);
+//                    }
+//                }
+//                showMyData();
+//            }
+//        });
     }
 
     private void initialPieChart() {
@@ -420,7 +475,7 @@ public class ChartActivity extends AppCompatActivity {
         pieChart1.getLegend().setEnabled(true);
     }
 
-    private void setPieLengend(){
+    private void setPieLengend() {
         Legend mLegend1 = pieChart1.getLegend();  //设置比例图
         mLegend1.setDrawInside(false);
         mLegend1.setFormSize(11f);//比例块字体大小
@@ -456,7 +511,6 @@ public class ChartActivity extends AppCompatActivity {
                 setBarChartData(isSortBySelectTimesBT.isChecked());
             }
         });
-        dialogFactory = new DialogFactory(this);
         toastFactory = new ToastFactory(this);
         pieChart1 = findViewById(R.id.pieChart1);
         pieChart2 = findViewById(R.id.pieChart2);
@@ -477,20 +531,7 @@ public class ChartActivity extends AppCompatActivity {
                     toastFactory.showCenterToast("没有统计数据");
                     return;
                 }
-                new ConfirmPopWindow(ChartActivity.this,"重置统计数据将无法恢复，请谨慎选择！")
-                        .show(ChartActivity.this, new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(boolean isConfirmed, Object... values) {
-                                if(isConfirmed)
-                                    showSelectList(names);
-                            }
-                        });
-//                dialogFactory.showDefaultConfirmDialog("重置统计数据将无法恢复，请谨慎选择！", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        showSelectList(names);
-//                    }
-//                });
+                showSelectList(names);
             }
         });
         initialPieChart();

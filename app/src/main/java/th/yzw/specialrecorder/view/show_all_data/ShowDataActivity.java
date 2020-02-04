@@ -42,7 +42,7 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.DialogFactory;
-import th.yzw.specialrecorder.view.common.EditDataDialogFragment;
+import th.yzw.specialrecorder.unuse.EditDataDialogFragment;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.show_total.ShareTotalDataDialogFragment;
 

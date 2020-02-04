@@ -78,33 +78,18 @@
             <!--android:layout_weight="3"-->
             <!--android:spinnerMode="dialog" />-->
         </LinearLayout>
-        <RelativeLayout
+        <ScrollView
+            android:padding="8dp"
             android:id="@+id/recyclerviewGroup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-            <android.support.v7.widget.RecyclerView
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
+            android:layout_weight="1">
+            <th.yzw.specialrecorder.view.common.FlowLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/keyboad_input_recyclerview"/>
-            <th.yzw.specialrecorder.view.common.SideIndexBarView
-                android:layout_alignParentEnd="true"
-                app:radius="6dp"
-                app:textSize="12sp"
-                app:pressedBGColor="@color/pop2_center"
-                android:focusable="true"
-                android:clickable="true"
-                android:id="@+id/sideBar"
-                android:layout_width="12dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:background="@color/activityBG" />
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:id="@+id/flowLayout"/>
+
+        </ScrollView>
         <LinearLayout
             android:id="@+id/keyboad_input_count_group"
             android:background="@color/white"
@@ -220,16 +205,5 @@
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/indexToastTV"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/index_infotexview_shape"
-        android:gravity="center"
-        android:text="#"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+
 </RelativeLayout>

@@ -4,18 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,13 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -48,6 +41,7 @@ import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.view.RecorderActivity;
 import th.yzw.specialrecorder.view.common.DatePopWindow;
+import th.yzw.specialrecorder.view.common.FlowLayout;
 import th.yzw.specialrecorder.view.common.SideIndexBarView;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
@@ -55,12 +49,11 @@ public class KeyboardInputFragment extends Fragment {
     private String TAG = "殷宗旺";
 
     private long date;
-    private RecyclerView recyclerView;
     private RelativeLayout keyboardGroup;
     private int[] ids = {R.id.num0_IV, R.id.num1_IV, R.id.num2_IV, R.id.num3_IV, R.id.num4_IV,
             R.id.num5_IV, R.id.num6_IV, R.id.num7_IV, R.id.num8_IV, R.id.num9_IV};
     private ImageView[] numIVs = new ImageView[10];
-    private TextView dateTextView,nameTextView,selectDate,countTextView,toastTV;
+    private TextView dateTextView,nameTextView,selectDate,countTextView;
     private SimpleDateFormat dateformat;
     private MyPopupWin2 popupWin2;
     private MyPopWindow3 popWindow3;
@@ -69,9 +62,10 @@ public class KeyboardInputFragment extends Fragment {
     private TranslateAnimation translateAnimation;
     private ToastFactory toast;
     private List<ItemName> list;
-    private ItemNameAdapter adapter;
+//    private ItemNameAdapter adapter;
     private StringBuilder stringBuilder;
-    private RelativeLayout recyclerViewGroup;
+    private ScrollView scrollView;
+    private FlowLayout flowLayout;
     private LinearLayout countGroup;
 
     @Override
@@ -82,13 +76,13 @@ public class KeyboardInputFragment extends Fragment {
         setHasOptionsMenu(true);
         currentIndex = -1;
         list = ItemNameOperator.findAll(true);
-        adapter = new ItemNameAdapter(list);
-        adapter.setClickListener(new MyClickListener() {
-            @Override
-            public void OnClick(View view, Object o) {
-                itemNameClick((int)o);
-            }
-        });
+//        adapter = new ItemNameAdapter(list);
+//        adapter.setClickListener(new MyClickListener() {
+//            @Override
+//            public void OnClick(View view, Object o) {
+//                itemNameClick((int)o);
+//            }
+//        });
         showInfoMode = AppSetupOperator.getShowInformationMode();
         date = System.currentTimeMillis();
         dateformat = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
@@ -100,10 +94,19 @@ public class KeyboardInputFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.keyboard_input_layout, container, false);
-        recyclerView = view.findViewById(R.id.keyboad_input_recyclerview);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        recyclerView.setAdapter(adapter);
-        recyclerViewGroup = view.findViewById(R.id.recyclerviewGroup);
+//        recyclerView = view.findViewById(R.id.keyboad_input_recyclerview);
+//        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+//        recyclerView.setAdapter(adapter);
+        scrollView = view.findViewById(R.id.recyclerviewGroup);
+        flowLayout = view.findViewById(R.id.flowLayout);
+        flowLayout.setTextViewMargin(40);
+        flowLayout.setOnItemClickListenr(new MyClickListener() {
+            @Override
+            public void OnClick(View view, Object o) {
+                itemNameClick((Integer) o);
+            }
+        });
+
         keyboardGroup = view.findViewById(R.id.keyboard_group_relativelayout);
         for(int i = 0;i<10;i++){
             numIVs[i] = view.findViewById(ids[i]);
@@ -166,42 +169,42 @@ public class KeyboardInputFragment extends Fragment {
                     showKeyboard();
             }
         });
-        initialSideBar(view);
+//        initialSideBar(view);
         return view;
     }
 
-    private void initialSideBar(View view) {
-        SideIndexBarView sideBarIndex = view.findViewById(R.id.sideBar);
-        toastTV = view.findViewById(R.id.indexToastTV);
-        if (!AppSetupOperator.getShowGroupButtonStatus()) {
-            String[] letters = ItemNameOperator.getItemNameFirstLetters();
-            sideBarIndex.setLetters(letters);
-            sideBarIndex.setPressedListener(new OnIndexBarPressedListener() {
-                @Override
-                public void onIndexBarPressed(int index, String text) {
-                    toastTV.setText(text);
-                    toastTV.setVisibility(View.VISIBLE);
-                    for (int k = 0; k < adapter.getItemCount(); k++) {
-                        String name = list.get(k).getName();
-                        if (name.startsWith(text.toLowerCase())) {
-                            // 滚动指定的项目到顶部可见位置
-                            ((GridLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(k,0);
-                            break;
-                        }
-                    }
-                }
-
-                @Override
-                public void onMoutionEventEnd() {
-                    toastTV.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
+//    private void initialSideBar(View view) {
+//        SideIndexBarView sideBarIndex = view.findViewById(R.id.sideBar);
+//        toastTV = view.findViewById(R.id.indexToastTV);
+//        if (!AppSetupOperator.getShowGroupButtonStatus()) {
+//            String[] letters = ItemNameOperator.getItemNameFirstLetters();
+//            sideBarIndex.setLetters(letters);
+//            sideBarIndex.setPressedListener(new OnIndexBarPressedListener() {
+//                @Override
+//                public void onIndexBarPressed(int index, String text) {
+//                    toastTV.setText(text);
+//                    toastTV.setVisibility(View.VISIBLE);
+//                    for (int k = 0; k < adapter.getItemCount(); k++) {
+//                        String name = list.get(k).getName();
+//                        if (name.startsWith(text.toLowerCase())) {
+//                            // 滚动指定的项目到顶部可见位置
+//                            ((GridLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(k,0);
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onMoutionEventEnd() {
+//                    toastTV.setVisibility(View.GONE);
+//                }
+//            });
+//        }
+//    }
 
     private ObjectAnimator hideView(final View view){
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,"scaleY",1f,0f);
-        objectAnimator.setDuration(200);
+        objectAnimator.setDuration(100);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -214,7 +217,7 @@ public class KeyboardInputFragment extends Fragment {
 
     private ObjectAnimator showView(final View view){
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,"scaleY",0f,1f);
-        objectAnimator.setDuration(200);
+        objectAnimator.setDuration(100);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -226,7 +229,7 @@ public class KeyboardInputFragment extends Fragment {
     }
 
     private ObjectAnimator translateView(final View view, boolean isUp, boolean hide){
-        int height = recyclerViewGroup.getHeight();
+        int height = scrollView.getHeight();
         ObjectAnimator animator;
         if(isUp) {
             animator = ObjectAnimator.ofFloat(view,"translationY",height,0);
@@ -249,33 +252,34 @@ public class KeyboardInputFragment extends Fragment {
                 });
             }
         }
-        animator.setDuration(200);
+        animator.setDuration(100);
         return animator;
     }
 
     private void showItemList(){
-        ObjectAnimator animator1 = showView(recyclerViewGroup);
+        ObjectAnimator animator1 = showView(scrollView);
         ObjectAnimator animator2 = translateView(keyboardGroup,false,true);
         ObjectAnimator animator3 = translateView(countGroup,false,false);
+        animator3.setDuration(100);
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(animator1,animator2,animator3);
         animatorSet.start();
-        adapter.notifyDataSetChanged();
+//        flowLayout.notifyDataSetChanged();
     }
 
     private void itemNameClick(int position){
         nameTextView.setTextColor(Color.BLACK);
         ItemName itemName = list.get(position);
         nameTextView.setText(itemName.getName());
-        currentIndex =adapter.getCurrentIndex();
+        currentIndex = position;
         showKeyboard();
     }
 
     private void showKeyboard(){
-        ObjectAnimator animator1 = hideView(recyclerViewGroup);
+        ObjectAnimator animator1 = hideView(scrollView);
         ObjectAnimator animator2 = translateView(keyboardGroup,true,false);
         ObjectAnimator animator3 = translateView(countGroup,true,false);
-        animator3.setDuration(200);
+        animator3.setDuration(100);
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(animator2).with(animator3).after(animator1);
         animatorSet.start();
@@ -329,6 +333,7 @@ public class KeyboardInputFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        flowLayout.setDataSource(list);
         showItemList();
     }
 

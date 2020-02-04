@@ -23,6 +23,7 @@ public class ConfirmPopWindow extends PopupWindow {
     private IDialogDismiss dialogDismiss = null;
     private boolean confirmFlag = false;
     private Activity mActivity = null;
+    public boolean isResumeAlpha = true;
 //    private View contentView;
 //    private ObjectAnimator enterAnim,exitAnim;
 
@@ -37,7 +38,8 @@ public class ConfirmPopWindow extends PopupWindow {
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
-                darkenBackground(1.0f);
+                if(isResumeAlpha)
+                    darkenBackground(1.0f);
             }
         });
     }

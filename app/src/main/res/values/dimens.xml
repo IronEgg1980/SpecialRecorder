@@ -3,4 +3,8 @@
     <dimen name="head_top">20dp</dimen>
     <dimen name="switch_paddingLR">32dp</dimen>
     <dimen name="switch_paddingTB">12dp</dimen>
+    <dimen name="popwindow_marginTop">4dp</dimen>
+    <dimen name="popwindow_marginBottom">8dp</dimen>
+    <dimen name="popwindow_marginStart">4dp</dimen>
+    <dimen name="popwindow_marginEnd">4dp</dimen>
 </resources>

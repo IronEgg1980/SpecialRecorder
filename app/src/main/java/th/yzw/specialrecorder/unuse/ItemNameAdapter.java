@@ -1,7 +1,6 @@
-package th.yzw.specialrecorder.view.input_data;
+package th.yzw.specialrecorder.unuse;
 
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

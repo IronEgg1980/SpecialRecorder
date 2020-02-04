@@ -148,7 +148,6 @@ public class EditPopWindow extends PopupWindow {
         showInfo();
         showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
         darkenBackground(0.5f);
-
     }
 
     private void darkenBackground(Float bgcolor) {

@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.common;
+package th.yzw.specialrecorder.unuse;
 
 import android.app.Activity;
 import android.app.Dialog;

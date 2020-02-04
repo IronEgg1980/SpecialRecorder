@@ -1,5 +1,6 @@
 package th.yzw.specialrecorder.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class ItemName extends BaseModel {
@@ -7,6 +8,12 @@ public class ItemName extends BaseModel {
     private boolean isOftenUse;
     private int formalation;
     private int itemType;
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
     public boolean isOftenUse() {
         return isOftenUse;
