@@ -3,6 +3,9 @@ package th.yzw.specialrecorder;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 
+import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+
 public abstract class MyActivity extends AppCompatActivity {
 
     @Override

@@ -129,9 +129,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
 //            }
 //        });
 
-        ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(mContext,"是否删除【" + r.getName() + "】的记录？");
-
-        confirmPopWindow.show(mActivity, new IDialogDismiss() {
+       new ConfirmPopWindow(mActivity).show("是否删除【" + r.getName() + "】的记录？",new IDialogDismiss() {
             @Override
             public void onDismiss(boolean isConfirmed, Object... values) {
                 if (isConfirmed){

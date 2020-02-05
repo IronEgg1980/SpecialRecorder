@@ -17,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import th.yzw.specialrecorder.R;
@@ -63,13 +66,22 @@ public class SelectItemPopWindow extends PopupWindow {
         okTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onDisMiss.onDismiss(true,selectedFlag);
+                List<Integer> selectedIndex = new ArrayList<>();
+                for(int i = 0;i<selectedFlag.length;i++){
+                    boolean b1 = selectedFlag[i];
+                    if(b1){
+                        selectedIndex.add(i);
+                    }
+                }
+                Object[] indexs = selectedIndex.toArray();
+                onDisMiss.onDismiss(true,indexs);
                 dismiss();
             }
         });
         view.findViewById(R.id.cancelTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isResumeAlpha = true;
                 onDisMiss.onDismiss(false);
                 dismiss();
             }

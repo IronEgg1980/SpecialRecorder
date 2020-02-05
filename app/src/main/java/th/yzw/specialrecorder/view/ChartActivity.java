@@ -53,6 +53,7 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
@@ -64,9 +65,11 @@ public class ChartActivity extends AppCompatActivity {
     private TextView phoneIdTV;
     private int selectTimesColor, totalQuantityColor;
     private String phoneId;
-    private ToastFactory toastFactory;
+    //    private ToastFactory toastFactory;
     private List<ItemStatisticalInformation> ordredDataList;
     private RadioButton isSortBySelectTimesBT;
+    private ConfirmPopWindow confirmPopWindow;
+    private InfoPopWindow infoPopWindow;
 
     private ArrayMap<String, Integer> getItemPieMap(List<ItemStatisticalInformation> list) {
         Collections.sort(list, new Comparator<ItemStatisticalInformation>() {
@@ -105,7 +108,7 @@ public class ChartActivity extends AppCompatActivity {
     private void showSelectDataFileDialog() {
         String[] temp = FileTools.getFileList(new File(microMsgPath), ".data");
         if (temp == null || temp.length == 0) {
-            toastFactory.showCenterToast("没有数据文件");
+            infoPopWindow.show("没有数据文件");
         } else {
             final List<String> list = new ArrayList<>();
             list.add("本机数据");
@@ -125,21 +128,6 @@ public class ChartActivity extends AppCompatActivity {
                     }
                 }
             });
-
-//            final String[] files = new String[temp.length + 1];
-//            files[0] = "本机数据";
-//            System.arraycopy(temp, 0, files, 1, temp.length);
-//            dialogFactory.showSingleSelect(files, new SelectDialogClicker() {
-//                @Override
-//                public void click(int checkedItem) {
-//                    if (checkedItem == 0) {
-//                        showMyData();
-//                        return;
-//                    }
-//                    File file = new File(microMsgPath, files[checkedItem]);
-//                    showFileData(file);
-//                }
-//            });
         }
     }
 
@@ -225,10 +213,10 @@ public class ChartActivity extends AppCompatActivity {
             showData(list);
         } catch (IOException e) {
             e.printStackTrace();
-            toastFactory.showCenterToast("打开文件失败！原因：" + e.getMessage());
+            infoPopWindow.show("打开文件失败！原因：" + e.getMessage());
         } catch (JSONException e) {
             e.printStackTrace();
-            toastFactory.showCenterToast("解析文件失败！原因：" + e.getMessage());
+            infoPopWindow.show("解析文件失败！原因：" + e.getMessage());
         }
     }
 
@@ -389,12 +377,11 @@ public class ChartActivity extends AppCompatActivity {
     }
 
     private void resetData(final List<String> names) {
-        ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(ChartActivity.this, "重置后数据无法恢复，确定继续吗？");
-        confirmPopWindow.show(ChartActivity.this, new IDialogDismiss() {
+        confirmPopWindow.show("重置后数据无法恢复，确定继续吗？", new IDialogDismiss() {
             @Override
             public void onDismiss(boolean isConfirmed, Object... values) {
                 if (isConfirmed) {
-                    for (int i = 0; i<names.size(); i++) {
+                    for (int i = 0; i < names.size(); i++) {
                         ItemStatisticalInformationOperator.del(names.get(i));
                     }
                     showMyData();
@@ -405,18 +392,17 @@ public class ChartActivity extends AppCompatActivity {
 
     private void showSelectList(final String[] names) {
         final List<String> list = new ArrayList<>(Arrays.asList(names));
-        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, true);
-        popWindow.isResumeAlpha = false;
+        final SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, true);
         popWindow.show(new IDialogDismiss() {
             @Override
             public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
-                    final boolean[] selectedFlag = (boolean[]) values[0];
+                if (isConfirmed && values.length > 0) {
                     List<String> list1 = new ArrayList<>();
-                    for (int i = selectedFlag.length - 1; i > -1; i--) {
-                        if(selectedFlag[i])
-                            list1.add(list.get(i));
+                    for (int i = values.length - 1; i > -1; i--) {
+                        int index = (int) values[i];
+                        list1.add(list.get(index));
                     }
+                    popWindow.isResumeAlpha = false;
                     resetData(list1);
                 }
             }
@@ -511,7 +497,6 @@ public class ChartActivity extends AppCompatActivity {
                 setBarChartData(isSortBySelectTimesBT.isChecked());
             }
         });
-        toastFactory = new ToastFactory(this);
         pieChart1 = findViewById(R.id.pieChart1);
         pieChart2 = findViewById(R.id.pieChart2);
         barChart = findViewById(R.id.barChart);
@@ -528,7 +513,7 @@ public class ChartActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 final String[] names = ItemStatisticalInformationOperator.getNameList();
                 if (names.length == 0) {
-                    toastFactory.showCenterToast("没有统计数据");
+                    infoPopWindow.show("没有统计数据");
                     return;
                 }
                 showSelectList(names);
@@ -543,6 +528,8 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
         selectTimesColor = Color.parseColor(OtherTools.getRandomColor(0xff));
         totalQuantityColor = Color.parseColor(OtherTools.getRandomColor(0xff));
+        confirmPopWindow = new ConfirmPopWindow(this);
+        infoPopWindow = new InfoPopWindow(this);
         initialView();
     }
 

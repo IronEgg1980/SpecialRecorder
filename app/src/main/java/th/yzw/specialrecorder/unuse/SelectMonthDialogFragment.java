@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.common;
+package th.yzw.specialrecorder.unuse;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -95,7 +95,7 @@ public class SelectMonthDialogFragment extends DialogFragment {
         if (dialog != null) {
             DisplayMetrics dm = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            int width = (int) (dm.widthPixels * 0.85);
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.setCanceledOnTouchOutside(false);
             Window window = dialog.getWindow();

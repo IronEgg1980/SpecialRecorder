@@ -47,6 +47,7 @@ import th.yzw.specialrecorder.DAO.SumTotalOperator;
 import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.MyClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
@@ -54,8 +55,10 @@ import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.RecorderActivity;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
@@ -64,13 +67,14 @@ public class ShowTotalDataFragment extends Fragment {
         void updateList(long start, long end) {
             recordEntityList.clear();
             List<SumTotalRecord> temp = SumTotalOperator.getSumData(start, end);
-            for(SumTotalRecord record:temp){
+            for (SumTotalRecord record : temp) {
                 record.setPhoneId(phoneId);
-                record.setMonth(start + 28* MyDateUtils.ONE_DAY_MILLIS - 1);
+                record.setMonth(start + 28 * MyDateUtils.ONE_DAY_MILLIS - 1);
                 recordEntityList.add(record);
             }
             notifyDataSetChanged();
         }
+
         @NonNull
         @Override
         public ShowTotalAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -91,7 +95,6 @@ public class ShowTotalDataFragment extends Fragment {
         }
 
 
-
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView name, count;
             View view;
@@ -104,8 +107,11 @@ public class ShowTotalDataFragment extends Fragment {
             }
         }
     }
-    private DialogFactory dialogFactory;
-    private ToastFactory toastFactory;
+
+    //    private DialogFactory dialogFactory;
+    private ConfirmPopWindow confirmPopWindow;
+    private InfoPopWindow infoPopWindow;
+    //    private ToastFactory toastFactory;
     private RecorderActivity activity;
     private List<SumTotalRecord> recordEntityList;
     private TextView showTotalNodata;
@@ -116,30 +122,14 @@ public class ShowTotalDataFragment extends Fragment {
     private Calendar calendar;
     private SimpleDateFormat format;
     private ShowTotalAdapter adapter;
-    private File path,cacheDir;
+    private File path, cacheDir;
     private String phoneId;
 
     private void selectDateRange() {
-//        SelectDateRangeDialogFragment dateRangeDialogFragment = new SelectDateRangeDialogFragment();
-//        dateRangeDialogFragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
-//            @Override
-//            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-//                if (isConfirm) {
-//                    start = timeInMillis[0];
-//                    end = timeInMillis[1];
-//                    adapter.updateList(start, end);
-//                    showInfo();
-//                }
-//            }
-//        });
-//        dateRangeDialogFragment.show(getFragmentManager(), "selectDateRange");
-
-        DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(activity);
-
-        dateRangePopWindow.show(changeDate, new OnSelectDateRangeDismiss() {
+        new DateRangePopWindow(activity).show(changeDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-                if(isConfirm){
+                if (isConfirm) {
                     start = timeInMillis[0];
                     end = timeInMillis[1];
                     adapter.updateList(start, end);
@@ -158,61 +148,61 @@ public class ShowTotalDataFragment extends Fragment {
         }
     }
 
-    private void showConfirmDeleDialog(){
-        Dialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("删除确认")
-                .setMessage("确定删除吗？\n（注意：如果没有备份数据，删除数据后将不能恢复！建议立即备份数据，再执行删除操作。）")
-                .setIcon(R.drawable.ic_warning_18dp)
-                .setNegativeButton("取消", null)
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+    private void backup() {
+        final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
+        loadingDialog.setCancelClick(null);
+        loadingDialog.setCancelable(false);
+        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), "backup");
+        dataBackuper.setOnFinish(new IDialogDismiss() {
+            @Override
+            public void onDismiss(boolean isConfirmed, Object... values) {
+                loadingDialog.dismiss();
+                if (isConfirmed) {
+                    RecordEntityOperator.deleAllBetweenDate(start, end);
+                    adapter.updateList(start, end);
+                    infoPopWindow.show("备份后删除数据成功");
+                } else {
+                    String s = (String) values[0];
+                    infoPopWindow.show(s);
+                }
+            }
+        });
+        loadingDialog.show(getFragmentManager(), "loading");
+        dataBackuper.execute();
+    }
+
+    private void showConfirmDeleDialog() {
+        new ConfirmPopWindow(activity)
+                .setThirdButton("立即备份", new MyClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RecordEntityOperator.deleAllBetweenDate(start,end);
-                        adapter.updateList(start, end);
-                        toastFactory.showDefaultToast("删除成功");
+                    public void OnClick(View view, Object o) {
+                        backup();
                     }
                 })
-                .setNeutralButton("立即备份", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
-                        loadingDialog.setCancelClick(null);
-                        loadingDialog.setCancelable(false);
-                        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), "backup");
-                        dataBackuper.setOnFinish(new IDialogDismiss() {
+                .show("确定删除吗？\n（注意：如果没有备份数据，删除数据后将不能恢复！建议立即备份数据，再执行删除操作。）",
+                        new IDialogDismiss() {
                             @Override
-                            public void onDismiss(boolean isConfirmed, Object... values) {
-                                loadingDialog.dismiss();
-                                if(isConfirmed){
-                                    RecordEntityOperator.deleAllBetweenDate(start,end);
+                            public void onDismiss(boolean isConfirmed, Object... value) {
+                                if (isConfirmed) {
+                                    RecordEntityOperator.deleAllBetweenDate(start, end);
                                     adapter.updateList(start, end);
-                                    toastFactory.showDefaultToast("备份后删除数据成功");
-                                }else {
-                                    String s = (String) values[0];
-                                    toastFactory.showCenterToast(s);
+                                    infoPopWindow.show("删除成功");
                                 }
                             }
                         });
-                        loadingDialog.show(getFragmentManager(),"loading");
-                        dataBackuper.execute();
-                    }
-                }).show();
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setWindowAnimations(R.style.SelectDialogAnim);
-        }
     }
 
     private void dele() {
         if (adapter.getItemCount() == 0) {
-            toastFactory.showCenterToast("当前列表内没有数据");
+            infoPopWindow.show("当前列表内没有数据");
             return;
         }
-        dialogFactory.showDefaultConfirmDialog("是否要删除【 " + format.format(start) + " 】至【 " + format.format(end) + " 】内的所有数据？",
-                new DialogInterface.OnClickListener() {
+        confirmPopWindow.show("是否要删除【 " + format.format(start) + " 】至【 " + format.format(end) + " 】内的所有数据？",
+                new IDialogDismiss() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        showConfirmDeleDialog();
+                    public void onDismiss(boolean isConfirmed, Object... value) {
+                        if(isConfirmed)
+                            showConfirmDeleDialog();
                     }
                 });
     }
@@ -239,8 +229,10 @@ public class ShowTotalDataFragment extends Fragment {
         activity = (RecorderActivity) getActivity();
         activity.setTitle("汇总记录");
         setHasOptionsMenu(true);
-        dialogFactory = new DialogFactory(getContext());
-        toastFactory = new ToastFactory(getContext());
+        confirmPopWindow = new ConfirmPopWindow(activity);
+        infoPopWindow = new InfoPopWindow(activity);
+//        dialogFactory = new DialogFactory(getContext());
+//        toastFactory = new ToastFactory(getContext());
         recordEntityList = new ArrayList<>();
         calendar = new GregorianCalendar(Locale.CHINA);
         end = calendar.getTimeInMillis();
@@ -250,7 +242,7 @@ public class ShowTotalDataFragment extends Fragment {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         start = calendar.getTimeInMillis();
-        format = new SimpleDateFormat("yyyy年M月d日",Locale.CHINA);
+        format = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         phoneId = AppSetupOperator.getPhoneId();
         adapter = new ShowTotalAdapter();
         adapter.updateList(start, end);
@@ -277,7 +269,7 @@ public class ShowTotalDataFragment extends Fragment {
         Uri fileUri = null;
         File file = getShareFile();
         if (file == null) {
-            toastFactory.showCenterToast("获取文件失败！");
+            infoPopWindow.show("获取文件失败！");
             return;
         }
         if (Build.VERSION.SDK_INT >= 24) {
@@ -295,7 +287,7 @@ public class ShowTotalDataFragment extends Fragment {
 
     private void shareData() {
         if (adapter.getItemCount() == 0) {
-            toastFactory.showCenterToast("该时间段内没有汇总数据！");
+            infoPopWindow.show("该时间段内没有汇总数据！");
             return;
         }
         new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
@@ -317,7 +309,7 @@ public class ShowTotalDataFragment extends Fragment {
             File file = new File(path, fileName);
             if (file.exists())
                 file.delete();
-        }else{
+        } else {
             path.mkdirs();
         }
     }
@@ -326,7 +318,7 @@ public class ShowTotalDataFragment extends Fragment {
     private File getShareFile() {
         FileTools.clearFiles(cacheDir);
         long currentTime = System.currentTimeMillis();
-        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss",Locale.CHINA).format(currentTime);
+        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
         String fileName = "SendBy" + randomText + ".data";
         clearSameFile(fileName);
         try {
@@ -340,11 +332,11 @@ public class ShowTotalDataFragment extends Fragment {
             return file;
         } catch (IOException e) {
             e.printStackTrace();
-            dialogFactory.showInfoDialog("写入文件出错！原因为："+e.getMessage());
+            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
             return null;
         } catch (JSONException ex) {
             ex.printStackTrace();
-            dialogFactory.showInfoDialog("生成文件出错！原因为：" + ex.getMessage());
+            infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
             return null;
         }
     }

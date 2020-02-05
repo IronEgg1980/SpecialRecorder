@@ -92,7 +92,6 @@ public class ShowDataActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d(TAG, "openFile: " + e.getMessage());
             toastFactory.showCenterToast("解析数据失败！");
             setFileName("none");
         } catch (IOException ex) {

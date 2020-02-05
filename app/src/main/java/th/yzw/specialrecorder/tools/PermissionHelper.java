@@ -22,6 +22,7 @@ public final class PermissionHelper {
     private Context mContext;
     private Activity mActivity;
     private DialogInterface.OnClickListener cancel = null;
+    private InfoPopWindow infoPopWindow;
 
     public void setCancel(DialogInterface.OnClickListener cancel) {
         this.cancel = cancel;
@@ -47,16 +48,15 @@ public final class PermissionHelper {
                     if(isAll)
                         onResult.hasPermission();
                     else
-                        new InfoPopWindow(mContext,"您已拒绝授予部分权限，可能会影响正常使用，已取消操作。")
-                                .show(mActivity);
+                       infoPopWindow.show("您已拒绝授予部分权限，可能会影响正常使用，已取消操作。");
 //                        new DialogFactory1(mContext).showInfoDialog("您已拒绝授予部分权限，可能会影响正常使用，已取消操作。",cancel);
                 }
 
                 @Override
                 public void noPermission(List<String> denied, boolean quick) {
                     if(quick) {
-                        new ConfirmPopWindow(mContext,"您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。")
-                                .show(mActivity, new IDialogDismiss() {
+                        new ConfirmPopWindow(mActivity)
+                                .show("您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。", new IDialogDismiss() {
                                     @Override
                                     public void onDismiss(boolean isConfirmed, Object... values) {
                                         if(isConfirmed){
@@ -74,8 +74,7 @@ public final class PermissionHelper {
 //                            }
 //                        },"",cancel);
                     }else
-                        new InfoPopWindow(mContext,"您已拒绝授权，不能使用该功能，已取消操作。")
-                                .show(mActivity);
+                        infoPopWindow.show("您已拒绝授权，不能使用该功能，已取消操作。");
 //                        new DialogFactory1(mContext).showInfoDialog("您已拒绝授权，不能使用该功能，已取消操作。",cancel);
                 }
             });

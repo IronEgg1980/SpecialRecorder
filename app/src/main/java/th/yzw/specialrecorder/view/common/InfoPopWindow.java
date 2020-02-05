@@ -13,13 +13,11 @@ import android.widget.TextView;
 import th.yzw.specialrecorder.R;
 
 public class InfoPopWindow extends PopupWindow {
-    private Context mContext;
-    private String mMessage;
-    private Activity mActivity = null;
+    private Activity mActivity ;
+    private TextView textView;
 
-    public InfoPopWindow(Context context,String message){
-        this.mContext = context;
-        this.mMessage = message;
+    public InfoPopWindow(Activity activity){
+        mActivity = activity;
         createView();
         setOutsideTouchable(true);
         setTouchable(true);
@@ -27,12 +25,18 @@ public class InfoPopWindow extends PopupWindow {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.PopWindowAnim);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                darkenBackground(1f);
+            }
+        });
     }
 
     private void createView(){
-        View view = LayoutInflater.from(mContext).inflate(R.layout.popwindow_info_layout,null);
-        TextView textView = view.findViewById(R.id.messageTV);
-        textView.setText(mMessage);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.popwindow_info_layout,null);
+        textView = view.findViewById(R.id.messageTV);
+        textView.setText("");
         view.findViewById(R.id.confirmTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,16 +46,10 @@ public class InfoPopWindow extends PopupWindow {
         setContentView(view);
     }
 
-    public void show(Activity activity){
-        this.mActivity = activity;
-        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
+    public void show(String message){
+        textView.setText(message);
+        showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
         darkenBackground(0.5f);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                darkenBackground(1f);
-            }
-        });
     }
 
     private void darkenBackground(Float bgcolor) {

@@ -1,54 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:background="@drawable/select_date_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <TextView
         style="@style/TitleTextView"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
         android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
-        android:text="选择月份" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorAccent"/>
-
+        android:text="选择月份"/>
     <DatePicker
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
         android:calendarTextColor="@color/textColor"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
-        style="@android:style/Widget.Holo.DatePicker"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorAccent"/>
-
+        android:layout_width="300dp"
+        android:layout_height="140dp"
+        android:id="@+id/date"
+        android:textSize="16sp"/>
     <LinearLayout
         android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
+            android:id="@+id/cancel"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/cancel"
-            android:layout_marginRight="8dp"
-            android:layout_width="72dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:gravity="center"
             android:text="取消"/>
         <TextView
             android:id="@+id/confirm"
-            android:layout_width="72dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:text="确定"/>
