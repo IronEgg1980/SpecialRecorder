@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 
 public class EditDataDialogFragment extends DialogFragment {
 
@@ -29,7 +30,7 @@ public class EditDataDialogFragment extends DialogFragment {
     private int mOldValue,newValue;
     private IDialogDismiss onDissmissListener;
     private EditText editText;
-    private boolean isConfirm ;
+    private Result result;
 
 
     public void setOnDissmissListener(IDialogDismiss onDissmissListener) {
@@ -85,7 +86,7 @@ public class EditDataDialogFragment extends DialogFragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isConfirm =false;
+                result = Result.OK;
                 newValue = 0;
                 hideInputKeyboard();
                 dismiss();
@@ -97,9 +98,9 @@ public class EditDataDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 if(confirmInput()) {
                     if(newValue == mOldValue){
-                        isConfirm =false;
+                        result = Result.CANCEL;
                     }else {
-                        isConfirm = true;
+                        result = Result.OK;
                     }
                     hideInputKeyboard();
                     dismiss();
@@ -132,7 +133,7 @@ public class EditDataDialogFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        onDissmissListener.onDismiss(isConfirm,newValue);
+        onDissmissListener.onDismiss(result,newValue);
         super.onDismiss(dialog);
     }
 

@@ -30,6 +30,7 @@ import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.AppUpdater;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
@@ -108,8 +109,8 @@ public class RecorderActivity extends AppCompatActivity {
         final AppUpdater updater = new AppUpdater(RecorderActivity.this, zipFile);
         updater.setOnFinish(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK) {
                     File updateFile = (File) values[0];
                     if (updateFile != null) {
                         OtherTools.openAPKFile(RecorderActivity.this, updateFile);
@@ -131,8 +132,8 @@ public class RecorderActivity extends AppCompatActivity {
         ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = ShowAppUpdateInfomationDialog.newInstant(filePath);
         showAppUpdateInfomationDialog.setOnDismiss(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK) {
                     String zipFilePath = (String) values[0];
                     File zipFile = new File(zipFilePath);
                     openUpdater(zipFile);

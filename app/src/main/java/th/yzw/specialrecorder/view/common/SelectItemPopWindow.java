@@ -18,25 +18,25 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 
 public class SelectItemPopWindow extends PopupWindow {
     private Activity mActivity;
-    private List<String> mList;
+    private String[] mList;
     private boolean isMutiSelectMode = false;
     private boolean[] selectedFlag;
     private IDialogDismiss onDisMiss;
     public boolean isResumeAlpha = true;
+    public boolean isDarkBG = true;
 
-    public SelectItemPopWindow(Activity activity, List<String> list, final boolean isMutiSelectMode){
+    public SelectItemPopWindow(Activity activity,String[] list, final boolean isMutiSelectMode){
         mActivity = activity;
         mList = list;
-        this.selectedFlag = new boolean[list.size()];
+        this.selectedFlag = new boolean[list.length];
         this.isMutiSelectMode = isMutiSelectMode;
         initialView();
         setFocusable(true);
@@ -74,7 +74,7 @@ public class SelectItemPopWindow extends PopupWindow {
                     }
                 }
                 Object[] indexs = selectedIndex.toArray();
-                onDisMiss.onDismiss(true,indexs);
+                onDisMiss.onDismiss(Result.OK,indexs);
                 dismiss();
             }
         });
@@ -82,7 +82,7 @@ public class SelectItemPopWindow extends PopupWindow {
             @Override
             public void onClick(View v) {
                 isResumeAlpha = true;
-                onDisMiss.onDismiss(false);
+                onDisMiss.onDismiss(Result.CANCEL);
                 dismiss();
             }
         });
@@ -93,7 +93,8 @@ public class SelectItemPopWindow extends PopupWindow {
     public void show(IDialogDismiss dialogDismiss) {
         this.onDisMiss = dialogDismiss;
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        darkenBackground(0.5f);
+        if(isDarkBG)
+            darkenBackground(0.5f);
     }
 
     private void darkenBackground(Float bgcolor) {
@@ -129,7 +130,7 @@ public class SelectItemPopWindow extends PopupWindow {
 
         @Override
         public void onBindViewHolder(@NonNull VH vh, int i) {
-            String s = mList.get(i);
+            String s = mList[i];
             final int index = i;
             final boolean b = selectedFlag[index];
             vh.itemNameTV.setText(s);
@@ -141,7 +142,7 @@ public class SelectItemPopWindow extends PopupWindow {
                         selectedFlag[index] = !b;
                         notifyItemChanged(index);
                     } else if (onDisMiss != null) {
-                        onDisMiss.onDismiss(true,index);
+                        onDisMiss.onDismiss(Result.OK,index);
                         dismiss();
                     }
                 }
@@ -150,7 +151,7 @@ public class SelectItemPopWindow extends PopupWindow {
 
         @Override
         public int getItemCount() {
-            return mList.size();
+            return mList.length;
         }
     }
 }

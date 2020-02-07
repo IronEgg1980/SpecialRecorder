@@ -14,12 +14,13 @@ import java.util.List;
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.JSON.ItemNameJSONHelper;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.tools.FileTools;
 
 public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
 
-    private boolean isSuccess;
+    private Result result;
     private String message;
     private File updateFile = null;
     private float value;
@@ -37,7 +38,7 @@ public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
     public ItemUpdater(Context context) {
         this.message = "";
         this.mContext = context;
-        this.isSuccess = false;
+        this.result = Result.CANCEL;
         this.helper = new ItemNameJSONHelper();
     }
 
@@ -63,7 +64,7 @@ public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
             sleep(1000);
         } catch (IOException e) {
             message = "读取文件出错！\n原因:" + e.getMessage();
-            isSuccess = false;
+            result = Result.CANCEL;
             e.printStackTrace();
             sleep(1000);
             return null;
@@ -78,7 +79,7 @@ public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
             sleep(1000);
         } catch (JSONException e) {
             message = "解析数据出错！\n原因:" + e.getMessage();
-            isSuccess = false;
+            result = Result.CANCEL;
             e.printStackTrace();
             sleep(1000);
             return null;
@@ -97,17 +98,17 @@ public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
                     value = currentIndex * per;
                     sleep(20);
                 }
-                isSuccess = true;
+                result = Result.OK;
                 MyDBHelper.deleteAllWithDataMode(ItemName.class, MyDBHelper.DATA_MODE_OLDDATA);
                 AppSetupOperator.setItemVersion(fileVersion);
             } else {
-                isSuccess = false;
+                result = Result.CANCEL;
                 message = "解析失败！得到的列表为空。";
                 publishProgress(0);
                 sleep(1000);
             }
         } else {
-            isSuccess = false;
+            result = Result.CANCEL;
             message = "数据文件版本低于当前版本，取消更新。";
             publishProgress(4);
             sleep(1000);
@@ -147,8 +148,8 @@ public class ItemUpdater extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        if (isSuccess)
+        if (result == Result.OK)
             message = "数据已更新！";
-        onFinished.onDismiss(isSuccess, message);
+        onFinished.onDismiss(result, message);
     }
 }

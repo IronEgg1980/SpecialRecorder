@@ -23,6 +23,7 @@ import th.yzw.specialrecorder.JSON.ItemStatisticJSONHelper;
 import th.yzw.specialrecorder.JSON.JSONHelper;
 import th.yzw.specialrecorder.JSON.RecordEntityJSONHelper;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.AppSetup;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.model.ItemStatisticalInformation;
@@ -52,7 +53,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
 //    private String backupPath;
     private String jsonString;
     private String message;
-    private boolean isSuccess;
+    private Result result;
     private float perValue;
     private boolean isBackupMode;
     private IDialogDismiss onFinish;
@@ -78,7 +79,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
             this.jsonString = jsonString;
         }
         this.message = "";
-        this.isSuccess = false;
+        this.result = Result.CANCEL;
         this.itemNameHelper = new ItemNameJSONHelper();
         this.recordHelper = new RecordEntityJSONHelper();
         this.appUpdateJSONHelper = new AppSetupJSONHelper();
@@ -101,7 +102,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         sleep(500);
         for (int i = 1; i <= size; i++) {
             publishProgress(BACKUP_ITEMNAME, i, size);
-            sleep(10);
+//            sleep(10);
         }
         return itemNameHelper.backup(list);
     }
@@ -115,7 +116,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         perValue = 100.0f / size;
         for (int j = 1; j <= size; j++) {
             publishProgress(RESTORE_ITEMNAME, j, size);
-            sleep(10);
+//            sleep(10);
         }
        ItemNameOperator.saveAll(list);
     }
@@ -128,7 +129,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         sleep(500);
         for (int i = 1; i <= size; i++) {
             publishProgress(BACKUP_RECORDENTITY, i, size);
-            sleep(10);
+//            sleep(10);
         }
         return recordHelper.backup(list);
     }
@@ -139,7 +140,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         perValue = 100.0f / size;
         for (int j = 1; j <= size; j++) {
             publishProgress(RESTORE_RECORDENTITY, j, size);
-            sleep(10);
+//            sleep(10);
         }
         RecordEntityOperator.saveAll(list);
     }
@@ -152,7 +153,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         sleep(500);
         for (int i = 1; i <= size; i++) {
             publishProgress(BACKUP_APPSETUP, i, size);
-            sleep(10);
+//            sleep(10);
         }
         return appUpdateJSONHelper.backup(list);
     }
@@ -163,7 +164,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
         perValue = 100.0f / size;
         for (int j = 1; j <= size; j++) {
             publishProgress(RESTORE_APPSETUP, j, size);
-            sleep(10);
+//            sleep(10);
         }
         AppSetupOperator.saveAll(list);
     }
@@ -206,7 +207,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
                 publishProgress(CREATE_FILE_ERROR);
                 sleep(1000);
                 e.printStackTrace();
-                isSuccess = false;
+                result = Result.CANCEL;
                 return;
             }
             if (success) {
@@ -228,25 +229,25 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
                 publishProgress(WRITE_FILE);
                 try {
                     FileTools.writeDecryptFile(backFileString, backupFile);
-                    isSuccess = true;
+                    result = Result.OK;
                     message = "备份成功！";
                 } catch (IOException e) {
                     message = e.getMessage();
                     publishProgress(CREATE_FILE_ERROR);
                     sleep(1000);
                     e.printStackTrace();
-                    isSuccess = false;
+                    result = Result.CANCEL;
                 }
                 sleep(1000);
             } else {
                 publishProgress(CREATE_FILE_ERROR);
                 sleep(1000);
-                isSuccess = false;
+                result = Result.CANCEL;
             }
         } else {
             publishProgress(CREATE_FILE_ERROR);
             sleep(1000);
-            isSuccess = false;
+            result = Result.CANCEL;
         }
     }
 
@@ -288,7 +289,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
             publishProgress(CLEAR_OLDDATA);
             clearData(MyDBHelper.DATA_MODE_OLDDATA);
             sleep(1000);
-            isSuccess = true;
+            result = Result.OK;
             message = "数据恢复成功！";
         } catch (JSONException e) {
             rollBack();
@@ -296,7 +297,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
             message = e.getMessage();
             publishProgress(JSON_ERROR);
             sleep(1000);
-            isSuccess = false;
+            result = Result.CANCEL;
         }
     }
 
@@ -435,7 +436,7 @@ public class DataBackupAndRestore extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        onFinish.onDismiss(isSuccess, message);
+        onFinish.onDismiss(result, message);
     }
 
 

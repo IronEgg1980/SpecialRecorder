@@ -4,8 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -67,6 +71,7 @@ public class KeyboardInputFragment extends Fragment {
     private ScrollView scrollView;
     private FlowLayout flowLayout;
     private LinearLayout countGroup;
+    private Vibrator vibrator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,27 +81,18 @@ public class KeyboardInputFragment extends Fragment {
         setHasOptionsMenu(true);
         currentIndex = -1;
         list = ItemNameOperator.findAll(true);
-//        adapter = new ItemNameAdapter(list);
-//        adapter.setClickListener(new MyClickListener() {
-//            @Override
-//            public void OnClick(View view, Object o) {
-//                itemNameClick((int)o);
-//            }
-//        });
         showInfoMode = AppSetupOperator.getShowInformationMode();
         date = System.currentTimeMillis();
         dateformat = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         initialAnimation();
         toast = new ToastFactory(getContext());
         stringBuilder = new StringBuilder();
+        vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.keyboard_input_layout, container, false);
-//        recyclerView = view.findViewById(R.id.keyboad_input_recyclerview);
-//        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-//        recyclerView.setAdapter(adapter);
         scrollView = view.findViewById(R.id.recyclerviewGroup);
         flowLayout = view.findViewById(R.id.flowLayout);
         flowLayout.setTextViewMargin(40);
@@ -165,42 +161,13 @@ public class KeyboardInputFragment extends Fragment {
                     nameTextView.setTextColor(Color.RED);
                     nameTextView.setText("请先选择项目！");
                     nameTextView.startAnimation(translateAnimation);
+                    vibrate();
                 }else
                     showKeyboard();
             }
         });
-//        initialSideBar(view);
         return view;
     }
-
-//    private void initialSideBar(View view) {
-//        SideIndexBarView sideBarIndex = view.findViewById(R.id.sideBar);
-//        toastTV = view.findViewById(R.id.indexToastTV);
-//        if (!AppSetupOperator.getShowGroupButtonStatus()) {
-//            String[] letters = ItemNameOperator.getItemNameFirstLetters();
-//            sideBarIndex.setLetters(letters);
-//            sideBarIndex.setPressedListener(new OnIndexBarPressedListener() {
-//                @Override
-//                public void onIndexBarPressed(int index, String text) {
-//                    toastTV.setText(text);
-//                    toastTV.setVisibility(View.VISIBLE);
-//                    for (int k = 0; k < adapter.getItemCount(); k++) {
-//                        String name = list.get(k).getName();
-//                        if (name.startsWith(text.toLowerCase())) {
-//                            // 滚动指定的项目到顶部可见位置
-//                            ((GridLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(k,0);
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onMoutionEventEnd() {
-//                    toastTV.setVisibility(View.GONE);
-//                }
-//            });
-//        }
-//    }
 
     private ObjectAnimator hideView(final View view){
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view,"scaleY",1f,0f);
@@ -264,7 +231,6 @@ public class KeyboardInputFragment extends Fragment {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(animator1,animator2,animator3);
         animatorSet.start();
-//        flowLayout.notifyDataSetChanged();
     }
 
     private void itemNameClick(int position){
@@ -384,17 +350,28 @@ public class KeyboardInputFragment extends Fragment {
 
     }
 
+    private void vibrate(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            VibrationEffect effect = VibrationEffect.createOneShot(100, 125);
+            vibrator.vibrate(effect);
+        } else {
+            vibrator.vibrate(100);
+        }
+    }
+
     private boolean isInputError(){
         if (currentIndex < 0) {
             nameTextView.setTextColor(Color.RED);
             nameTextView.setText("请先选择项目！");
             nameTextView.startAnimation(translateAnimation);
+            vibrate();
             return true;
         }
         if (stringBuilder == null || stringBuilder.length() == 0) {
             countTextView.setTextColor(Color.RED);
             countTextView.setText("请输入数量！");
             countTextView.startAnimation(translateAnimation);
+            vibrate();
             return true;
         }
         final int _count = Integer.valueOf(stringBuilder.toString());
@@ -402,6 +379,7 @@ public class KeyboardInputFragment extends Fragment {
             countTextView.setTextColor(Color.RED);
             countTextView.setText("数量不能为 0");
             countTextView.startAnimation(translateAnimation);
+            vibrate();
             return true;
         }
         return false;
@@ -414,7 +392,6 @@ public class KeyboardInputFragment extends Fragment {
         ItemName itemName = list.get(currentIndex);
         final String _name = itemName.getName();
         RecordEntityOperator.saveOrMergeByDateAndCount(date,_name,_count);
-//        ItemName itemName = ItemNameOperator.findSingle(_name);
         ItemStatisticalInformationOperator.saveItemStatisticalInformation(itemName,_count);
         countTextView.setText("");
         String s = _name + "    +" + _count;

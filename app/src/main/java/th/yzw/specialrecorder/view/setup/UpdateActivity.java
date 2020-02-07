@@ -20,16 +20,20 @@ import java.io.InputStream;
 import th.yzw.specialrecorder.DAO.AppUpdater;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 
 public class UpdateActivity extends AppCompatActivity {
     private LoadingDialog loadingDialog;
     private File zipFile;
     private AppUpdater updater;
-    private DialogFactory dialogAndToast;
+    private InfoPopWindow infoPopWindow;
+//    private DialogFactory dialogAndToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class UpdateActivity extends AppCompatActivity {
                 updater.cancleUpdate();
             }
         });
-        dialogAndToast = new DialogFactory(this);
+        infoPopWindow = new InfoPopWindow(this);
     }
 
     private File readFile(Uri uri) {
@@ -83,36 +87,36 @@ public class UpdateActivity extends AppCompatActivity {
 
     private void updateApp() {
         if (zipFile == null) {
-            dialogAndToast.showInfoDialog("打开文件失败");
+            infoPopWindow.show("打开文件失败");
             return;
         }
         updater = new AppUpdater(this, zipFile);
         updater.setOnFinish(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
+            public void onDismiss(Result result, Object... values) {
                 loadingDialog.dismiss();
-                if (isConfirmed) {
+                if (result == Result.OK) {
                     File apkFile = (File) values[0];
                     if (apkFile != null) {
                         OtherTools.openAPKFile(UpdateActivity.this, apkFile);
                         finish();
                     } else {
                         String s = (String) values[0];
-                        dialogAndToast.showInfoDialog(s, new DialogInterface.OnClickListener() {
+                        new ConfirmPopWindow(UpdateActivity.this).setDialogDismiss(new IDialogDismiss() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onDismiss(Result result, Object... values) {
                                 finish();
                             }
-                        });
+                        }).toConfirm(s);
                     }
                 } else {
                     String s = (String) values[0];
-                    dialogAndToast.showInfoDialog(s, new DialogInterface.OnClickListener() {
+                    new ConfirmPopWindow(UpdateActivity.this).setDialogDismiss(new IDialogDismiss() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onDismiss(Result result, Object... values) {
                             finish();
                         }
-                    });
+                    }).toConfirm(s);
                 }
             }
         });
@@ -157,12 +161,12 @@ public class UpdateActivity extends AppCompatActivity {
             PermissionHelper helper = new PermissionHelper(UpdateActivity.this, UpdateActivity.this, new PermissionHelper.OnResult() {
                 @Override
                 public void hasPermission() {
-                   dialogAndToast.showInfoDialog("已授权，请重新点击升级文件安装。", new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           finish();
-                       }
-                   });
+                    new ConfirmPopWindow(UpdateActivity.this).setDialogDismiss(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            finish();
+                        }
+                    }).toConfirm("已授权，请重新点击升级文件安装。");
                 }
             });
             helper.setCancel(new DialogInterface.OnClickListener() {

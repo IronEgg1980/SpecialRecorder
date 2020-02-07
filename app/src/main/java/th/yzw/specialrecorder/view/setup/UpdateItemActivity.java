@@ -16,27 +16,30 @@ import java.io.InputStream;
 import th.yzw.specialrecorder.DAO.ItemUpdater;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 
 public class UpdateItemActivity extends AppCompatActivity {
 
     private File updateFile = null;
     private LoadingDialog loadingDialog;
-    private DialogFactory dialogAndToast;
+    private InfoPopWindow infoPopWindow;
+//    private DialogFactory dialogAndToast;
 
     private void updateItem() {
         if (updateFile == null) {
-            dialogAndToast.showInfoDialog("打开文件错误！");
+            infoPopWindow.show("打开文件错误！");
         } else {
             ItemUpdater itemUpdater = new ItemUpdater(this, updateFile);
             itemUpdater.setOnFinished(new IDialogDismiss() {
                 @Override
-                public void onDismiss(boolean isConfirmed, Object... values) {
+                public void onDismiss(Result result, Object... values) {
                     loadingDialog.dismiss();
                     String s = (String) values[0];
-                    dialogAndToast.showInfoDialog(s);
+                    infoPopWindow.show(s);
                 }
             });
             loadingDialog.show(getSupportFragmentManager(), "loading");
@@ -84,7 +87,7 @@ public class UpdateItemActivity extends AppCompatActivity {
         loadingDialog = LoadingDialog.newInstant("正在更新", "正在查找文件...", true);
         loadingDialog.setCancelClick(null);
         loadingDialog.setCancelable(false);
-        dialogAndToast = new DialogFactory(this);
+        infoPopWindow = new InfoPopWindow(this);
     }
 
     @Override

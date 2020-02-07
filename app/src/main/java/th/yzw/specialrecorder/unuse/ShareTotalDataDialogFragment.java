@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.show_total;
+package th.yzw.specialrecorder.unuse;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 
 public class ShareTotalDataDialogFragment extends DialogFragment {
     public void setOnDismissListener(IDialogDismiss onDismissListener) {
@@ -29,10 +30,10 @@ public class ShareTotalDataDialogFragment extends DialogFragment {
     }
     private IDialogDismiss onDismissListener;
     private EditText editText;
-    private TextView cancel,titleTV,infoTV;
+    private TextView cancel,titleTV;
     private TextView confirm;
     private String passWord,title,info;
-    private boolean isConfirm;
+    private Result result;
     private boolean confirmInput(){
         if(TextUtils.isEmpty(editText.getText())){
             editText.setError("请输入密码！");
@@ -72,14 +73,14 @@ public class ShareTotalDataDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         passWord = "";
-        isConfirm = false;
+        result = Result.CANCEL;
         View view = inflater.inflate(R.layout.share_total_data_dialog,container,false);
         editText = view.findViewById(R.id.edit_text);
         cancel = view.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isConfirm = false;
+                result = Result.CANCEL;
                 dismiss();
             }
         });
@@ -88,22 +89,20 @@ public class ShareTotalDataDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if(confirmInput()) {
-                    isConfirm = true;
+                    result = Result.OK;
                     dismiss();
                 }
             }
         });
         titleTV = view.findViewById(R.id.title);
         titleTV.setText(title);
-        infoTV = view.findViewById(R.id.info_textview);
-        infoTV.setText(info);
         return view;
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         hideInputKeyboard();
-        onDismissListener.onDismiss(isConfirm,passWord);
+        onDismissListener.onDismiss(result,passWord);
         super.onDismiss(dialog);
     }
 

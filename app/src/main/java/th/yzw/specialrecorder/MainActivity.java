@@ -4,18 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.json.JSONException;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -28,35 +21,28 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.Folder;
 import javax.mail.MessagingException;
-import javax.mail.Store;
-import javax.mail.internet.MimeMessage;
 
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ImportFileOperator;
 import th.yzw.specialrecorder.DAO.ItemNameOperator;
-import th.yzw.specialrecorder.DAO.MyDBHelper;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
-import th.yzw.specialrecorder.JSON.ItemNameJSONHelper;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
-import th.yzw.specialrecorder.model.AppSetup;
-import th.yzw.specialrecorder.model.ItemName;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.UserPassWord;
 import th.yzw.specialrecorder.tools.EncryptAndDecrypt;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.ReceiveEmailHelper;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.ChartActivity;
 import th.yzw.specialrecorder.view.RecorderActivity;
+import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.service.AppUpdateFileDownloadSVC;
 import th.yzw.specialrecorder.view.service.ItemNameUpdateByEmailSVC;
 import th.yzw.specialrecorder.view.setup.EditItemActivity;
 import th.yzw.specialrecorder.view.show_all_data.ShowDataActivity;
-import th.yzw.specialrecorder.view.show_total.ShareTotalDataDialogFragment;
 
 public class MainActivity extends MyActivity {
 
@@ -274,20 +260,35 @@ public class MainActivity extends MyActivity {
     }
 
     private void showInputPWDDialog() {
-        ShareTotalDataDialogFragment fragment = ShareTotalDataDialogFragment.getInstance("打开高级设置", "输入密码：");
-        fragment.setOnDismissListener(new IDialogDismiss() {
-            @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
-                    String pwd = (String) values[0];
-                    if ("19800210".equals(pwd)) {
-                        Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
-                        startActivity(intent);
+        new EnterPWDPopWindow(this,"打开高级设置","请输入密码")
+                .setIcon(getDrawable(R.drawable.ic_lock_24dp))
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK){
+                            String pwd = (String) values[0];
+                            if ("19800210".equals(pwd)) {
+                                Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+                                startActivity(intent);
+                            }
+                        }
                     }
-                }
-            }
-        });
-        fragment.show(getSupportFragmentManager(), "showinputPWDdialog");
+                }).show();
+
+//        ShareTotalDataDialogFragment fragment = ShareTotalDataDialogFragment.getInstance("打开高级设置", "输入密码：");
+//        fragment.setOnDismissListener(new IDialogDismiss() {
+//            @Override
+//            public void onDismiss(Result result, Object... values) {
+//                if (result == Result.OK) {
+//                    String pwd = (String) values[0];
+//                    if ("19800210".equals(pwd)) {
+//                        Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+//                        startActivity(intent);
+//                    }
+//                }
+//            }
+//        });
+//        fragment.show(getSupportFragmentManager(), "showinputPWDdialog");
     }
 
     //继承OnClick接口

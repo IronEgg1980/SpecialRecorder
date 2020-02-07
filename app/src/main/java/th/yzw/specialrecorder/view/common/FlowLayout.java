@@ -2,6 +2,7 @@ package th.yzw.specialrecorder.view.common;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,6 +71,7 @@ public class FlowLayout extends RelativeLayout{
     private void createChildView(){
         if(!mInited || mList == null || mList.isEmpty())
             return;
+
         removeAllViews();
         int total = getPaddingLeft() + getPaddingRight();
         int index = 1;
@@ -91,7 +93,7 @@ public class FlowLayout extends RelativeLayout{
                     if(lastIndex != -1){
                         TextView textView = (TextView) getChildAt(lastIndex);
                         textView.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_bg));
-                        textView.setTextColor(getContext().getColor(R.color.textColor));
+                        textView.setTextColor(getContext().getColor(R.color.colorPrimary));
                     }
                     lastIndex = finalI;
                     onItemClickListenr.OnClick(view, finalI);
@@ -117,6 +119,7 @@ public class FlowLayout extends RelativeLayout{
             total += childWidth;
             index ++ ;
         }
+        invalidate();
     }
 
     @Override

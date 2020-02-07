@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.setup;
+package th.yzw.specialrecorder.unuse;
 
 import android.app.Dialog;
 import android.graphics.Color;

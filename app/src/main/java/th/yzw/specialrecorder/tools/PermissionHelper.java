@@ -10,6 +10,7 @@ import com.hjq.permissions.XXPermissions;
 import java.util.List;
 
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 
@@ -56,23 +57,15 @@ public final class PermissionHelper {
                 public void noPermission(List<String> denied, boolean quick) {
                     if(quick) {
                         new ConfirmPopWindow(mActivity)
-                                .show("您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。", new IDialogDismiss() {
+                                .setDialogDismiss(new IDialogDismiss() {
                                     @Override
-                                    public void onDismiss(boolean isConfirmed, Object... values) {
-                                        if(isConfirmed){
+                                    public void onDismiss(Result result, Object... values) {
+                                        if(result == Result.OK){
                                             XXPermissions.gotoPermissionSettings(mContext,true);
                                         }
                                     }
-                                });
-//                        new DialogFactory1(mContext).showWarningDialog("注意",
-//                                "您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。",
-//                                "去设置",
-//                                new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                XXPermissions.gotoPermissionSettings(mContext,true);
-//                            }
-//                        },"",cancel);
+                                })
+                                .toConfirm("您已永久拒绝授权，如需使用该功能，请打开设置页面手动授予权限。");
                     }else
                         infoPopWindow.show("您已拒绝授权，不能使用该功能，已取消操作。");
 //                        new DialogFactory1(mContext).showInfoDialog("您已拒绝授权，不能使用该功能，已取消操作。",cancel);

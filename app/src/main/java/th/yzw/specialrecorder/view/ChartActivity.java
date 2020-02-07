@@ -46,6 +46,7 @@ import th.yzw.specialrecorder.JSON.ItemStatisticJSONHelper;
 import th.yzw.specialrecorder.JSON.JSONHelper;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemStatisticalInformation;
 import th.yzw.specialrecorder.tools.DataTool;
@@ -68,7 +69,6 @@ public class ChartActivity extends AppCompatActivity {
     //    private ToastFactory toastFactory;
     private List<ItemStatisticalInformation> ordredDataList;
     private RadioButton isSortBySelectTimesBT;
-    private ConfirmPopWindow confirmPopWindow;
     private InfoPopWindow infoPopWindow;
 
     private ArrayMap<String, Integer> getItemPieMap(List<ItemStatisticalInformation> list) {
@@ -110,20 +110,20 @@ public class ChartActivity extends AppCompatActivity {
         if (temp == null || temp.length == 0) {
             infoPopWindow.show("没有数据文件");
         } else {
-            final List<String> list = new ArrayList<>();
-            list.add("本机数据");
-            list.addAll(Arrays.asList(temp));
+            final String[] list = new String[temp.length + 1];
+            list[0] ="本机数据";
+            System.arraycopy(temp,0,list,1,temp.length);
             SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, false);
             popWindow.show(new IDialogDismiss() {
                 @Override
-                public void onDismiss(boolean isConfirmed, Object... values) {
-                    if (isConfirmed) {
+                public void onDismiss(Result result, Object... values) {
+                    if (result == Result.OK) {
                         int index = (int) values[0];
                         if (index == 0) {
                             showMyData();
                             return;
                         }
-                        File file = new File(microMsgPath, list.get(index));
+                        File file = new File(microMsgPath, list[index]);
                         showFileData(file);
                     }
                 }
@@ -377,48 +377,35 @@ public class ChartActivity extends AppCompatActivity {
     }
 
     private void resetData(final List<String> names) {
-        confirmPopWindow.show("重置后数据无法恢复，确定继续吗？", new IDialogDismiss() {
+        new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
+            public void onDismiss(Result result, Object... values) {
+                if(result == Result.OK){
                     for (int i = 0; i < names.size(); i++) {
                         ItemStatisticalInformationOperator.del(names.get(i));
                     }
                     showMyData();
                 }
             }
-        });
+        }).toConfirm("重置后数据无法恢复，确定继续吗？");
     }
 
     private void showSelectList(final String[] names) {
-        final List<String> list = new ArrayList<>(Arrays.asList(names));
-        final SelectItemPopWindow popWindow = new SelectItemPopWindow(this, list, true);
+        final SelectItemPopWindow popWindow = new SelectItemPopWindow(this, names, true);
         popWindow.show(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed && values.length > 0) {
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK && values.length > 0) {
                     List<String> list1 = new ArrayList<>();
                     for (int i = values.length - 1; i > -1; i--) {
                         int index = (int) values[i];
-                        list1.add(list.get(index));
+                        list1.add(names[index]);
                     }
                     popWindow.isResumeAlpha = false;
                     resetData(list1);
                 }
             }
         });
-
-//        dialogFactory.showMultiSelect(names, new SelectDialogClicker() {
-//            @Override
-//            public void click(boolean[] checkedItems) {
-//                for (int i = checkedItems.length - 1; i > -1; i--) {
-//                    if (checkedItems[i]) {
-//                        ItemStatisticalInformationOperator.del(names[i]);
-//                    }
-//                }
-//                showMyData();
-//            }
-//        });
     }
 
     private void initialPieChart() {
@@ -528,7 +515,6 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
         selectTimesColor = Color.parseColor(OtherTools.getRandomColor(0xff));
         totalQuantityColor = Color.parseColor(OtherTools.getRandomColor(0xff));
-        confirmPopWindow = new ConfirmPopWindow(this);
         infoPopWindow = new InfoPopWindow(this);
         initialView();
     }

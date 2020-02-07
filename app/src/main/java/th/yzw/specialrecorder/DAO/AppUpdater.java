@@ -13,6 +13,7 @@ import java.util.List;
 
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 
 public class AppUpdater extends AsyncTask<Void, Integer, Void> {
@@ -136,8 +137,8 @@ public class AppUpdater extends AsyncTask<Void, Integer, Void> {
 //        MyAppSetupUtils.setAppUpdated(false);
         Broadcasts.sendBroadcast(mContext,Broadcasts.DISMISS_DIALOG);
         if (isCanceled)
-            onFinish.onDismiss(false, message);
+            onFinish.onDismiss(Result.CANCEL, message);
         else
-            onFinish.onDismiss(true, updateFile);
+            onFinish.onDismiss(Result.OK, updateFile);
     }
 }

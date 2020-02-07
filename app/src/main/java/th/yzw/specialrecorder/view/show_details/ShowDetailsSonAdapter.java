@@ -1,10 +1,13 @@
 package th.yzw.specialrecorder.view.show_details;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -21,9 +24,12 @@ import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
+import th.yzw.specialrecorder.view.common.MenuPopWindow;
 
 public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAdapter.SonViewHolder> {
     private List<RecordEntity> mList;
@@ -43,7 +49,8 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
 //        dialogFactory = new DialogFactory(context);
         initialAnim();
     }
-    private void initialAnim(){
+
+    private void initialAnim() {
 //        this.hideAnim = new AlphaAnimation(1.0f,0.0f);
 //        this.hideAnim.setDuration(400);
         this.showAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
@@ -62,10 +69,11 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
 //                Animation.RELATIVE_TO_SELF, 0.0f);
 //        this.countLTR.setDuration(400);
     }
+
     protected void click(int position) {
         if (preIndex >= 0 && preIndex != position) {
             RecordEntity _entity = mList.get(preIndex);
-            if(_entity.isSelected()) {
+            if (_entity.isSelected()) {
                 _entity.setSelected(false);
                 notifyItemChanged(preIndex);
             }
@@ -76,79 +84,74 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         preIndex = position;
     }
 
-    protected void editData(final int position,View view) {
-        final RecordEntity r = mList.get(position);
-        EditPopWindow editPopWindow = new EditPopWindow(mContext,r.getName(),r.getCount());
-        editPopWindow.show(mActivity, new IDialogDismiss() {
+    private void showMenu(final View view, final int position){
+        click(position);
+        String[] menuitem = {"修改","删除"};
+        Drawable[] icons = new Drawable[2];
+        icons[0] = view.getContext().getDrawable(R.drawable.ic_edit_18dp);
+        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_white_24dp);
+        final MenuPopWindow popWindow = new MenuPopWindow(view,menuitem,icons);
+        popWindow.setClickListener(new MyClickListener() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if(isConfirmed){
-                    int value =(int)values[0];
-                    int changeValue = value -  r.getCount();
-                    RecordEntityOperator.update(r,value);
-                    ItemStatisticalInformationOperator.update(r.getName(),changeValue);
+            public void OnClick(View view, Object o) {
+                int index = (int) o;
+                if(index == 0)
+                    editData(position);
+                else
+                    delData(position);
+            }
+        });
+        popWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                click(position);
+            }
+        });
+        popWindow.showAsDropDown(view);
+    }
+
+    protected void editData(final int position) {
+        final RecordEntity r = mList.get(position);
+        EditPopWindow editPopWindow = new EditPopWindow(mActivity, r.getName(), r.getCount());
+        editPopWindow.show( new IDialogDismiss() {
+            @Override
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK) {
+                    int value = (int) values[0];
+                    int changeValue = value - r.getCount();
+                    RecordEntityOperator.update(r, value);
+                    ItemStatisticalInformationOperator.update(r.getName(), changeValue);
                     r.setSelected(false);
                     preIndex = -1;
                     notifyItemChanged(position);
                 }
             }
         });
-//        EditDataDialogFragment fragment = EditDataDialogFragment.newInstant(r.getName(), r.getCount());
-//        fragment.setOnDissmissListener(new IDialogDismiss() {
-//            @Override
-//            public void onDismiss(boolean isConfirmed, Object...values) {
-//                if (isConfirmed) {
-//                    int value =(int)values[0];
-//                    int changeValue = value -  r.getCount();
-//                    RecordEntityOperator.update(r,value);
-//                    ItemStatisticalInformationOperator.update(r.getName(),changeValue);
-//                    r.setSelected(false);
-//                    preIndex = -1;
-//                    notifyItemChanged(position);
-//                }
-//            }
-//        });
-//        fragment.show(mActivity.getSupportFragmentManager(), "edit");
-        click(position);
     }
 
-    protected void delData(View view,final int position) {
+    protected void delData(final int position) {
         final RecordEntity r = mList.get(position);
-//        dialogFactory.showDefaultConfirmDialog("是否删除【" + r.getName() + "】的记录？", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                RecordEntityOperator.del(r);
-//                ItemStatisticalInformationOperator.del(r.getName(),r.getCount());
-//                mList.remove(position);
-//                if (getItemCount() > 0) {
-//                    fatherAdapter.flushCurrent();
-//                    preIndex = -1;
-//                } else {
-//                    fatherAdapter.noData();
-//                }
-//            }
-//        });
-
-       new ConfirmPopWindow(mActivity).show("是否删除【" + r.getName() + "】的记录？",new IDialogDismiss() {
-            @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed){
-                    RecordEntityOperator.del(r);
-                    ItemStatisticalInformationOperator.del(r.getName(),r.getCount());
-                    mList.remove(position);
-                    if (getItemCount() > 0) {
-                        fatherAdapter.flushCurrent();
-                        preIndex = -1;
-                    } else {
-                        fatherAdapter.noData();
+        new ConfirmPopWindow(mActivity)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OK) {
+                            RecordEntityOperator.del(r);
+                            ItemStatisticalInformationOperator.del(r.getName(), r.getCount());
+                            mList.remove(position);
+                            if (getItemCount() > 0) {
+                                fatherAdapter.flushCurrent();
+                                preIndex = -1;
+                            } else {
+                                fatherAdapter.noData();
+                            }
+                        }
                     }
-                }
-            }
-        });
-        click(position);
+                })
+                .toConfirm("是否删除【" + r.getName() + "】的记录？");
     }
 
-        @NonNull
+    @NonNull
     @Override
     public SonViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.show_details_item, viewGroup, false);
@@ -158,50 +161,58 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     @Override
     public void onBindViewHolder(@NonNull final SonViewHolder sonViewHolder, int i) {
         final int index = sonViewHolder.getAdapterPosition();
-        sonViewHolder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                click(index);
-            }
-        });
-        sonViewHolder.showItemEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editData(index,sonViewHolder.showItemEdit);
-            }
-        });
-        sonViewHolder.showItemDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delData(sonViewHolder.showItemDel,index);
-            }
-        });
         RecordEntity entity = mList.get(index);
         sonViewHolder.showItemName.setText(entity.getName());
         sonViewHolder.showItemCount.setText(String.valueOf(entity.getCount()));
-        if (entity.isSelected()) {
-            showAnim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-                    sonViewHolder.group.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            sonViewHolder.group.startAnimation(showAnim);
-        } else if(sonViewHolder.group.getVisibility() == View.VISIBLE){
+        sonViewHolder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenu(sonViewHolder.root,index);
+            }
+        });
+        if(entity.isSelected()){
+            sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+            sonViewHolder.showItemCount.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+        }else{
             sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.textColor));
-            sonViewHolder.group.setVisibility(View.GONE);
+            sonViewHolder.showItemCount.setTextColor(mContext.getResources().getColor(R.color.textColor));
         }
+
+//        sonViewHolder.showItemEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                editData(index, sonViewHolder.showItemEdit);
+//            }
+//        });
+//        sonViewHolder.showItemDel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                delData(sonViewHolder.showItemDel, index);
+//            }
+//        });
+//        if (entity.isSelected()) {
+//            showAnim.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//                    sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+//                    sonViewHolder.group.setVisibility(View.VISIBLE);
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//
+//                }
+//            });
+//            sonViewHolder.group.startAnimation(showAnim);
+//        } else if (sonViewHolder.group.getVisibility() == View.VISIBLE) {
+//            sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.textColor));
+//            sonViewHolder.group.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -213,18 +224,20 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         private RelativeLayout root;
         private TextView showItemName;
         private TextView showItemCount;
-        private TextView showItemEdit;
-        private TextView showItemDel;
-        private LinearLayout group;
+//        private TextView showItemEdit;
+//        private TextView showItemDel;
+//        private LinearLayout group;
 
         public SonViewHolder(@NonNull View itemView) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
             showItemName = itemView.findViewById(R.id.show_item_name);
+            showItemName.setClickable(false);
             showItemCount = itemView.findViewById(R.id.show_item_count);
-            showItemEdit = itemView.findViewById(R.id.show_item_edit);
-            showItemDel = itemView.findViewById(R.id.show_item_del);
-            group = itemView.findViewById(R.id.group);
+            showItemCount.setClickable(false);
+//            showItemEdit = itemView.findViewById(R.id.show_item_edit);
+//            showItemDel = itemView.findViewById(R.id.show_item_del);
+//            group = itemView.findViewById(R.id.group);
         }
     }
 }

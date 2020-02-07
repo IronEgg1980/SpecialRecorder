@@ -49,6 +49,7 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.MyDateUtils;
@@ -109,7 +110,6 @@ public class ShowTotalDataFragment extends Fragment {
     }
 
     //    private DialogFactory dialogFactory;
-    private ConfirmPopWindow confirmPopWindow;
     private InfoPopWindow infoPopWindow;
     //    private ToastFactory toastFactory;
     private RecorderActivity activity;
@@ -155,12 +155,12 @@ public class ShowTotalDataFragment extends Fragment {
         DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), "backup");
         dataBackuper.setOnFinish(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
+            public void onDismiss(Result result, Object... values) {
                 loadingDialog.dismiss();
-                if (isConfirmed) {
+                if (result == Result.OK) {
                     RecordEntityOperator.deleAllBetweenDate(start, end);
                     adapter.updateList(start, end);
-                    infoPopWindow.show("备份后删除数据成功");
+                    new ToastFactory(getContext()).showCenterToast("备份后删除数据成功");
                 } else {
                     String s = (String) values[0];
                     infoPopWindow.show(s);
@@ -173,23 +173,20 @@ public class ShowTotalDataFragment extends Fragment {
 
     private void showConfirmDeleDialog() {
         new ConfirmPopWindow(activity)
-                .setThirdButton("立即备份", new MyClickListener() {
+                .setOtherButton("立即备份")
+                .setDialogDismiss(new IDialogDismiss() {
                     @Override
-                    public void OnClick(View view, Object o) {
-                        backup();
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OTHER) {
+                            backup();
+                        } else if (result == Result.OK) {
+                            RecordEntityOperator.deleAllBetweenDate(start, end);
+                            adapter.updateList(start, end);
+                            new ToastFactory(getContext()).showCenterToast("删除成功");
+                        }
                     }
                 })
-                .show("确定删除吗？\n（注意：如果没有备份数据，删除数据后将不能恢复！建议立即备份数据，再执行删除操作。）",
-                        new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(boolean isConfirmed, Object... value) {
-                                if (isConfirmed) {
-                                    RecordEntityOperator.deleAllBetweenDate(start, end);
-                                    adapter.updateList(start, end);
-                                    infoPopWindow.show("删除成功");
-                                }
-                            }
-                        });
+                .toConfirm("确定删除吗？\n（注意：如果没有备份数据，删除数据后将不能恢复！建议立即备份数据，再执行删除操作。）");
     }
 
     private void dele() {
@@ -197,14 +194,17 @@ public class ShowTotalDataFragment extends Fragment {
             infoPopWindow.show("当前列表内没有数据");
             return;
         }
-        confirmPopWindow.show("是否要删除【 " + format.format(start) + " 】至【 " + format.format(end) + " 】内的所有数据？",
-                new IDialogDismiss() {
-                    @Override
-                    public void onDismiss(boolean isConfirmed, Object... value) {
-                        if(isConfirmed)
-                            showConfirmDeleDialog();
-                    }
-                });
+        final ConfirmPopWindow popWindow = new ConfirmPopWindow(getActivity());
+        popWindow.setDialogDismiss(new IDialogDismiss() {
+            @Override
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK) {
+                    popWindow.isResumeAlpha = false;
+                    showConfirmDeleDialog();
+                }
+            }
+        })
+                .toConfirm("是否要删除【 " + format.format(start) + " 】至【 " + format.format(end) + " 】内的所有数据？");
     }
 
     private void initialView(View view) {
@@ -229,7 +229,6 @@ public class ShowTotalDataFragment extends Fragment {
         activity = (RecorderActivity) getActivity();
         activity.setTitle("汇总记录");
         setHasOptionsMenu(true);
-        confirmPopWindow = new ConfirmPopWindow(activity);
         infoPopWindow = new InfoPopWindow(activity);
 //        dialogFactory = new DialogFactory(getContext());
 //        toastFactory = new ToastFactory(getContext());

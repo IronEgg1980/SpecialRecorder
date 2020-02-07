@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +21,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.hjq.permissions.Permission;
+import com.sun.mail.imap.protocol.ID;
 
 import org.json.JSONException;
 
@@ -36,15 +36,20 @@ import th.yzw.specialrecorder.DAO.ShowDataOperator;
 import th.yzw.specialrecorder.JSON.ShowDataJSONHelper;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ShowDataEntity;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.unuse.EditDataDialogFragment;
+import th.yzw.specialrecorder.view.common.EditPopWindow;
+import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
+import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
-import th.yzw.specialrecorder.view.show_total.ShareTotalDataDialogFragment;
 
 public class ShowDataActivity extends AppCompatActivity {
     String TAG = "殷宗旺";
@@ -62,8 +67,9 @@ public class ShowDataActivity extends AppCompatActivity {
     private Button exitEditModeBT;
     private int preIndex;
     private File path = null;
-    private DialogFactory dialogFactory;
-    private ToastFactory toastFactory;
+    private InfoPopWindow infoPopWindow;
+//    private DialogFactory dialogFactory;
+//    private ToastFactory toastFactory;
     private ShowDataJSONHelper jsonHelper;
 
     private void setFileName(String _fileName) {
@@ -87,16 +93,16 @@ public class ShowDataActivity extends AppCompatActivity {
                 ShowDataOperator.saveAll(list);
                 setFileName(_fileName);
             } else {
-                toastFactory.showCenterToast("密码错误！");
+                infoPopWindow.show("密码错误！");
                 setFileName("none");
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            toastFactory.showCenterToast("解析数据失败！");
+            infoPopWindow.show("解析数据失败！");
             setFileName("none");
         } catch (IOException ex) {
             ex.printStackTrace();
-            toastFactory.showCenterToast("读取文件失败！");
+            infoPopWindow.show("读取文件失败！");
             setFileName("none");
         } finally {
             showInfo();
@@ -111,20 +117,35 @@ public class ShowDataActivity extends AppCompatActivity {
                 if (list == null)
                     list = new ArrayList<>();
                 list.clear();
-                ShareTotalDataDialogFragment fragment = ShareTotalDataDialogFragment.getInstance("需要密码", "请输入密码：");
-                fragment.setOnDismissListener(new IDialogDismiss() {
-                    @Override
-                    public void onDismiss(boolean isConfirmed, Object... values) {
-                        if (isConfirmed) {
-                            String pwd = (String) values[0];
-                            openFile(_fileName, pwd);
-                        } else {
-                            setFileName("none");
-                            showInfo();
-                        }
-                    }
-                });
-                fragment.show(getSupportFragmentManager(), "inputpwd");
+                new EnterPWDPopWindow(ShowDataActivity.this, "验证密码", "请输入密码")
+                        .setIcon(getDrawable(R.drawable.ic_lock_24dp))
+                        .setDialogDismiss(new IDialogDismiss() {
+                            @Override
+                            public void onDismiss(Result result, Object... values) {
+                                if (result == Result.OK) {
+                                    String pwd = (String) values[0];
+                                    openFile(_fileName, pwd);
+                                } else {
+                                    setFileName("none");
+                                    showInfo();
+                                }
+                            }
+                        }).show();
+
+//                ShareTotalDataDialogFragment fragment = ShareTotalDataDialogFragment.getInstance("需要密码", "请输入密码：");
+//                fragment.setOnDismissListener(new IDialogDismiss() {
+//                    @Override
+//                    public void onDismiss(Result result, Object... values) {
+//                        if (result == Result.OK) {
+//                            String pwd = (String) values[0];
+//                            openFile(_fileName, pwd);
+//                        } else {
+//                            setFileName("none");
+//                            showInfo();
+//                        }
+//                    }
+//                });
+//                fragment.show(getSupportFragmentManager(), "inputpwd");
 //                final EditText editText = new EditText(ShowDataActivity.this);
 //                AlertDialog.Builder builder = new AlertDialog.Builder(ShowDataActivity.this);
 //                builder.setTitle("需要密码")
@@ -165,32 +186,62 @@ public class ShowDataActivity extends AppCompatActivity {
     }
 
     private void clear() {
-        dialogFactory.showDefaultConfirmDialog("是否删除数据文件【 " + mFileName + " 】？", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
                     @Override
-                    public void hasPermission() {
-                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                            path = new File(FileTools.MICROMSG_DIR);
-                            if (!path.exists()) {
-                                toastFactory.showCenterToast("未找到文件目录");
-                                return;
-                            }
-                            File file = new File(path, mFileName);
-                            file.delete();
-                            ShowDataOperator.deleAll(mFileName);
-                            if (list == null)
-                                list = new ArrayList<>();
-                            list.clear();
-                            setFileName("none");
-                            showInfo();
-                            toastFactory.showCenterToast("已删除文件");
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK) {
+                            new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
+                                @Override
+                                public void hasPermission() {
+                                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                                        path = new File(FileTools.MICROMSG_DIR);
+                                        if (!path.exists()) {
+                                            infoPopWindow.show("未找到文件目录");
+                                            return;
+                                        }
+                                        File file = new File(path, mFileName);
+                                        file.delete();
+                                        ShowDataOperator.deleAll(mFileName);
+                                        if (list == null)
+                                            list = new ArrayList<>();
+                                        list.clear();
+                                        setFileName("none");
+                                        showInfo();
+                                        infoPopWindow.show("已删除文件");
+                                    }
+                                }
+                            }).request(Permission.Group.STORAGE);
                         }
                     }
-                }).request(Permission.Group.STORAGE);
-            }
-        });
+                }).toConfirm("是否删除数据文件【 " + mFileName + " 】？");
+
+//        dialogFactory.showDefaultConfirmDialog("是否删除数据文件【 " + mFileName + " 】？", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
+//                    @Override
+//                    public void hasPermission() {
+//                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+//                            path = new File(FileTools.MICROMSG_DIR);
+//                            if (!path.exists()) {
+//                                toastFactory.showCenterToast("未找到文件目录");
+//                                return;
+//                            }
+//                            File file = new File(path, mFileName);
+//                            file.delete();
+//                            ShowDataOperator.deleAll(mFileName);
+//                            if (list == null)
+//                                list = new ArrayList<>();
+//                            list.clear();
+//                            setFileName("none");
+//                            showInfo();
+//                            toastFactory.showCenterToast("已删除文件");
+//                        }
+//                    }
+//                }).request(Permission.Group.STORAGE);
+//            }
+//        });
     }
 
     private void updateList(String _fileName) {
@@ -229,7 +280,7 @@ public class ShowDataActivity extends AppCompatActivity {
     private void changeEditMode(boolean flag) {
         isEditMode = flag;
         if (flag) {
-            toastFactory.showCenterToast("进入编辑模式，点击项目可以修改数据");
+            infoPopWindow.show("进入编辑模式，点击项目可以修改数据");
             fileNameTV.setText("编辑模式(点击需要修改的项目)");
             frameLayout.setBackground(new ColorDrawable(Color.RED));
             exitEditModeBT.setVisibility(View.VISIBLE);
@@ -242,7 +293,7 @@ public class ShowDataActivity extends AppCompatActivity {
                 preIndex = -1;
             }
         } else {
-            toastFactory.showCenterToast("退出编辑模式");
+            infoPopWindow.show("退出编辑模式");
             fileNameTV.setText(mFileName);
             frameLayout.setBackground(new ColorDrawable(Color.TRANSPARENT));
             exitEditModeBT.setVisibility(View.GONE);
@@ -285,13 +336,22 @@ public class ShowDataActivity extends AppCompatActivity {
                         changeEditMode(true);
                         break;
                     case 4:
-                        dialogFactory.showDefaultConfirmDialog("该操作会删除所有对【 " + mFileName + " 】数据文件的修改，将数据恢复至原始状态。是否继续？",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                        new ConfirmPopWindow(ShowDataActivity.this)
+                            .setDialogDismiss(new IDialogDismiss() {
+                                @Override
+                                public void onDismiss(Result result, Object... values) {
+                                    if(result == Result.OK){
                                         readFile(mFileName);
                                     }
-                                });
+                                }
+                            }).toConfirm("该操作会删除所有对【 " + mFileName + " 】数据文件的修改，将数据恢复至原始状态。是否继续？");
+//                        dialogFactory.showDefaultConfirmDialog("该操作会删除所有对【 " + mFileName + " 】数据文件的修改，将数据恢复至原始状态。是否继续？",
+//                                new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        readFile(mFileName);
+//                                    }
+//                                });
                         break;
                     case 5:
                         closeFile();
@@ -304,13 +364,16 @@ public class ShowDataActivity extends AppCompatActivity {
     }
 
     private void clearFiles() {
-        dialogFactory.showDefaultConfirmDialog("即将删除所有汇总数据与汇总文件，是否继续？", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                delFiles();
-                showInfo();
-            }
-        });
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK){
+                            delFiles();
+                            showInfo();
+                        }
+                    }
+                }).toConfirm("即将删除所有汇总数据与汇总文件，是否继续？");
     }
 
     private void delFiles() {
@@ -321,7 +384,7 @@ public class ShowDataActivity extends AppCompatActivity {
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     path = new File(FileTools.MICROMSG_DIR);
                     if (!path.exists()) {
-                        toastFactory.showCenterToast("未找到文件目录");
+                        infoPopWindow.show("未找到文件目录");
                         return;
                     }
                 }
@@ -331,7 +394,7 @@ public class ShowDataActivity extends AppCompatActivity {
                     list = new ArrayList<>();
                 list.clear();
                 setFileName("none");
-                toastFactory.showCenterToast("已清除所有文件");
+                infoPopWindow.show("已清除所有文件");
             }
         }).request(Permission.Group.STORAGE);
     }
@@ -355,7 +418,7 @@ public class ShowDataActivity extends AppCompatActivity {
             ActivityManager.closeAll();
         } else {
             firstTouchTime = System.currentTimeMillis();
-            toastFactory.showCenterToast("再按一次退出");
+            new ToastFactory(this).showCenterToast("再按一次退出");
         }
     }
 
@@ -403,8 +466,9 @@ public class ShowDataActivity extends AppCompatActivity {
                 showMenu(showMenuIB);
             }
         });
-        dialogFactory = new DialogFactory(this);
-        toastFactory = new ToastFactory(this);
+        infoPopWindow = new InfoPopWindow(this);
+//        dialogFactory = new DialogFactory(this);
+//        toastFactory = new ToastFactory(this);
         jsonHelper = new ShowDataJSONHelper();
     }
 
@@ -425,19 +489,34 @@ public class ShowDataActivity extends AppCompatActivity {
                         pathList = FileTools.getFileList(path, ".total");
                     }
                     if (pathList != null && pathList.length > 0) {
-                        dialogFactory.showSingleSelectWithConfirmButton(pathList, new SelectDialogClicker() {
+                        final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(ShowDataActivity.this,pathList,false);
+                        selectItemPopWindow.show(new IDialogDismiss() {
                             @Override
-                            public void click(int checkedItem) {
-                                mFileName = pathList[checkedItem];
-                                updateList(mFileName);
-                                if (list.size() == 0)
-                                    readFile(mFileName);
-                                else
-                                    showInfo();
+                            public void onDismiss(Result result, Object... values) {
+                                if(result == Result.OK){
+                                    mFileName = pathList[(int) values[0]];
+                                    updateList(mFileName);
+                                    if (list.size() == 0) {
+                                        readFile(mFileName);
+                                        selectItemPopWindow.isResumeAlpha = false;
+                                    }else
+                                        showInfo();
+                                }
                             }
                         });
+//                        dialogFactory.showSingleSelectWithConfirmButton(pathList, new SelectDialogClicker() {
+//                            @Override
+//                            public void click(int checkedItem) {
+//                                mFileName = pathList[checkedItem];
+//                                updateList(mFileName);
+//                                if (list.size() == 0)
+//                                    readFile(mFileName);
+//                                else
+//                                    showInfo();
+//                            }
+//                        });
                     } else {
-                        toastFactory.showCenterToast("未找到数据文件！");
+                        infoPopWindow.show("未找到数据文件！");
                     }
                 }
             }
@@ -447,19 +526,33 @@ public class ShowDataActivity extends AppCompatActivity {
 
     protected void editData(final int position) {
         final ShowDataEntity r = list.get(position);
-        EditDataDialogFragment fragment = EditDataDialogFragment.newInstant(r.getName(), r.getCount());
-        fragment.setOnDissmissListener(new IDialogDismiss() {
+        EditPopWindow editPopWindow = new EditPopWindow(ShowDataActivity.this,r.getName(),r.getCount());
+        editPopWindow.show(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
+            public void onDismiss(Result result, Object... values) {
+                if(result == Result.OK){
                     int value = (int) values[0];
                     r.setCount(value);
                     r.save();
                     adapter.notifyItemChanged(position);
-                    toastFactory.showCenterToast("修改成功!");
+                    new ToastFactory(ShowDataActivity.this).showCenterToast("修改成功!");
                 }
             }
         });
-        fragment.show(getSupportFragmentManager(), "edit");
+
+//        EditDataDialogFragment fragment = EditDataDialogFragment.newInstant(r.getName(), r.getCount());
+//        fragment.setOnDissmissListener(new IDialogDismiss() {
+//            @Override
+//            public void onDismiss(Result result, Object... values) {
+//                if (result == Result.OK) {
+//                    int value = (int) values[0];
+//                    r.setCount(value);
+//                    r.save();
+//                    adapter.notifyItemChanged(position);
+//                    new ToastFactory(ShowDataActivity.this).showCenterToast("修改成功!");
+//                }
+//            }
+//        });
+//        fragment.show(getSupportFragmentManager(), "edit");
     }
 }

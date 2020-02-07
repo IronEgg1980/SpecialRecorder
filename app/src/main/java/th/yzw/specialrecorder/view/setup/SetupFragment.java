@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,13 +43,15 @@ import th.yzw.specialrecorder.DAO.DataBackupAndRestore;
 import th.yzw.specialrecorder.DAO.ItemUpdater;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
-import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.RecorderActivity;
-import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
+import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class SetupFragment extends Fragment {
@@ -83,8 +84,9 @@ public class SetupFragment extends Fragment {
     private RadioGroup infoLocationGroup;
     private LoadingDialog loadingDialog;
     private TextView appUpdatedFlagTV;
-    private DialogFactory dialogFactory;
-    private ToastFactory toastFactory;
+    private InfoPopWindow infoPopWindow;
+//    private DialogFactory dialogFactory;
+//    private ToastFactory toastFactory;
 
     private final int WRITE_INPUT = 1, TOUCH_INPUT = 2;
     private int showInfoMode;
@@ -98,8 +100,9 @@ public class SetupFragment extends Fragment {
     private BroadcastReceiver receiver;
 
     private void initialView(View view) {
-        dialogFactory = new DialogFactory(getContext());
-        toastFactory = new ToastFactory(getContext());
+//        dialogFactory = new DialogFactory(getContext());
+//        toastFactory = new ToastFactory(getContext());
+        infoPopWindow = new InfoPopWindow(getActivity());
         infoLocationCard = view.findViewById(R.id.info_location_cardview);
         infoLocationGroup = view.findViewById(R.id.info_location_group);
         infoLocationNone = view.findViewById(R.id.info_location_none);
@@ -271,7 +274,7 @@ public class SetupFragment extends Fragment {
             public void onClick(View v) {
                 AppSetupOperator.setUseAlarmMode(dataSafeAlarm.isChecked());
                 if (dataSafeAlarm.isChecked())
-                    toastFactory.showLongToast("已启用紧急模式，（/110/)你懂的！");
+                    new ToastFactory(getContext()).showLongToast("已启用紧急模式，（/110/)你懂的！");
             }
         });
         vibrateLevelSeekbar.setProgress(vibrateLevel);
@@ -320,7 +323,8 @@ public class SetupFragment extends Fragment {
         othersSetupPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new EditPassWordDialogFragment().show(getFragmentManager(), "editpassword");
+                new EditPWDPopWindow(activity).show();
+//                new EditPassWordDialogFragment().show(getFragmentManager(), "editpassword");
             }
         });
         othersSetupUpdateItems.setOnClickListener(new View.OnClickListener() {
@@ -354,7 +358,7 @@ public class SetupFragment extends Fragment {
                 String s = "版本: " + OtherTools.getAppVersionName(getContext()) +
                         "\n代码: " + AppSetupOperator.getLastAppVersion() +
                         "\n\nEnjoy it !";
-                dialogFactory.showInfoDialog(s);
+                infoPopWindow.show(s);
             }
         });
         return view;
@@ -442,37 +446,19 @@ public class SetupFragment extends Fragment {
         if (path.exists()) {
             File[] files = path.listFiles();
             if (files.length == 0) {
-                toastFactory.showCenterToast("没有备份文件，不用清理！");
+                infoPopWindow.show("没有备份文件，不用清理！");
                 return;
             }
             for (File file : files) {
                 b = FileTools.clearFiles(file);
             }
             if (b)
-                toastFactory.showCenterToast("备份文件夹清理完成！建议立即备份一次。");
+                new ToastFactory(getContext()).showCenterToast("备份文件夹清理完成！建议立即备份一次。");
             else
-                toastFactory.showCenterToast("备份文件夹清理失败！");
+                infoPopWindow.show("备份文件夹清理失败！");
         } else {
-            toastFactory.showCenterToast("未找到备份文件夹！可能原因：还没有备份过。");
+            infoPopWindow.show("未找到备份文件夹！可能原因：还没有备份过。");
         }
-
-//        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-//            AlertDialog dialog = new AlertDialog.Builder(getContext())
-//                    .setTitle("确认")
-//                    .setMessage("清除所有备份文件后将不能恢复，是否继续？")
-//                    .setIcon(R.drawable.ic_warning_24dp)
-//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            clear();
-//                        }
-//                    })
-//                    .setNegativeButton("取消", null).create();
-//            dialog.show();
-//
-//        } else {
-//            dialogAndToast.showCenterToast("SD卡不可用，请稍后再试一下看看…");
-//        }
     }
 
     private void cleaningApp() {
@@ -480,17 +466,19 @@ public class SetupFragment extends Fragment {
             @Override
             public void hasPermission() {
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    dialogFactory.showDefaultConfirmDialog("是否清理所有数据文件、项目更新文件、App升级文件？", new DialogInterface.OnClickListener() {
+                    new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FileTools.cleanApp(Objects.requireNonNull(getContext()));
-                            AppSetupOperator.setDownloadAppVersion(1);
-                            AppSetupOperator.setForceUpdate(false);
-                            toastFactory.showCenterToast("已清理");
+                        public void onDismiss(Result result, Object... values) {
+                            if(result == Result.OK){
+                                FileTools.cleanApp(Objects.requireNonNull(getContext()));
+                                AppSetupOperator.setDownloadAppVersion(1);
+                                AppSetupOperator.setForceUpdate(false);
+                                new ToastFactory(getContext()).showCenterToast("已清理");
+                            }
                         }
-                    });
+                    }).toConfirm("是否清理所有数据文件、项目更新文件、App升级文件？");
                 } else {
-                    toastFactory.showCenterToast("SD卡不可用，请稍后再试一下看看…");
+                    infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
                 }
             }
         }).request(Permission.Group.STORAGE);
@@ -501,14 +489,16 @@ public class SetupFragment extends Fragment {
             @Override
             public void hasPermission() {
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    dialogFactory.showDefaultConfirmDialog("清除所有备份文件后将不能恢复，是否继续？", new DialogInterface.OnClickListener() {
+                    new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearBackupFiles();
+                        public void onDismiss(Result result, Object... values) {
+                            if(result == Result.OK){
+                                clearBackupFiles();
+                            }
                         }
-                    });
+                    }).toConfirm("清除所有备份文件后将不能恢复，是否继续？");
                 } else {
-                    toastFactory.showCenterToast("SD卡不可用，请稍后再试一下看看…");
+                    infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
                 }
             }
         }).request(Permission.Group.STORAGE);
@@ -517,7 +507,7 @@ public class SetupFragment extends Fragment {
     private void backup() {
         File path = new File(FileTools.BACKUP_DIR);
         if (!path.exists() && !path.mkdirs()) {
-            toastFactory.showCenterToast("创建目录失败！请重试一次…");
+            infoPopWindow.show("创建目录失败！请重试一次…");
             return;
         }
         loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
@@ -526,10 +516,10 @@ public class SetupFragment extends Fragment {
         DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), "backup");
         dataBackuper.setOnFinish(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
+            public void onDismiss(Result result, Object... values) {
                 loadingDialog.dismiss();
                 String s = (String) values[0];
-                toastFactory.showCenterToast(s);
+                new ToastFactory(getContext()).showCenterToast(s);
             }
         });
         loadingDialog.show(getFragmentManager(), "loading");
@@ -546,39 +536,43 @@ public class SetupFragment extends Fragment {
     }
 
     private void restore() {
-        dialogFactory.showDefaultConfirmDialog("注意：【恢复数据】操作将会清除现有数据，恢复为已备份的记录。是否确认该操作？", new DialogInterface.OnClickListener() {
+        final ConfirmPopWindow popWindow =  new ConfirmPopWindow(getActivity());
+        popWindow.setDialogDismiss(new IDialogDismiss() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (selectedFile.exists()) {
-                    try {
-                        String s = FileTools.readEncryptFile(selectedFile);
-                        if (s.startsWith("nothing")) {
-                            toastFactory.showCenterToast("备份文件内无数据");
-                            return;
-                        }
-                        loadingDialog = LoadingDialog.newInstant("恢复数据", "准备中...", true);
-                        loadingDialog.setCancelClick(null);
-                        loadingDialog.setCancelable(false);
-                        final DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), s);
-                        dataBackuper.setOnFinish(new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(boolean isConfirmed, Object... values) {
-                                loadingDialog.dismiss();
-                                String s = (String) values[0];
-                                toastFactory.showCenterToast(s);
+            public void onDismiss(Result result, Object... values) {
+                if(result == Result.OK){
+                    if (selectedFile.exists()) {
+                        try {
+                            String s = FileTools.readEncryptFile(selectedFile);
+                            if (s.startsWith("nothing")) {
+                                popWindow.isResumeAlpha = false;
+                                infoPopWindow.show("备份文件内无数据");
+                                return;
                             }
-                        });
-                        loadingDialog.show(getFragmentManager(), "loading");
-                        dataBackuper.execute();
-                    } catch (IOException e) {
-                        dialogFactory.showInfoDialog("读取文件失败！\n" + e.getMessage());
-                        e.printStackTrace();
+                            loadingDialog = LoadingDialog.newInstant("恢复数据", "准备中...", true);
+                            loadingDialog.setCancelClick(null);
+                            loadingDialog.setCancelable(false);
+                            final DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), s);
+                            dataBackuper.setOnFinish(new IDialogDismiss() {
+                                @Override
+                                public void onDismiss(Result result, Object... values) {
+                                    loadingDialog.dismiss();
+                                    String s = (String) values[0];
+                                    new ToastFactory(getContext()).showCenterToast(s);
+                                }
+                            });
+                            loadingDialog.show(getFragmentManager(), "loading");
+                            dataBackuper.execute();
+                        } catch (IOException e) {
+                            infoPopWindow.show("读取文件失败！\n" + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        infoPopWindow.show("备份文件丢失，请进入【" + FileTools.BACKUP_DIR + "】目录查看！");
                     }
-                } else {
-                    dialogFactory.showInfoDialog("备份文件丢失，请进入【" + FileTools.BACKUP_DIR + "】目录查看！");
                 }
             }
-        });
+        }).toConfirm("注意：【恢复数据】操作将会清除现有数据，恢复为已备份的记录。是否确认该操作？");
     }
 
     private void restoreData(View view) {
@@ -589,34 +583,32 @@ public class SetupFragment extends Fragment {
                     final String[] pathList = FileTools.getFileList(FileTools.BACKUP_DIR, ".backup");
                     if (pathList.length > 0) {
                         selectedFile = new File(FileTools.BACKUP_DIR, pathList[0]);
-                        dialogFactory.showSingleSelectWithConfirmButton(pathList, new SelectDialogClicker() {
+                        final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(activity,pathList,false);
+                        selectItemPopWindow.show(new IDialogDismiss() {
                             @Override
-                            public void click(int checkedItem) {
-                                selectedFile = new File(FileTools.BACKUP_DIR, pathList[checkedItem]);
-                                restore();
+                            public void onDismiss(Result result, Object... values) {
+                                if(result == Result.OK){
+                                    selectItemPopWindow.isResumeAlpha = false;
+                                    selectedFile = new File(FileTools.BACKUP_DIR, pathList[(int) values[0]]);
+                                    restore();
+                                }
                             }
                         });
-//
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                    builder.setTitle("请选择备份文件");
-//                    builder.setIcon(R.drawable.ic_info_cyan_800_18dp);
-//                    builder.setSingleChoiceItems(pathList, -1, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            selectedFile = new File(backFilesPath, pathList[which]);
-//                            restore();
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    builder.setNegativeButton("关闭", null);
-//                    builder.create().show();
+
+//                        dialogFactory.showSingleSelectWithConfirmButton(pathList, new SelectDialogClicker() {
+//                            @Override
+//                            public void click(int checkedItem) {
+//                                selectedFile = new File(FileTools.BACKUP_DIR, pathList[checkedItem]);
+//                                restore();
+//                            }
+//                        });
                     } else {
-                        toastFactory.showCenterToast("未找到备份记录！");
+                        infoPopWindow.show("未找到备份记录！");
                     }
                 }
             }).request(Permission.Group.STORAGE);
         }else {
-            toastFactory.showCenterToast("SD卡不可用，请稍后再试一下看看…");
+            infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
         }
 
     }
@@ -628,55 +620,91 @@ public class SetupFragment extends Fragment {
                 public void hasPermission() {
                     final String[] temp = FileTools.getFileList(FileTools.MICROMSG_DIR, ".itemupdate");
                     if (temp.length > 0) {
-                        dialogFactory.showSingleSelectWithConfirmButton(temp, new SelectDialogClicker() {
+                        SelectItemPopWindow itemPopWindow = new SelectItemPopWindow(activity,temp,false);
+                        itemPopWindow.show(new IDialogDismiss() {
                             @Override
-                            public void click(int checkedItem) {
-                                File f = new File(FileTools.MICROMSG_DIR, temp[checkedItem]);
-                                loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", true);
-                                loadingDialog.setCancelClick(null);
-                                loadingDialog.setCancelable(false);
-                                ItemUpdater updater = new ItemUpdater(getContext(), f);
-                                updater.setOnFinished(new IDialogDismiss() {
-                                    @Override
-                                    public void onDismiss(boolean isConfirmed, Object... values) {
-                                        loadingDialog.dismiss();
-                                        String s = (String) values[0];
-                                        toastFactory.showCenterToast(s);
-                                    }
-                                });
-                                loadingDialog.show(getFragmentManager(), "loading");
-                                updater.execute();
+                            public void onDismiss(Result result, Object... values) {
+                                if(result == Result.OK){
+                                    File f = new File(FileTools.MICROMSG_DIR, temp[(int) values[0]]);
+                                    loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", true);
+                                    loadingDialog.setCancelClick(null);
+                                    loadingDialog.setCancelable(false);
+                                    ItemUpdater updater = new ItemUpdater(getContext(), f);
+                                    updater.setOnFinished(new IDialogDismiss() {
+                                        @Override
+                                        public void onDismiss(Result result, Object... values) {
+                                            loadingDialog.dismiss();
+                                            String s = (String) values[0];
+                                            infoPopWindow.show(s);
+                                        }
+                                    });
+                                    loadingDialog.show(getFragmentManager(), "loading");
+                                    updater.execute();
+                                }
                             }
                         });
+//                        dialogFactory.showSingleSelectWithConfirmButton(temp, new SelectDialogClicker() {
+//                            @Override
+//                            public void click(int checkedItem) {
+//                                File f = new File(FileTools.MICROMSG_DIR, temp[checkedItem]);
+//                                loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", true);
+//                                loadingDialog.setCancelClick(null);
+//                                loadingDialog.setCancelable(false);
+//                                ItemUpdater updater = new ItemUpdater(getContext(), f);
+//                                updater.setOnFinished(new IDialogDismiss() {
+//                                    @Override
+//                                    public void onDismiss(Result result, Object... values) {
+//                                        loadingDialog.dismiss();
+//                                        String s = (String) values[0];
+//                                        infoPopWindow.show(s);
+//                                    }
+//                                });
+//                                loadingDialog.show(getFragmentManager(), "loading");
+//                                updater.execute();
+//                            }
+//                        });
                     } else {
-                        toastFactory.showCenterToast(FileTools.MICROMSG_DIR + "未找到数据文件。");
+                        infoPopWindow.show(FileTools.MICROMSG_DIR + "未找到数据文件。");
                     }
                 }
             }).request(Permission.Group.STORAGE);
         }else {
-            toastFactory.showCenterToast("SD卡不可用，请稍后再试一下看看…");
+            infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
         }
     }
 
     private void updateAPPClick() {
         if (!XXPermissions.isHasPermission(getContext(), Permission.REQUEST_INSTALL_PACKAGES)) {
-            dialogFactory.showDefaultConfirmDialog("请授予安装未知来源软件的权限。", new DialogInterface.OnClickListener() {
+            new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
-                        @Override
-                        public void hasPermission() {
-                            toastFactory.showCenterToast("已获得授权，请重新点击按钮更新程序！");
-                        }
-                    }).request(Permission.REQUEST_INSTALL_PACKAGES);
+                public void onDismiss(Result result, Object... values) {
+                    if(result == Result.OK){
+                        new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+                            @Override
+                            public void hasPermission() {
+                                new ToastFactory(getContext()).showCenterToast("已获得授权，请重新点击按钮更新程序！");
+                            }
+                        }).request(Permission.REQUEST_INSTALL_PACKAGES);
+                    }
                 }
-            });
+            }).toConfirm("请授予安装未知来源软件的权限。");
+
+//            dialogFactory.showDefaultConfirmDialog("请授予安装未知来源软件的权限。", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+//                        @Override
+//                        public void hasPermission() {
+//                            new ToastFactory(getContext()).showCenterToast("已获得授权，请重新点击按钮更新程序！");
+//                        }
+//                    }).request(Permission.REQUEST_INSTALL_PACKAGES);
+//                }
+//            });
 
         } else {
             new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
                 @Override
                 public void hasPermission() {
-//                    updateApp();
                     openUpdateAppDialog();
                 }
             }).request(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
@@ -691,8 +719,8 @@ public class SetupFragment extends Fragment {
             ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = ShowAppUpdateInfomationDialog.newInstant(filePath);
             showAppUpdateInfomationDialog.setOnDismiss(new IDialogDismiss() {
                 @Override
-                public void onDismiss(boolean isConfirmed, Object... values) {
-                    if (isConfirmed) {
+                public void onDismiss(Result result, Object... values) {
+                    if (result == Result.OK) {
                         String zipFilePath = (String) values[0];
                         File zipFile = new File(zipFilePath);
                         updateAppByEmail(zipFile);
@@ -709,41 +737,77 @@ public class SetupFragment extends Fragment {
     private void updateAppByMicroMsg() {
         final String[] temp = FileTools.getFileList(FileTools.MICROMSG_DIR, ".update");
         if (temp.length > 0) {
-            dialogFactory.showSingleSelectWithConfirmButton(temp, new SelectDialogClicker() {
+            SelectItemPopWindow itemPopWindow = new SelectItemPopWindow(activity,temp,false);
+            itemPopWindow.show(new IDialogDismiss() {
                 @Override
-                public void click(int checkedItem) {
-                    File f = new File(FileTools.MICROMSG_DIR, temp[checkedItem]);
-                    loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", false);
-                    loadingDialog.setCancelable(false);
-                    final AppUpdater updater = new AppUpdater(getContext(), f);
-                    loadingDialog.setCancelClick(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            updater.cancleUpdate();
-                        }
-                    });
-                    updater.setOnFinish(new IDialogDismiss() {
-                        @Override
-                        public void onDismiss(boolean isConfirmed, Object... values) {
-                            if (isConfirmed) {
-                                File updateFile = (File) values[0];
-                                if (updateFile != null) {
-                                    OtherTools.openAPKFile(activity, updateFile);
-                                } else {
-                                    toastFactory.showCenterToast("安装文件损坏");
-                                }
-                            } else {
-                                String s = (String) values[0];
-                                dialogFactory.showInfoDialog(s);
+                public void onDismiss(Result result, Object... values) {
+                    if(result == Result.OK){
+                        File f = new File(FileTools.MICROMSG_DIR, temp[(int) values[0]]);
+                        loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", false);
+                        loadingDialog.setCancelable(false);
+                        final AppUpdater updater = new AppUpdater(getContext(), f);
+                        loadingDialog.setCancelClick(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                updater.cancleUpdate();
                             }
-                        }
-                    });
-                    loadingDialog.show(getFragmentManager(), "loading");
-                    updater.execute();
+                        });
+                        updater.setOnFinish(new IDialogDismiss() {
+                            @Override
+                            public void onDismiss(Result result, Object... values) {
+                                if (result == Result.OK) {
+                                    File updateFile = (File) values[0];
+                                    if (updateFile != null) {
+                                        OtherTools.openAPKFile(activity, updateFile);
+                                    } else {
+                                        infoPopWindow.show("安装文件损坏");
+                                    }
+                                } else {
+                                    String s = (String) values[0];
+                                    infoPopWindow.show(s);
+                                }
+                            }
+                        });
+                        loadingDialog.show(getFragmentManager(), "loading");
+                        updater.execute();
+                    }
                 }
             });
+//            dialogFactory.showSingleSelectWithConfirmButton(temp, new SelectDialogClicker() {
+//                @Override
+//                public void click(int checkedItem) {
+//                    File f = new File(FileTools.MICROMSG_DIR, temp[checkedItem]);
+//                    loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", false);
+//                    loadingDialog.setCancelable(false);
+//                    final AppUpdater updater = new AppUpdater(getContext(), f);
+//                    loadingDialog.setCancelClick(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            updater.cancleUpdate();
+//                        }
+//                    });
+//                    updater.setOnFinish(new IDialogDismiss() {
+//                        @Override
+//                        public void onDismiss(Result result, Object... values) {
+//                            if (result == Result.OK) {
+//                                File updateFile = (File) values[0];
+//                                if (updateFile != null) {
+//                                    OtherTools.openAPKFile(activity, updateFile);
+//                                } else {
+//                                    infoPopWindow.show("安装文件损坏");
+//                                }
+//                            } else {
+//                                String s = (String) values[0];
+//                                infoPopWindow.show(s);
+//                            }
+//                        }
+//                    });
+//                    loadingDialog.show(getFragmentManager(), "loading");
+//                    updater.execute();
+//                }
+//            });
         } else {
-            toastFactory.showCenterToast(FileTools.MICROMSG_DIR + "文件夹内未找到数据文件。");
+            infoPopWindow.show(FileTools.MICROMSG_DIR + "文件夹内未找到数据文件。");
         }
     }
 
@@ -759,17 +823,17 @@ public class SetupFragment extends Fragment {
         });
         updater.setOnFinish(new IDialogDismiss() {
             @Override
-            public void onDismiss(boolean isConfirmed, Object... values) {
-                if (isConfirmed) {
+            public void onDismiss(Result result, Object... values) {
+                if (result == Result.OK) {
                     File updateFile = (File) values[0];
                     if (updateFile != null) {
                         OtherTools.openAPKFile(activity, updateFile);
                     } else {
-                        toastFactory.showCenterToast("安装文件损坏");
+                        infoPopWindow.show("安装文件损坏");
                     }
                 } else {
                     String s = (String) values[0];
-                    dialogFactory.showInfoDialog(s);
+                    infoPopWindow.show(s);
                 }
             }
         });

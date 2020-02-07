@@ -29,6 +29,7 @@ import java.io.IOException;
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 
 public class ShowAppUpdateInfomationDialog extends DialogFragment {
@@ -126,7 +127,7 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
     TextView confirm;
     private String cachePath;
     private String zipFilePath = "";
-    private boolean isBeginInstall;
+    private Result result;
 
 
     private void initialView(View view) {
@@ -135,7 +136,7 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isBeginInstall = false;
+                result = Result.CANCEL;
                 dismiss();
             }
         });
@@ -143,7 +144,7 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isBeginInstall = true;
+                result = Result.OK;
                 dismiss();
             }
         });
@@ -198,6 +199,6 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
         // 注销该广播接收器
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
         super.onDismiss(dialog);
-        onDismiss.onDismiss(isBeginInstall, zipFilePath);
+        onDismiss.onDismiss(result, zipFilePath);
     }
 }

@@ -10,13 +10,12 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ImportedFile;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
@@ -256,6 +255,6 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         getMessage();
-        onFinished.onDismiss(true, message);
+        onFinished.onDismiss(Result.OK, message);
     }
 }

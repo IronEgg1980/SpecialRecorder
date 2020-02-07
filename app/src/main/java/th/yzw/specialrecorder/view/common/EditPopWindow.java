@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
 
 public class EditPopWindow extends PopupWindow {
-    private Context mContext;
     private String mName;
     private int mCount;
     private int[] ids = {R.id.num0_IV, R.id.num1_IV, R.id.num2_IV, R.id.num3_IV, R.id.num4_IV,
@@ -28,8 +28,8 @@ public class EditPopWindow extends PopupWindow {
     private TextView numTextView, infoTextView;
     private Activity mActivity;
 
-    public EditPopWindow(Context context, String name, int count) {
-        this.mContext = context;
+    public EditPopWindow(Activity activity, String name, int count) {
+        this.mActivity = activity;
         this.mName = name;
         this.mCount = count;
         View view = createView();
@@ -53,7 +53,7 @@ public class EditPopWindow extends PopupWindow {
     }
 
     private View createView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.popwindow_edit_layout, null);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.popwindow_edit_layout, null);
         TextView nameTextView = view.findViewById(R.id.record_name_TV);
         nameTextView.setText(mName);
         numTextView = view.findViewById(R.id.record_count_TV);
@@ -78,7 +78,7 @@ public class EditPopWindow extends PopupWindow {
             @Override
             public void onClick(View v) {
                 if (dialogDismiss != null) {
-                    dialogDismiss.onDismiss(false);
+                    dialogDismiss.onDismiss(Result.CANCEL);
                     dismiss();
                 }
             }
@@ -102,9 +102,9 @@ public class EditPopWindow extends PopupWindow {
                     return;
                 }
                 if (count == mCount) {
-                    dialogDismiss.onDismiss(false);
+                    dialogDismiss.onDismiss(Result.CANCEL);
                 } else {
-                    dialogDismiss.onDismiss(true, count);
+                    dialogDismiss.onDismiss(Result.OK, count);
                 }
                 dismiss();
             }
@@ -142,17 +142,14 @@ public class EditPopWindow extends PopupWindow {
         showInfo();
     }
 
-    public void show(Activity activity, IDialogDismiss dialogDismiss) {
+    public void show(IDialogDismiss dialogDismiss) {
         this.dialogDismiss = dialogDismiss;
-        this.mActivity = activity;
         showInfo();
-        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
+        showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
         darkenBackground(0.5f);
     }
 
     private void darkenBackground(Float bgcolor) {
-        if(mActivity == null)
-            return;
         WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
         lp.alpha = bgcolor;
         mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);

@@ -7,7 +7,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 117
-        versionName '20191015 Final'
+        versionName '20200206'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -41,5 +41,7 @@ dependencies {
 
     implementation 'com.sun.mail:android-mail:1.6.2'
     implementation 'com.sun.mail:android-activation:1.6.2'
+
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 //    implementation 'org.litepal.android:java:3.0.0'
 }

@@ -15,6 +15,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +45,9 @@ import th.yzw.specialrecorder.DAO.ItemNameOperator;
 import th.yzw.specialrecorder.DAO.MyDBHelper;
 import th.yzw.specialrecorder.JSON.ItemNameJSONHelper;
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.tools.DataTool;
@@ -51,7 +55,11 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.InfoPopWindow;
+import th.yzw.specialrecorder.view.common.MenuPopWindow;
+import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 //import java.io.File;
@@ -94,26 +102,16 @@ public class EditItemActivity extends AppCompatActivity {
             viewHolder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialogFactory.showDefaultConfirmDialog("是否删除【" + mItemNameList.get(i).getName() + "】？", new DialogInterface.OnClickListener() {
+                    new ConfirmPopWindow(EditItemActivity.this).setDialogDismiss(new IDialogDismiss() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mItemNameList.get(i).delete();
-                            mItemNameList.remove(i);
-                            notifyDataSetChanged();
+                        public void onDismiss(Result result, Object... values) {
+                            if(result == Result.OK){
+                                mItemNameList.get(i).delete();
+                                mItemNameList.remove(i);
+                                notifyDataSetChanged();
+                            }
                         }
-                    });
-//
-//                    new AlertDialog.Builder(v.getContext())
-//                            .setIcon(R.drawable.ic_warning_24dp)
-//                            .setTitle("删除")
-//                            .setMessage("是否删除【" + mItemNameList.get(i).getName() + "】？")
-//                            .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//
-//                                }
-//                            })
-//                            .setNegativeButton("取消", null).show();
+                    }).toConfirm("是否删除【" + mItemNameList.get(i).getName() + "】？");
                 }
             });
         }
@@ -131,16 +129,16 @@ public class EditItemActivity extends AppCompatActivity {
     private EditText editText;
     private RecyclerView recyclerView;
     private byte itemType, itemFormalation;
-    //    private AlertDialog.Builder builder;
     private String[] itemTypeList, itemFormalationList;
-//    private File path;
     private List<ItemName> mItemNameList;
-    private DialogFactory dialogFactory;
-    private ToastFactory toastFactory;
+    private InfoPopWindow infoPopWindow;
+//    private DialogFactory dialogFactory;
+//    private ToastFactory toastFactory;
 
     private void initialView() {
-        dialogFactory = new DialogFactory(this);
-        toastFactory = new ToastFactory(this);
+//        dialogFactory = new DialogFactory(this);
+//        toastFactory = new ToastFactory(this);
+        infoPopWindow = new InfoPopWindow(this);
         recyclerView = findViewById(R.id.item_setup_recyclerview);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(manager);
@@ -223,33 +221,29 @@ public class EditItemActivity extends AppCompatActivity {
 
     private void showSelectDialog(final int mode) {
         if (mode == 1) {
-            dialogFactory.showSingleSelect(itemTypeList, new SelectDialogClicker() {
+            MenuPopWindow menuPopWindow = new MenuPopWindow(itemtypeTextView,itemTypeList,null);
+            menuPopWindow.setClickListener(new MyClickListener() {
                 @Override
-                public void click(int checkedItem) {
-                    itemType = (byte) (checkedItem + 1);
-                    itemtypeTextView.setText(itemTypeList[checkedItem]);
+                public void OnClick(View view, Object o) {
+                    int index = (int) o;
+                    itemType = (byte) (index + 1);
+                    itemtypeTextView.setText(itemTypeList[index]);
                     editText.setError(null);
                 }
             });
-
-//            builder.setSingleChoiceItems(itemTypeList, -1, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog1, int which) {
-//                    itemType = (byte) (which + 1);
-//                    itemtypeTextView.setText(itemTypeList[which]);
-//                    dialog1.dismiss();
-//                    editText.setError(null);
-//                }
-//            });
+            menuPopWindow.showAsDropDown(itemtypeTextView);
         } else {
-            dialogFactory.showSingleSelect(itemFormalationList, new SelectDialogClicker() {
+            MenuPopWindow menuPopWindow = new MenuPopWindow(itemformalationTextView,itemFormalationList,null);
+            menuPopWindow.setClickListener(new MyClickListener() {
                 @Override
-                public void click(int checkedItem) {
-                    itemFormalation = (byte) (checkedItem + 1);
-                    itemformalationTextView.setText(itemFormalationList[checkedItem]);
+                public void OnClick(View view, Object o) {
+                    int index = (int)o ;
+                    itemFormalation = (byte) (index + 1);
+                    itemformalationTextView.setText(itemFormalationList[index]);
                     editText.setError(null);
                 }
             });
+            menuPopWindow.showAsDropDown(itemformalationTextView);
         }
     }
 
@@ -329,13 +323,13 @@ public class EditItemActivity extends AppCompatActivity {
                         FileTools.writeDecryptFile(s, file);
                         AppSetupOperator.setItemVersion(currentVersion);
                         sendEmail(currentVersion,file);
-                        toastFactory.showCenterToast("已导出文件至" + file.getAbsolutePath());
+                        infoPopWindow.show("已导出文件至" + file.getAbsolutePath());
                     } catch (IOException e) {
                         e.printStackTrace();
-                        dialogFactory.showInfoDialog("写入文件出错！原因为：" + e.getMessage());
+                        infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        dialogFactory.showInfoDialog("解析数据失败！原因为：" + e.getMessage());
+                        infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
                     }
                 }
             });
@@ -368,11 +362,11 @@ public class EditItemActivity extends AppCompatActivity {
                 return file;
             } catch (IOException e) {
                 e.printStackTrace();
-                dialogFactory.showInfoDialog("写入文件出错！原因为：" + e.getMessage());
+                infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
                 return null;
             } catch (JSONException e) {
                 e.printStackTrace();
-                dialogFactory.showInfoDialog("解析数据失败！原因为：" + e.getMessage());
+                infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
                 return null;
             }
         } else {
@@ -384,7 +378,7 @@ public class EditItemActivity extends AppCompatActivity {
         OtherTools.checkFileUriExposure();
         Uri fileUri = null;
         if (file == null) {
-            toastFactory.showCenterToast("获取文件失败！");
+            infoPopWindow.show("获取文件失败！");
             return;
         }
         if (Build.VERSION.SDK_INT >= 24) {
@@ -399,44 +393,4 @@ public class EditItemActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(Intent.createChooser(intent, "发送给："));
     }
-
-    //    private void myCodebackup(){
-//        try {
-//            File file = new File(getCacheDir(), fileName);
-//            if (file.exists()) {
-//                file.delete();
-//            }
-//            file.createNewFile();
-//            JSONArray jsonArray = new JSONArray();
-//            JSONObject versionOBJ = new JSONObject();
-//            int currentVersion = MyAppSetupUtils.getItemVersion() +1;
-//            versionOBJ.put("itemversion",currentVersion);
-//            jsonArray.put(versionOBJ);
-//            for (int i = 0; i < list.size(); i++) {
-//                ItemName record = list.get(i);
-//                JSONObject object = new JSONObject();
-//                object.put("name", record.getName());
-//                object.put("isOftenUse", false);
-//                object.put("formalation", record.getFormalation());
-//                object.put("itemType", record.getItemType());
-//                jsonArray.put(object);
-//            }
-//            String s = jsonArray.toString();
-//            Tools.writeFile(s, file);
-//            MyAppSetupUtils.setItemVersion(currentVersion);
-//            return file;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast toast = Toast.makeText(EditItemActivity.this, "写入文件出错！原因为：" + e.getMessage(), Toast.LENGTH_LONG);
-//            toast.setGravity(Gravity.CENTER, 0, 0);
-//            toast.show();
-//            return null;
-//        } catch (JSONException ex) {
-//            ex.printStackTrace();
-//            Toast toast = Toast.makeText(EditItemActivity.this, "生成文件出错！原因为：" + ex.getMessage(), Toast.LENGTH_LONG);
-//            toast.setGravity(Gravity.CENTER, 0, 0);
-//            toast.show();
-//            return null;
-//        }
-//    }
 }

@@ -1,12 +1,6 @@
 package th.yzw.specialrecorder.view.common;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +12,17 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
-import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.Result;
 
 public class ConfirmPopWindow extends PopupWindow {
     private IDialogDismiss dialogDismiss = null;
-    private boolean confirmFlag = false;
     private Activity mActivity;
-    public boolean isResumeAlpha = true;
-    private TextView textView,thirdTV;
+    private TextView textView, thirdTV;
+    private Result result;
 
-    public ConfirmPopWindow(Activity activity){
+    public boolean isResumeAlpha = true;
+
+    public ConfirmPopWindow(Activity activity) {
         mActivity = activity;
         createView(activity);
         setTouchable(true);
@@ -41,21 +36,29 @@ public class ConfirmPopWindow extends PopupWindow {
             public void onDismiss() {
                 if(isResumeAlpha)
                     darkenBackground(1.0f);
-                if(dialogDismiss != null)
-                    dialogDismiss.onDismiss(confirmFlag);
+                if (dialogDismiss != null)
+                    dialogDismiss.onDismiss(result);
             }
         });
     }
 
-    private void createView(Activity activity){
-        View view = LayoutInflater.from(activity).inflate(R.layout.popwindow_confirm_layout,null);
+    private void createView(Activity activity) {
+        View view = LayoutInflater.from(activity).inflate(R.layout.popwindow_confirm_layout, null);
         textView = view.findViewById(R.id.messageTV);
         thirdTV = view.findViewById(R.id.thirdTV);
+        thirdTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                result = Result.OTHER;
+                dismiss();
+            }
+        });
         thirdTV.setVisibility(View.INVISIBLE);
         thirdTV.setEnabled(false);
         view.findViewById(R.id.cancelTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                result = Result.CANCEL;
                 isResumeAlpha = true;
                 dismiss();
             }
@@ -63,38 +66,40 @@ public class ConfirmPopWindow extends PopupWindow {
         view.findViewById(R.id.confirmTV).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirmFlag = true;
+                result = Result.OK;
                 dismiss();
             }
         });
         setContentView(view);
     }
 
-    public ConfirmPopWindow setThirdButton(String title, final MyClickListener clickListener){
+    public ConfirmPopWindow setOtherButton(String title) {
         thirdTV.setText(title);
         thirdTV.setVisibility(View.VISIBLE);
         thirdTV.setEnabled(true);
-        thirdTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickListener.OnClick(v,-1);
-                isResumeAlpha = true;
-                dismiss();
-            }
-        });
         return this;
     }
 
-    public void show(String message, IDialogDismiss dialogDismiss){
+    public ConfirmPopWindow hideOtherButton() {
+        thirdTV.setVisibility(View.INVISIBLE);
+        thirdTV.setEnabled(false);
+        return this;
+    }
+
+    public ConfirmPopWindow setDialogDismiss(IDialogDismiss dialogDismiss) {
         this.dialogDismiss = dialogDismiss;
+        return this;
+    }
+
+    public void toConfirm(String message) {
         this.textView.setText(message);
         Window window = mActivity.getWindow();
-        showAtLocation(window.getDecorView(), Gravity.BOTTOM,0,0);
+        showAtLocation(window.getDecorView(), Gravity.BOTTOM, 0, 0);
         darkenBackground(0.5f);
     }
 
     private void darkenBackground(Float bgcolor) {
-        if(mActivity == null)
+        if (mActivity == null)
             return;
         WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
         lp.alpha = bgcolor;

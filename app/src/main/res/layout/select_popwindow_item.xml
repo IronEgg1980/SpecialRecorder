@@ -8,7 +8,7 @@
     android:layout_height="wrap_content">
     <ImageView
         android:layout_gravity="center_vertical"
-        android:padding="12dp"
+        android:padding="16dp"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:id="@+id/select_popwindow_item_iv"
