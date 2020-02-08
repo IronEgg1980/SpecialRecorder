@@ -24,7 +24,7 @@ public class EditPopWindow extends PopupWindow {
     private boolean isFirstClick = true;
     private StringBuilder stringBuilder;
     private IDialogDismiss dialogDismiss;
-    private TextView numTextView, infoTextView,nameTextView;
+    private TextView numTextView, infoTextView, nameTextView;
     private Activity mActivity;
     private boolean isEditMode;
 
@@ -44,8 +44,7 @@ public class EditPopWindow extends PopupWindow {
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
-                if(isEditMode)
-                    darkenBackground(1f);
+                darkenBackground(1f);
             }
         });
     }
@@ -114,7 +113,7 @@ public class EditPopWindow extends PopupWindow {
             isFirstClick = false;
             stringBuilder = new StringBuilder();
         }
-        if(num != 0 || stringBuilder.length() > 0) {
+        if (num != 0 || stringBuilder.length() > 0) {
             stringBuilder.append(num);
         }
         showInfo();
@@ -134,7 +133,7 @@ public class EditPopWindow extends PopupWindow {
             isFirstClick = false;
             stringBuilder = new StringBuilder();
         }
-        if(stringBuilder.length() > 0)
+        if (stringBuilder.length() > 0)
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         showInfo();
     }
@@ -143,10 +142,10 @@ public class EditPopWindow extends PopupWindow {
         isFirstClick = true;
         showInfo();
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        if(isEditMode)
-            darkenBackground(0.5f);
+        darkenBackground(0.5f);
     }
-    public EditPopWindow setData(String name,int count){
+
+    public EditPopWindow setData(String name, int count) {
         this.mCount = count;
         stringBuilder = new StringBuilder();
         stringBuilder.append(mCount);
@@ -154,7 +153,7 @@ public class EditPopWindow extends PopupWindow {
         return this;
     }
 
-    public EditPopWindow setDialogDismiss(IDialogDismiss dialogDismiss){
+    public EditPopWindow setDialogDismiss(IDialogDismiss dialogDismiss) {
         this.dialogDismiss = dialogDismiss;
         return this;
     }
