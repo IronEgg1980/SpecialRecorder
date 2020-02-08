@@ -3,14 +3,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <RelativeLayout
-        android:layout_alignParentTop="true"
         android:id="@+id/relativelayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
@@ -23,8 +22,8 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:textColor="@color/white"
-            android:text="2019年7月31日"/>
+            android:text="2019年7月31日"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/changeDate"
@@ -40,170 +39,19 @@
             android:textColor="@color/colorPrimary" />
 
     </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/linearLayout"
+
+    <ScrollView
+        android:id="@+id/recyclerviewGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/relativelayout">
+        android:layout_below="@id/relativelayout"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp">
 
-
-        <LinearLayout
-            android:id="@+id/name_group"
-            android:background="@color/white"
-            android:orientation="horizontal"
+        <th.yzw.specialrecorder.view.common.FlowLayout
+            android:id="@+id/flowLayout"
             android:layout_width="match_parent"
-            android:layout_height="56dp">
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:gravity="end|center_vertical"
-                android:text="名称："
-                android:textSize="18sp" />
-            <TextView
-                android:id="@+id/keyboad_input_name_TV"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textColor="@color/textColor"
-                android:textSize="24sp" />
-            <!--<Spinner-->
-            <!--android:id="@+id/add_activity_spninner"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginRight="5dp"-->
-            <!--android:layout_weight="3"-->
-            <!--android:spinnerMode="dialog" />-->
-        </LinearLayout>
-        <ScrollView
-            android:padding="8dp"
-            android:id="@+id/recyclerviewGroup"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <th.yzw.specialrecorder.view.common.FlowLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/flowLayout"/>
-
-        </ScrollView>
-        <LinearLayout
-            android:id="@+id/keyboad_input_count_group"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:gravity="end|center_vertical"
-                android:text="数量："
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/keyboad_input_count_TV"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textColor="@color/textColor"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-        <RelativeLayout
-            android:id="@+id/keyboard_group_relativelayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/linearLayout0"
-                style="@style/NumImageViewGroup"
-                android:layout_alignParentTop="true">
-
-                <ImageView
-                    android:id="@+id/num1_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_1" />
-
-                <ImageView
-                    android:id="@+id/num2_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_2" />
-
-                <ImageView
-                    android:id="@+id/num3_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_3" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                style="@style/NumImageViewGroup"
-                android:layout_below="@id/linearLayout0">
-
-                <ImageView
-                    android:id="@+id/num4_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_4" />
-
-                <ImageView
-                    android:id="@+id/num5_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_5" />
-
-                <ImageView
-                    android:id="@+id/num6_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_6" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout4"
-                style="@style/NumImageViewGroup"
-                android:layout_below="@id/linearLayout3">
-
-                <ImageView
-                    android:id="@+id/num7_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_7" />
-
-                <ImageView
-                    android:id="@+id/num8_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_8" />
-
-                <ImageView
-                    android:id="@+id/num9_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_9" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout5"
-                style="@style/NumImageViewGroup"
-                android:layout_below="@id/linearLayout4">
-
-                <ImageView
-                    android:id="@+id/num0_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/num_0" />
-
-                <ImageView
-                    android:id="@+id/backspace_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/ic_backspace_24dp" />
-
-                <ImageView
-                    android:id="@+id/ok_IV"
-                    style="@style/NumImageView"
-                    android:src="@drawable/confirm" />
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </RelativeLayout>

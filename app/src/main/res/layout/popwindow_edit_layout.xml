@@ -13,9 +13,7 @@
         android:layout_height="wrap_content">
         <TextView
             style="@style/TitleTextView"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_margin="8dp"
             android:id="@+id/record_name_TV"
             android:text=""/>
         <LinearLayout
