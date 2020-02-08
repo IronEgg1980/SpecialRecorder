@@ -145,8 +145,6 @@ public class SideIndexBarView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int t = getPaddingTop();
-//        Rect indexBounds = new Rect();
-//        RectF rectF = new RectF();
         rectF.set(0, 0, mWidth, mHeight);
         if (isTouch){
             canvas.drawRoundRect(rectF, radius, radius, bgPaint);
@@ -154,8 +152,6 @@ public class SideIndexBarView extends View {
             float y = indexRectY+letterHeight / 2f;
             float r = Math.min(x,letterHeight / 2f);
             canvas.drawCircle(x,y,r,letterBGPaint);
-//            indexBounds.set(0, indexRectY, mWidth, indexRectY + letterHeight);
-//            canvas.drawRect(indexBounds, letterBGPaint);
         }
         String indexText;
         for (int i = 0; i < letters.length; i++) {

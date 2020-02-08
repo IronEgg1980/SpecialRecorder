@@ -3,23 +3,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <LinearLayout
+        android:layout_marginBottom="-6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:orientation="vertical">
         <TextView
             android:background="@drawable/popwin_shape"
-            android:padding="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:id="@+id/textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:text="aqmsghxj0.125    +999"/>
+            android:text="+ 1"/>
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="12dp"
             android:src="@drawable/sanjiaoxing_shape" />
     </LinearLayout>
 </LinearLayout>

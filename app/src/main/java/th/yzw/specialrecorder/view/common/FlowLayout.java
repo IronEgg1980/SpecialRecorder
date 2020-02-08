@@ -2,27 +2,30 @@ package th.yzw.specialrecorder.view.common;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
+import th.yzw.specialrecorder.DAO.ItemNameOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
 import th.yzw.specialrecorder.model.ItemName;
+import th.yzw.specialrecorder.tools.OtherTools;
 
-public class FlowLayout extends RelativeLayout{
+public class FlowLayout extends RelativeLayout {
     private String TAG = "殷宗旺";
 
     private int lastIndex = -1;
     private List<ItemName> mList;
+    //    private List<String> firstLetters;
     private int textViewMargin = 30;
     private int mWidth;
     private boolean mInited = false;
@@ -43,11 +46,11 @@ public class FlowLayout extends RelativeLayout{
         init(context);
     }
 
-    private void init(Context context){
+    private void init(Context context) {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if(!mInited){
+                if (!mInited) {
                     mInited = true;
                     createChildView();
                 }
@@ -55,8 +58,9 @@ public class FlowLayout extends RelativeLayout{
         });
     }
 
-    public void setDataSource(List<ItemName> list){
+    public void setDataSource(List<ItemName> list) {
         this.mList = list;
+//        this.firstLetters = ItemNameOperator.getItemNameFistLetterList(list);
         createChildView();
     }
 
@@ -68,19 +72,23 @@ public class FlowLayout extends RelativeLayout{
         this.onItemClickListenr = onItemClickListenr;
     }
 
-    private void createChildView(){
-        if(!mInited || mList == null || mList.isEmpty())
+    private void createChildView() {
+        if (!mInited || mList == null || mList.isEmpty())
             return;
 
         removeAllViews();
-        int total = getPaddingLeft() + getPaddingRight();
-        int index = 1;
-        int alignTopAnchor = 1;
 
-        for(int i = 0;i<mList.size();i++) {
+        String firstLetter = "";
+        int total = getPaddingLeft() + getPaddingRight();
+        int index = generateViewId();
+        int alignTopAnchor = generateViewId();
+        int endOfId = -1;
+        int textViewPadding = OtherTools.dip2px(getContext(),6);
+        for (int i = 0; i < mList.size(); i++) {
             final TextView view = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.itemname_list_item, null);
             view.setId(index);
             String name = mList.get(i).getName();
+            String _firstLetter = name.substring(0, 1).toUpperCase();
             view.setText(name);
             view.setFocusable(true);
             view.setClickable(true);
@@ -90,42 +98,55 @@ public class FlowLayout extends RelativeLayout{
                 public void onClick(View v) {
                     view.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_select_bg));
                     view.setTextColor(Color.WHITE);
-                    if(lastIndex != -1){
-                        TextView textView = (TextView) getChildAt(lastIndex);
+                    if (lastIndex != -1) {
+                        TextView textView = findViewById(lastIndex);
                         textView.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_bg));
                         textView.setTextColor(getContext().getColor(R.color.colorPrimary));
                     }
-                    lastIndex = finalI;
+                    lastIndex = view.getId();
                     onItemClickListenr.OnClick(view, finalI);
                 }
             });
-            view.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+            view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             int childWidth = view.getMeasuredWidth();
             LayoutParams childLP = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             childLP.bottomMargin = textViewMargin;
-            if(total + childWidth + textViewMargin > mWidth){
-                childLP.addRule(RelativeLayout.BELOW,alignTopAnchor);
-                total = getPaddingLeft() + getPaddingRight();
-                alignTopAnchor = index;
-            }else{
-                childLP.addRule(RelativeLayout.ALIGN_TOP,alignTopAnchor);
-                if(index != alignTopAnchor){
-                    childLP.addRule(RelativeLayout.END_OF,index -1);
-                    childLP.leftMargin = textViewMargin;
-                    total += textViewMargin;
-                }
-            }
-            addView(view,childLP);
-            total += childWidth;
-            index ++ ;
-        }
-        invalidate();
-    }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mWidth = MeasureSpec.getSize(widthMeasureSpec);
+            if (!firstLetter.equals(_firstLetter) || total + childWidth + textViewMargin > mWidth) {
+                LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.bottomMargin = textViewMargin;
+                lp.addRule(RelativeLayout.BELOW, alignTopAnchor);
+
+                alignTopAnchor = generateViewId();
+
+                TextView textView = new TextView(getContext());
+                textView.setId(alignTopAnchor);
+                textView.setPadding(0,textViewPadding,textViewPadding,textViewPadding);
+                textView.setWidth(textViewMargin + textViewPadding*2 );
+                textView.setHeight(view.getMeasuredHeight());
+
+                if (!firstLetter.equals(_firstLetter))
+                    textView.setText(_firstLetter);
+                else
+                    textView.setText("");
+
+                childLP.addRule(END_OF, alignTopAnchor);
+                childLP.addRule(ALIGN_TOP, alignTopAnchor);
+
+                firstLetter = _firstLetter;
+                total = getPaddingLeft() + getPaddingRight() + textViewMargin + textViewPadding*2;
+                addView(textView, lp);
+            } else {
+                childLP.addRule(RelativeLayout.ALIGN_TOP, alignTopAnchor);
+                childLP.addRule(RelativeLayout.END_OF, endOfId);
+                childLP.leftMargin = textViewMargin;
+                total += textViewMargin;
+            }
+            addView(view, childLP);
+            total += childWidth;
+            endOfId = index;
+            index=generateViewId();
+        }
     }
 
     @Override

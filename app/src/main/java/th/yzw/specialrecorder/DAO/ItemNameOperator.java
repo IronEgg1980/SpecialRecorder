@@ -34,12 +34,17 @@ public final class ItemNameOperator {
     }
 
     public static List<String> getItemNameFistLetterList() {
+        return getItemNameFistLetterList(ItemNameOperator.findAll(true));
+    }
+
+    public static List<String> getItemNameFistLetterList(List<ItemName> list) {
         Set<String> set = new TreeSet<>();
-        for (ItemName itemName : ItemNameOperator.findAll(true)) {
+        for (ItemName itemName : list) {
             set.add(itemName.getName().substring(0, 1).toUpperCase());
         }
         return new ArrayList<>(set);
     }
+
 
     public static String[] getItemNameFirstLetters(){
        List<String> tmp = getItemNameFistLetterList();
