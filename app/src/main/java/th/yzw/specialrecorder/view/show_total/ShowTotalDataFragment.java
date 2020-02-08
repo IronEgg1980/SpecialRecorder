@@ -149,6 +149,11 @@ public class ShowTotalDataFragment extends Fragment {
     }
 
     private void backup() {
+        File path = new File(FileTools.BACKUP_DIR);
+        if (!path.exists() && !path.mkdirs()) {
+            infoPopWindow.show("创建目录失败！请重试一次…");
+            return;
+        }
         final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
         loadingDialog.setCancelClick(null);
         loadingDialog.setCancelable(false);

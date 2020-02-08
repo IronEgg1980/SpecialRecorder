@@ -18,23 +18,20 @@ import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 
 public class EditPopWindow extends PopupWindow {
-    private String mName;
     private int mCount;
     private int[] ids = {R.id.num0_IV, R.id.num1_IV, R.id.num2_IV, R.id.num3_IV, R.id.num4_IV,
             R.id.num5_IV, R.id.num6_IV, R.id.num7_IV, R.id.num8_IV, R.id.num9_IV};
     private boolean isFirstClick = true;
     private StringBuilder stringBuilder;
     private IDialogDismiss dialogDismiss;
-    private TextView numTextView, infoTextView;
+    private TextView numTextView, infoTextView,nameTextView;
     private Activity mActivity;
+    private boolean isEditMode;
 
-    public EditPopWindow(Activity activity, String name, int count) {
+    public EditPopWindow(Activity activity, final boolean isEditMode) {
         this.mActivity = activity;
-        this.mName = name;
-        this.mCount = count;
+        this.isEditMode = isEditMode;
         View view = createView();
-        stringBuilder = new StringBuilder();
-        stringBuilder.append(mCount);
 
         setContentView(view);
         setFocusable(true);
@@ -47,15 +44,15 @@ public class EditPopWindow extends PopupWindow {
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
-                darkenBackground(1f);
+                if(isEditMode)
+                    darkenBackground(1f);
             }
         });
     }
 
     private View createView() {
         View view = LayoutInflater.from(mActivity).inflate(R.layout.popwindow_edit_layout, null);
-        TextView nameTextView = view.findViewById(R.id.record_name_TV);
-        nameTextView.setText(mName);
+        nameTextView = view.findViewById(R.id.record_name_TV);
         numTextView = view.findViewById(R.id.record_count_TV);
         infoTextView = view.findViewById(R.id.info_TV);
         for (int i = 0; i < 10; i++) {
@@ -101,7 +98,7 @@ public class EditPopWindow extends PopupWindow {
                     infoTextView.setText("请输入大于 0 的数字");
                     return;
                 }
-                if (count == mCount) {
+                if (isEditMode && count == mCount) {
                     dialogDismiss.onDismiss(Result.CANCEL);
                 } else {
                     dialogDismiss.onDismiss(Result.OK, count);
@@ -142,11 +139,24 @@ public class EditPopWindow extends PopupWindow {
         showInfo();
     }
 
-    public void show(IDialogDismiss dialogDismiss) {
-        this.dialogDismiss = dialogDismiss;
+    public void show() {
+        isFirstClick = true;
         showInfo();
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        darkenBackground(0.5f);
+        if(isEditMode)
+            darkenBackground(0.5f);
+    }
+    public EditPopWindow setData(String name,int count){
+        this.mCount = count;
+        stringBuilder = new StringBuilder();
+        stringBuilder.append(mCount);
+        nameTextView.setText(name);
+        return this;
+    }
+
+    public EditPopWindow setDialogDismiss(IDialogDismiss dialogDismiss){
+        this.dialogDismiss = dialogDismiss;
+        return this;
     }
 
     private void darkenBackground(Float bgcolor) {

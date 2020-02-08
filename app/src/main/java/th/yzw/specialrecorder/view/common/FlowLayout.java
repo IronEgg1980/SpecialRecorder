@@ -98,10 +98,12 @@ public class FlowLayout extends RelativeLayout {
                 public void onClick(View v) {
                     view.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_select_bg));
                     view.setTextColor(Color.WHITE);
-                    if (lastIndex != -1) {
+                    if (lastIndex != -1 && lastIndex!=view.getId()) {
                         TextView textView = findViewById(lastIndex);
-                        textView.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_bg));
-                        textView.setTextColor(getContext().getColor(R.color.colorPrimary));
+                        if(textView!=null) {
+                            textView.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_bg));
+                            textView.setTextColor(getContext().getColor(R.color.colorPrimary));
+                        }
                     }
                     lastIndex = view.getId();
                     onItemClickListenr.OnClick(view, finalI);

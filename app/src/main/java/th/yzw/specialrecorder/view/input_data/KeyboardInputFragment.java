@@ -1,19 +1,9 @@
 package th.yzw.specialrecorder.view.input_data;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,9 +14,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -41,7 +28,6 @@ import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
-import th.yzw.specialrecorder.interfaces.OnIndexBarPressedListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ItemName;
@@ -50,34 +36,25 @@ import th.yzw.specialrecorder.view.RecorderActivity;
 import th.yzw.specialrecorder.view.common.DatePopWindow;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 import th.yzw.specialrecorder.view.common.FlowLayout;
-import th.yzw.specialrecorder.view.common.SideIndexBarView;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class KeyboardInputFragment extends Fragment {
     private String TAG = "殷宗旺";
 
     private long date;
-    private RelativeLayout keyboardGroup;
-    private int[] ids = {R.id.num0_IV, R.id.num1_IV, R.id.num2_IV, R.id.num3_IV, R.id.num4_IV,
-            R.id.num5_IV, R.id.num6_IV, R.id.num7_IV, R.id.num8_IV, R.id.num9_IV};
-    private ImageView[] numIVs = new ImageView[10];
-    private TextView dateTextView, nameTextView, selectDate, countTextView;
+    private TextView dateTextView, selectDate;
     private SimpleDateFormat dateformat;
     private MyPopupWin2 popupWin2;
     private MyPopWindow3 popWindow3;
     private int showInfoMode;
     private int currentIndex;
     private TranslateAnimation translateAnimation;
-    private ToastFactory toast;
     private List<ItemName> list;
-    //    private ItemNameAdapter adapter;
-    private StringBuilder stringBuilder;
     private ScrollView scrollView;
     private FlowLayout flowLayout;
-    private LinearLayout countGroup;
-    private Vibrator vibrator;
     private View clickedView;
     private String infoMessage;
+    private EditPopWindow editPopWindow;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,10 +67,16 @@ public class KeyboardInputFragment extends Fragment {
         showInfoMode = AppSetupOperator.getShowInformationMode();
         date = System.currentTimeMillis();
         dateformat = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
+        editPopWindow = new EditPopWindow(getActivity(),false);
+        editPopWindow.setDialogDismiss(new IDialogDismiss() {
+            @Override
+            public void onDismiss(Result result, Object... values) {
+                if(result == Result.OK){
+                    confirm((Integer) values[0]);
+                }
+            }
+        });
         initialAnimation();
-        toast = new ToastFactory(getContext());
-        stringBuilder = new StringBuilder();
-        vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -115,6 +98,7 @@ public class KeyboardInputFragment extends Fragment {
                 itemNameClick((Integer) o);
             }
         });
+        flowLayout.setDataSource(list);
         dateTextView = view.findViewById(R.id.add_activity_dateTextView);
         selectDate = view.findViewById(R.id.changeDate);
         dateTextView.setFocusable(true);
@@ -128,133 +112,14 @@ public class KeyboardInputFragment extends Fragment {
         return view;
     }
 
-//    private ObjectAnimator hideView(final View view) {
-//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0f);
-//        objectAnimator.setDuration(100);
-//        objectAnimator.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                view.setVisibility(View.GONE);
-//            }
-//        });
-//        return objectAnimator;
-//    }
-//
-//    private ObjectAnimator showView(final View view) {
-//        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f);
-//        objectAnimator.setDuration(100);
-//        objectAnimator.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//                super.onAnimationStart(animation);
-//                view.setVisibility(View.VISIBLE);
-//            }
-//        });
-//        return objectAnimator;
-//    }
-
-//    private ObjectAnimator translateView(final View view, boolean isUp, boolean hide) {
-//        int height = scrollView.getHeight();
-//        ObjectAnimator animator;
-//        if (isUp) {
-//            animator = ObjectAnimator.ofFloat(view, "translationY", height, 0);
-//            animator.addListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    super.onAnimationEnd(animation);
-//                    view.setVisibility(View.VISIBLE);
-//                }
-//            });
-//        } else {
-//            animator = ObjectAnimator.ofFloat(view, "translationY", -height, 0);
-//            if (hide) {
-//                animator.addListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationStart(Animator animation) {
-//                        super.onAnimationStart(animation);
-//                        view.setVisibility(View.GONE);
-//                    }
-//                });
-//            }
-//        }
-//        animator.setDuration(100);
-//        return animator;
-//    }
-
-//    private void showItemList() {
-//        ObjectAnimator animator1 = showView(scrollView);
-//        ObjectAnimator animator2 = translateView(keyboardGroup, false, true);
-//        ObjectAnimator animator3 = translateView(countGroup, false, false);
-//        animator3.setDuration(100);
-//        AnimatorSet animatorSet = new AnimatorSet();
-//        animatorSet.playTogether(animator1, animator2, animator3);
-//        animatorSet.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                if (showInfoMode == 1) {
-//                    showPop3(clickedView, infoMessage);
-//                } else if (showInfoMode == 2) {
-//                    if(clickedView != null)
-//                        showInfoCenter(getActivity().getWindow().getDecorView(), infoMessage);
-//                } else {
-//                    if (clickedView != null)
-//                        toast.showDefaultToast(infoMessage);
-//                }
-//                clickedView = null;
-//                infoMessage = "";
-//            }
-//        });
-//        animatorSet.start();
-//    }
-
     private void itemNameClick(int position) {
-        nameTextView.setTextColor(Color.BLACK);
         ItemName itemName = list.get(position);
-        nameTextView.setText(itemName.getName());
         currentIndex = position;
-        showInputKeyboard(itemName.getName());
-//        showKeyboard();
+        hidePop3();
+        editPopWindow.setData(itemName.getName(),1).show();
     }
 
-    private void showInputKeyboard(String name){
-        EditPopWindow editPopWindow = new EditPopWindow(getActivity(),name,1);
-        editPopWindow.show(new IDialogDismiss() {
-            @Override
-            public void onDismiss(Result result, Object... values) {
-                if(result == Result.OK){
-                    confirm();
-                    int count = (int) values[0];
-                    showPop3();
-                }
-            }
-        });
-    }
 
-//    private void showKeyboard() {
-//        ObjectAnimator animator1 = hideView(scrollView);
-//        ObjectAnimator animator2 = translateView(keyboardGroup, true, false);
-//        ObjectAnimator animator3 = translateView(countGroup, true, false);
-//        animator3.setDuration(100);
-//        AnimatorSet animatorSet = new AnimatorSet();
-//        animatorSet.play(animator2).with(animator3).after(animator1);
-//        animatorSet.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//                super.onAnimationStart(animation);
-//                hidePop3();
-//            }
-//        });
-//        animatorSet.start();
-//    }
-
-//    private void backSpace() {
-//        if (stringBuilder != null && stringBuilder.length() > 0) {
-//            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-//            countTextView.setText(stringBuilder);
-//        }
-//    }
 
     private void initialAnimation() {
         translateAnimation = new TranslateAnimation(-20f, 20f, 0, 0);
@@ -263,22 +128,6 @@ public class KeyboardInputFragment extends Fragment {
         translateAnimation.setRepeatMode(Animation.RESTART);
         translateAnimation.setRepeatCount(3);
     }
-
-//    private void numClick(int num) {
-//        if (stringBuilder == null)
-//            stringBuilder = new StringBuilder();
-//        if (stringBuilder.length() == 0 && num == 0) {
-//            return;
-//        }
-//        stringBuilder.append(num);
-//        if (stringBuilder.length() > 5) {
-//            toast.showCenterToast("你确定有这么多数量吗？");
-//            stringBuilder.deleteCharAt(5);
-//        }
-//        countTextView.setTextColor(Color.BLACK);
-//        countTextView.setText(stringBuilder);
-//    }
-
 
     private void closePopWin() {
         if (popupWin2 != null && popupWin2.isShowing())
@@ -293,12 +142,6 @@ public class KeyboardInputFragment extends Fragment {
         inflater.inflate(R.menu.toolbar_to_touchuinput, menu);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        flowLayout.setDataSource(list);
-//        showItemList();
-    }
 
     @Override
     public void onPause() {
@@ -356,59 +199,22 @@ public class KeyboardInputFragment extends Fragment {
             popWindow3.dismiss2();
         }
     }
-//
-//    private void vibrate() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            VibrationEffect effect = VibrationEffect.createOneShot(100, 125);
-//            vibrator.vibrate(effect);
-//        } else {
-//            vibrator.vibrate(100);
-//        }
-//    }
 
-//    private boolean isInputError() {
-//        if (currentIndex < 0) {
-//            nameTextView.setTextColor(Color.RED);
-//            nameTextView.setText("请先选择项目！");
-//            nameTextView.startAnimation(translateAnimation);
-//            vibrate();
-//            return true;
-//        }
-//        if (stringBuilder == null || stringBuilder.length() == 0) {
-//            countTextView.setTextColor(Color.RED);
-//            countTextView.setText("请输入数量！");
-//            countTextView.startAnimation(translateAnimation);
-//            vibrate();
-//            return true;
-//        }
-//        final int _count = Integer.valueOf(stringBuilder.toString());
-//        if (_count == 0) {
-//            countTextView.setTextColor(Color.RED);
-//            countTextView.setText("数量不能为 0");
-//            countTextView.startAnimation(translateAnimation);
-//            vibrate();
-//            return true;
-//        }
-//        return false;
-//    }
-
-    public void confirm() {
-//        if (isInputError())
-//            return;
-        int _count = Integer.valueOf(stringBuilder.toString());
+    public void confirm(int count) {
         ItemName itemName = list.get(currentIndex);
         final String _name = itemName.getName();
-        RecordEntityOperator.saveOrMergeByDateAndCount(date, _name, _count);
-        ItemStatisticalInformationOperator.saveItemStatisticalInformation(itemName, _count);
-        countTextView.setText("");
-        if (showInfoMode == 1)
-            infoMessage = "+ " + _count;
-        else
-            infoMessage = _name + "    +" + _count;
-
-//        showItemList();
-        if (stringBuilder.length() > 0)
-            stringBuilder.delete(0, stringBuilder.length());
+        RecordEntityOperator.saveOrMergeByDateAndCount(date, _name, count);
+        ItemStatisticalInformationOperator.saveItemStatisticalInformation(itemName, count);
+        if (showInfoMode == 1) {
+            infoMessage = "+" + count;
+            showPop3();
+        }else {
+            infoMessage = _name + "    +" + count;
+            if(showInfoMode == 2)
+                showInfoCenter(getActivity().getWindow().getDecorView(),infoMessage);
+            else
+                new ToastFactory(getActivity()).showCenterToast(infoMessage);
+        }
     }
 
     private void selectDate(View view) {
@@ -421,7 +227,6 @@ public class KeyboardInputFragment extends Fragment {
                     date = timeInMillis[0];
                     dateTextView.setText(dateformat.format(date));
                 }
-//                showItemList();
             }
         });
     }
