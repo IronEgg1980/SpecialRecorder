@@ -29,7 +29,7 @@ public class EnterPWDPopWindow extends PopupWindow {
     private Result result;
     private IDialogDismiss dialogDismiss;
     private Activity activity;
-    private InputMethodManager imm;
+//    private InputMethodManager imm;
     private String passWord;
 
     private void createView(){
@@ -82,7 +82,7 @@ public class EnterPWDPopWindow extends PopupWindow {
 
     public EnterPWDPopWindow(Activity activity,String title,String hint){
         this.activity = activity;
-        imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         passWord = "";
         result = Result.CANCEL;
         createView();
@@ -97,7 +97,6 @@ public class EnterPWDPopWindow extends PopupWindow {
             @Override
             public void onDismiss() {
                 darkenBackground(1f);
-                imm.hideSoftInputFromWindow(editText.getWindowToken(),0);
                 if(dialogDismiss!=null)
                     dialogDismiss.onDismiss(result,passWord);
             }
@@ -105,8 +104,9 @@ public class EnterPWDPopWindow extends PopupWindow {
         setTouchable(true);
         setFocusable(true);
         setOutsideTouchable(false);
+
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-        setInputMethodMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
     private void darkenBackground(Float bgcolor) {
         if(activity == null)
@@ -119,8 +119,7 @@ public class EnterPWDPopWindow extends PopupWindow {
 
     public void show(){
         darkenBackground(0.5f);
-        imm.toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
-        showAtLocation(activity.getWindow().getDecorView(), Gravity.CENTER,0,0);
-
+        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
+        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

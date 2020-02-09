@@ -25,11 +25,11 @@ public class EditPWDPopWindow extends PopupWindow {
     private TextView confirmTV,cancelTV;
     private String value = "";
     private Activity activity;
-    private InputMethodManager imm;
+//    private InputMethodManager imm;
 
     public EditPWDPopWindow(Activity activity){
         this.activity = activity;
-        imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         createView();
 
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -40,14 +40,14 @@ public class EditPWDPopWindow extends PopupWindow {
             @Override
             public void onDismiss() {
                 darkenBackground(1f);
-                imm.hideSoftInputFromWindow(confirmPWDET.getWindowToken(),0);
+//                imm.hideSoftInputFromWindow(confirmPWDET.getWindowToken(),0);
             }
         });
         setTouchable(true);
         setFocusable(true);
         setOutsideTouchable(false);
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-        setInputMethodMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     private boolean getInputValue(){
@@ -118,8 +118,7 @@ public class EditPWDPopWindow extends PopupWindow {
     public void show(){
         showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
         darkenBackground(0.5f);
-        newPWDET.requestFocus();
-        imm.toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
+        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

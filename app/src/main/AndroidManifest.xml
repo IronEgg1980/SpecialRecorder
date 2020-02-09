@@ -11,8 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.ChartActivity"/>
-        <activity
-            android:name=".view.setup.UpdateItemActivity"
+        <activity android:name=".view.setup.UpdateItemActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent">
             <intent-filter>
@@ -27,8 +26,7 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.setup.UpdateActivity"
+        <activity android:name=".view.setup.UpdateActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent">
             <intent-filter>
@@ -43,14 +41,11 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.show_all_data.ShowDataActivity"
+        <activity android:name=".view.show_all_data.ShowDataActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.setup.EditItemActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.setup.EditItemActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,13 +53,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.RecorderActivity"
+        <activity android:name=".view.RecorderActivity"
             android:label="@string/title_activity_recorder"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
+        <provider android:name="android.support.v4.content.FileProvider"
             android:authorities="th.yzw.specialrecorder.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

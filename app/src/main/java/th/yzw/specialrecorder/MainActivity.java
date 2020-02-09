@@ -274,21 +274,6 @@ public class MainActivity extends MyActivity {
                         }
                     }
                 }).show();
-
-//        ShareTotalDataDialogFragment fragment = ShareTotalDataDialogFragment.getInstance("打开高级设置", "输入密码：");
-//        fragment.setOnDismissListener(new IDialogDismiss() {
-//            @Override
-//            public void onDismiss(Result result, Object... values) {
-//                if (result == Result.OK) {
-//                    String pwd = (String) values[0];
-//                    if ("19800210".equals(pwd)) {
-//                        Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
-//                        startActivity(intent);
-//                    }
-//                }
-//            }
-//        });
-//        fragment.show(getSupportFragmentManager(), "showinputPWDdialog");
     }
 
     //继承OnClick接口
