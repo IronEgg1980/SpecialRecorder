@@ -6,8 +6,8 @@ android {
         applicationId "th.yzw.specialrecorder"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 117
-        versionName '20200209'
+        versionCode 118
+        versionName '20200210'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

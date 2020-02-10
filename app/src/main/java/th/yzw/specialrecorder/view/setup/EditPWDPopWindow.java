@@ -52,12 +52,12 @@ public class EditPWDPopWindow extends PopupWindow {
 
     private boolean getInputValue(){
         if(TextUtils.isEmpty(newPWDET.getText())){
-            newPWDET.setError("请输入新密码，密码不能为空格！");
+            newPWDET.setError("请输入新密码！");
             newPWDET.requestFocus();
             return false;
         }
         if(TextUtils.isEmpty(confirmPWDET.getText())){
-            confirmPWDET.setError("请确认新密码，密码不能为空格！");
+            confirmPWDET.setError("请确认密码！");
             confirmPWDET.requestFocus();
             return false;
         }
@@ -118,7 +118,15 @@ public class EditPWDPopWindow extends PopupWindow {
     public void show(){
         showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
         darkenBackground(0.5f);
-        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
+        newPWDET.requestFocus();
+        newPWDET.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
+                        .toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }, 500);
+//        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }
