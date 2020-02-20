@@ -23,9 +23,10 @@ import java.util.Locale;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
+import th.yzw.specialrecorder.view.common.MyDatePicker;
 
 public class SelectDateDialogFragment extends DialogFragment {
-    private DatePicker datePicker;
+    private MyDatePicker datePicker;
     private boolean isConfirm;
     private long date;
     private Calendar calendar;
@@ -48,25 +49,34 @@ public class SelectDateDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.select_date,container,false);
         datePicker = view.findViewById(R.id.date);
-        datePicker.setMaxDate(calendar.getTimeInMillis());
-        TextView cancel = view.findViewById(R.id.cancel);
-        TextView confirm = view.findViewById(R.id.confirm);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        datePicker.setClickListener(new MyDatePicker.DatePickerClickListener() {
             @Override
-            public void onClick(View v) {
-                isConfirm = false;
-                dismiss();
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(int year, int month, int dayOfMonth) {
                 isConfirm = true;
-                calendar.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
+                calendar.set(year, month, dayOfMonth);
                 date = calendar.getTimeInMillis();
                 dismiss();
             }
         });
+//        datePicker.setMaxDate(calendar.getTimeInMillis());
+//        TextView cancel = view.findViewById(R.id.cancel);
+//        TextView confirm = view.findViewById(R.id.confirm);
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isConfirm = false;
+//                dismiss();
+//            }
+//        });
+//        confirm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isConfirm = true;
+//                calendar.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
+//                date = calendar.getTimeInMillis();
+//                dismiss();
+//            }
+//        });
         return view;
     }
 

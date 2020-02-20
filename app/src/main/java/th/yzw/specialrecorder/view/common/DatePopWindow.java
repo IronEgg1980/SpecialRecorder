@@ -18,7 +18,7 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 
 public class DatePopWindow extends PopupWindow {
-    private DatePicker datePicker;
+    private MyDatePicker datePicker;
     private boolean isConfirm = false;
     private long date;
     private Calendar calendar;
@@ -42,7 +42,8 @@ public class DatePopWindow extends PopupWindow {
         showAtLocation(parent, Gravity.NO_GRAVITY,location[0],location[1]);
         moveDatePickerTitle();
         calendar.setTimeInMillis(date);
-        datePicker.updateDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.setSelectedDate(date);
+//        datePicker.updateDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
     }
     private void moveDatePickerTitle(){
         ViewGroup viewGroup = (ViewGroup)datePicker.getChildAt(0);
@@ -63,23 +64,33 @@ public class DatePopWindow extends PopupWindow {
     private void createView(Activity activity){
         View view = LayoutInflater.from(activity).inflate(R.layout.select_date,null);
         datePicker = view.findViewById(R.id.date);
-        datePicker.setMaxDate(calendar.getTimeInMillis());
-        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+        datePicker = view.findViewById(R.id.date);
+        datePicker.setClickListener(new MyDatePicker.DatePickerClickListener() {
             @Override
-            public void onClick(View v) {
-                isConfirm = false;
-                dismiss();
-            }
-        });
-        view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(int year, int month, int dayOfMonth) {
                 isConfirm = true;
-                calendar.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
+                calendar.set(year, month, dayOfMonth);
                 date = calendar.getTimeInMillis();
                 dismiss();
             }
         });
+//        datePicker.setMaxDate(calendar.getTimeInMillis());
+//        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isConfirm = false;
+//                dismiss();
+//            }
+//        });
+//        view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isConfirm = true;
+//                calendar.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
+//                date = calendar.getTimeInMillis();
+//                dismiss();
+//            }
+//        });
         setContentView(view);
     }
 }

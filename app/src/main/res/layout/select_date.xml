@@ -13,49 +13,55 @@
         android:layout_marginEnd="6dp"
         android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
         android:text="选择日期" />
-    <DatePicker
+    <th.yzw.specialrecorder.view.common.MyDatePicker
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:calendarTextColor="@color/textColor"
-        android:calendarViewShown="true"
-        android:datePickerMode="calendar"
-        android:spinnersShown="false" />
+        android:layout_margin="16dp"
+        app:dateTextNormalColor="@color/textColor"/>
+<!--    <DatePicker-->
+<!--        android:id="@+id/date"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="8dp"-->
+<!--        android:layout_marginRight="8dp"-->
+<!--        android:calendarTextColor="@color/textColor"-->
+<!--        android:calendarViewShown="true"-->
+<!--        android:datePickerMode="calendar"-->
+<!--        android:spinnersShown="false" />-->
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+<!--    <android.support.constraint.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="8dp">-->
 
-        <TextView
-            android:id="@+id/cancel"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="取消"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/confirm"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/cancel"-->
+<!--            android:layout_width="72dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:gravity="center"-->
+<!--            android:text="取消"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/confirm"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <TextView
-            android:id="@+id/confirm"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="确定"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/confirm"-->
+<!--            android:layout_width="72dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:gravity="center"-->
+<!--            android:text="确定"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+<!--    </android.support.constraint.ConstraintLayout>-->
 </LinearLayout>

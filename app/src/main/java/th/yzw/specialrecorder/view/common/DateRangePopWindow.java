@@ -21,18 +21,21 @@ public class DateRangePopWindow extends PopupWindow {
     private OnSelectDateRangeDismiss onSelectDateRangeDismiss;
     private Calendar calendar;
     private TextView[] quickSelectTextViews = new TextView[3];
-    private DatePicker startDatePicker, endDatePicker;
+//    private DatePicker startDatePicker, endDatePicker;
+    private MyDatePicker datePicker;
     private long startDay, endDay;
     private boolean isConfirm = false;
     private int[] textViewId = {R.id.month1, R.id.month2, R.id.month3};
     private int[]  y = new int[3], m = new int[3],max = new int[3];
 
     private void initialView(View view) {
-        startDatePicker = view.findViewById(R.id.start_date);
-        startDatePicker.setMaxDate(calendar.getTimeInMillis());
-        startDatePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
-        endDatePicker = view.findViewById(R.id.end_date);
-        endDatePicker.setMaxDate(calendar.getTimeInMillis());
+//        startDatePicker = view.findViewById(R.id.start_date);
+//        startDatePicker.setMaxDate(calendar.getTimeInMillis());
+//        startDatePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+//        endDatePicker = view.findViewById(R.id.end_date);
+//        endDatePicker.setMaxDate(calendar.getTimeInMillis());
+        datePicker = view.findViewById(R.id.date);
+        datePicker.isMultiSelect = true;
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
         for (int i = 0; i < 3; i++) {
@@ -76,18 +79,21 @@ public class DateRangePopWindow extends PopupWindow {
     }
 
     private void getDate() {
-        calendar.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth(), 0, 0, 0);
-        startDay = calendar.getTimeInMillis();
-        calendar.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth(), 0, 0, 0);
-        endDay = calendar.getTimeInMillis();
-        if (startDay > endDay) {
-            startDay = endDay;
-            calendar.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth(), 23, 59, 59);
-            endDay = calendar.getTimeInMillis();
-        } else {
-            calendar.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth(), 23, 59, 59);
-            endDay = calendar.getTimeInMillis();
-        }
+        long[] times = datePicker.getSelectDateRange();
+        startDay = times[0];
+        endDay = times[1];
+//        calendar.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth(), 0, 0, 0);
+//        startDay = calendar.getTimeInMillis();
+//        calendar.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth(), 0, 0, 0);
+//        endDay = calendar.getTimeInMillis();
+//        if (startDay > endDay) {
+//            startDay = endDay;
+//            calendar.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth(), 23, 59, 59);
+//            endDay = calendar.getTimeInMillis();
+//        } else {
+//            calendar.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth(), 23, 59, 59);
+//            endDay = calendar.getTimeInMillis();
+//        }
     }
 
     public DateRangePopWindow(Activity activity){
@@ -98,7 +104,7 @@ public class DateRangePopWindow extends PopupWindow {
         setFocusable(true);
         setTouchable(true);
         setOutsideTouchable(true);
-        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.DateRangePopWindowAnim);
 //        setOnDismissListener(new OnDismissListener() {

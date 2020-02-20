@@ -1,138 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@drawable/select_date_bg"
-    android:layout_width="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        style="@style/TitleTextView"
-        android:layout_marginTop="6dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
-        android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
-        android:text="日期范围"/>
-
     <LinearLayout
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical"
+        android:background="@drawable/select_date_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
         <TextView
-            android:background="@drawable/mergedata_button_selector"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="4dp"
-            android:id="@+id/month1"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/textColor"
-            android:text="2019年7月份"/>
-        <TextView
-            android:background="@drawable/mergedata_button_selector"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:id="@+id/month2"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/textColor"
-            android:text="2019年6月份"/>
-        <TextView
-            android:background="@drawable/mergedata_button_selector"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="8dp"
-            android:id="@+id/month3"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/textColor"
-            android:text="2019年6月份"/>
-    </LinearLayout>
+            style="@style/TitleTextView"
+            android:layout_marginTop="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+            android:text="日期范围"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            android:text="开始日期"/>
-        <DatePicker
-            android:calendarTextColor="@color/textColor"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:id="@+id/start_date"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:textColor="@android:color/darker_gray"
-            android:gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="结束日期"/>
-        <DatePicker
-            android:calendarTextColor="@color/textColor"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
+            android:orientation="horizontal">
+            <TextView
+                android:background="@drawable/mergedata_button_selector"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="4dp"
+                android:id="@+id/month1"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/textColor"
+                android:text="2019年7月份"/>
+            <TextView
+                android:background="@drawable/mergedata_button_selector"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:id="@+id/month2"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/textColor"
+                android:text="2019年6月份"/>
+            <TextView
+                android:background="@drawable/mergedata_button_selector"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:id="@+id/month3"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/textColor"
+                android:text="2019年6月份"/>
+        </LinearLayout>
+        <th.yzw.specialrecorder.view.common.MyDatePicker
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:id="@+id/end_date"
-            android:textSize="16sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:padding="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/cancel"
-            android:layout_marginRight="8dp"
-            android:layout_width="72dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:gravity="center"
-            android:text="取消"/>
-        <TextView
-            android:id="@+id/confirm"
-            android:layout_width="72dp"
+            android:id="@+id/date"
+            app:dateTextNormalColor="@color/textColor"
+            app:dateSelectedBG="@color/colorPrimary"/>
+
+        <!--    <LinearLayout-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:orientation="horizontal">-->
+
+        <!--        <TextView-->
+        <!--            android:gravity="center"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:textColor="@android:color/darker_gray"-->
+        <!--            android:text="开始日期"/>-->
+        <!--        <DatePicker-->
+        <!--            android:calendarTextColor="@color/textColor"-->
+        <!--            android:calendarViewShown="false"-->
+        <!--            android:datePickerMode="spinner"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="140dp"-->
+        <!--            android:id="@+id/start_date"/>-->
+        <!--    </LinearLayout>-->
+        <!--    <LinearLayout-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:orientation="horizontal">-->
+
+        <!--        <TextView-->
+        <!--            android:textColor="@android:color/darker_gray"-->
+        <!--            android:gravity="center"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="结束日期"/>-->
+        <!--        <DatePicker-->
+        <!--            android:calendarTextColor="@color/textColor"-->
+        <!--            android:calendarViewShown="false"-->
+        <!--            android:datePickerMode="spinner"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="140dp"-->
+        <!--            android:id="@+id/end_date"-->
+        <!--            android:textSize="16sp"/>-->
+        <!--    </LinearLayout>-->
+        <LinearLayout
+            android:padding="12dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="确定"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_marginRight="8dp"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:gravity="center"
+                android:text="取消"/>
+            <TextView
+                android:id="@+id/confirm"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:text="确定"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
+
