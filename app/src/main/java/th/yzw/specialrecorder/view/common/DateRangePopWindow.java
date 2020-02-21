@@ -104,7 +104,7 @@ public class DateRangePopWindow extends PopupWindow {
         setFocusable(true);
         setTouchable(true);
         setOutsideTouchable(true);
-        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.DateRangePopWindowAnim);
 //        setOnDismissListener(new OnDismissListener() {

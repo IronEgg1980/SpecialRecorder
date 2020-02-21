@@ -28,6 +28,7 @@ public class MyDatePicker extends LinearLayout {
         this.clickListener = clickListener;
     }
 
+    private int margin = 40;
     private DatePickerClickListener clickListener;
     public boolean isMultiSelect = false;
     private long[] selectDateRange;
@@ -118,11 +119,11 @@ public class MyDatePicker extends LinearLayout {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(HORIZONTAL);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(8, 0, 8, 0);
+        lp.setMargins(margin, 0, margin, 0);
 
         preMonthView = new TextView(getContext());
         preMonthView.setGravity(Gravity.CENTER);
-        preMonthView.setPadding(8, 8, 8, 8);
+        preMonthView.setPadding(margin / 4, 0, margin/4, 0);
         preMonthView.setTextSize(20);
         preMonthView.setText("<");
         preMonthView.setTextColor(dateTextNormalColor);
@@ -170,7 +171,7 @@ public class MyDatePicker extends LinearLayout {
     private void addWeekTitleViews() {
         LinearLayout linearLayout = new LinearLayout(getContext());
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(8, 0, 8, 0);
+        lp.setMargins(margin, 0, margin, 0);
         String[] weeks = {"一", "二", "三", "四", "五", "六", "日"};
         LayoutParams childLP = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
         for (int i = 0; i < 7; i++) {
@@ -191,10 +192,11 @@ public class MyDatePicker extends LinearLayout {
         dateViewGroup = new LinearLayout(getContext());
         dateViewGroup.setOrientation(VERTICAL);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(8, 0, 8, 0);
+        lp.setMargins(margin, 0, margin, 0);
         LayoutParams _lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
-        _lp.setMargins(0,8,0,8);
+        _lp.setMargins(0,margin / 4,0,margin/4);
         LayoutParams childLP = new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
+        childLP.setMargins(margin / 4 ,0,margin/4,0);
         LayoutParams child_child_LP = new LayoutParams(120, 120);
         child_child_LP.gravity = Gravity.CENTER;
         int index = 0;
@@ -203,7 +205,7 @@ public class MyDatePicker extends LinearLayout {
             linearLayout.setOrientation(HORIZONTAL);
             for (int j = 0; j < 7; j++) {
                 LinearLayout ll = new LinearLayout(getContext());
-                final TextView textView = new TextView(getContext());
+                final FlagTextView textView = new FlagTextView(getContext());
                 textView.setPadding(10, 10, 10, 10);
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextSize(16);
@@ -248,10 +250,13 @@ public class MyDatePicker extends LinearLayout {
 
     private void changeDateViewUI() {
         for (int i = 0; i < 42; i++) {
-            TextView textView = findViewById(ids[i]);
+            FlagTextView textView = findViewById(ids[i]);
             if (textView != null) {
                 long time = (long) textView.getTag();
                 String s = dayOfMonthFormat.format(time);
+                textView.hideLeftTopFlag();
+                textView.hideRightBottomFlag();
+                textView.setText(s);
                 textView.setBackgroundColor(dateNormalBG);
                 if (compareMonth(time, monthDay) != 0) {
                     textView.setTextColor(Color.GRAY);
@@ -264,10 +269,10 @@ public class MyDatePicker extends LinearLayout {
 
                     if (startDiff >= 0 && endDiff <= 0) {
                         if (startDiff == 0) {
-                            s = dayOfMonthFormat.format(time) + "\nStart";
+                            textView.showLeftTopFlag();
                         }
                         if (isFirstSelect && endDiff == 0) {
-                            s = dayOfMonthFormat.format(time) + "\nEnd";
+                            textView.showRightBottomFlag();
                         }
                         textView.setTextColor(dateTextSelectedColor);
                         if (selectedBGDrawable != null) {
@@ -285,7 +290,6 @@ public class MyDatePicker extends LinearLayout {
                     }
                     currentIndex = i;
                 }
-                textView.setText(s);
             }
         }
     }
