@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:background="@drawable/select_date_bg"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
             style="@style/TitleTextView"
@@ -18,7 +18,8 @@
             android:text="日期范围"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
@@ -28,11 +29,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="4dp"
                 android:id="@+id/month1"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:padding="8dp"
                 android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="@color/textColor"
@@ -44,11 +43,9 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:id="@+id/month2"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:padding="8dp"
                 android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="@color/textColor"
@@ -57,21 +54,20 @@
                 android:background="@drawable/mergedata_button_selector"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
                 android:id="@+id/month3"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:padding="8dp"
                 android:gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="@color/textColor"
                 android:text="2019年6月份"/>
         </LinearLayout>
         <th.yzw.specialrecorder.view.common.MyDatePicker
-            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/date"
             app:dateTextNormalColor="@color/textColor"

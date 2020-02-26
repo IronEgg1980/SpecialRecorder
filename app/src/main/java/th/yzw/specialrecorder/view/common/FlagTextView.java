@@ -5,17 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
-import com.rengwuxian.materialedittext.MaterialEditText;
-
 public class FlagTextView extends AppCompatTextView {
     private boolean isShowLeftTopFlag = false;
     private boolean isShowRightBottomFlag = false;
-    private Paint flagBgPaint,flagTextPaint;
+    private Paint flagBgPaint;
 
     public FlagTextView(Context context) {
         super(context);
@@ -32,12 +29,10 @@ public class FlagTextView extends AppCompatTextView {
 
     public void showRightBottomFlag(){
         this.isShowRightBottomFlag = true;
-//        invalidate();
     }
 
     public void hideLeftTopFlag(){
         this.isShowLeftTopFlag = false;
-//        invalidate();
     }
 
     public void hideRightBottomFlag(){
@@ -51,13 +46,13 @@ public class FlagTextView extends AppCompatTextView {
             flagBgPaint.setColor(Color.RED);
             flagBgPaint.setStyle(Paint.Style.FILL);
         }
-        if(flagTextPaint == null){
-            flagTextPaint = new Paint();
-            flagTextPaint.setColor(Color.WHITE);
-            flagTextPaint.setStyle(Paint.Style.FILL);
-            flagTextPaint.setStrokeWidth(15);
-            flagTextPaint.setTextSize(30);
-        }
+//        if(flagTextPaint == null){
+//            flagTextPaint = new Paint();
+//            flagTextPaint.setColor(Color.WHITE);
+//            flagTextPaint.setStyle(Paint.Style.FILL);
+//            flagTextPaint.setStrokeWidth(15);
+//            flagTextPaint.setTextSize(30);
+//        }
     }
 
     private void drawLeftTopFlag(Canvas canvas){
@@ -67,9 +62,9 @@ public class FlagTextView extends AppCompatTextView {
         canvas.save();
 
         Path path = new Path();
-        path.moveTo(width * 2 / 3,0);
+        path.moveTo(width / 2,0);
         path.lineTo(0,0);
-        path.lineTo(0,height *2 / 3);
+        path.lineTo(0,height / 2);
         path.close();
         canvas.drawPath(path,flagBgPaint);
 
@@ -83,9 +78,9 @@ public class FlagTextView extends AppCompatTextView {
         canvas.save();
 
         Path path = new Path();
-        path.moveTo(width,height / 3);
+        path.moveTo(width,height / 2);
         path.lineTo(width,height);
-        path.lineTo(width / 3,height);
+        path.lineTo(width / 2,height);
         path.close();
         canvas.drawPath(path,flagBgPaint);
 

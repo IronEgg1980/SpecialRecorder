@@ -15,9 +15,9 @@
         android:text="选择日期" />
     <th.yzw.specialrecorder.view.common.MyDatePicker
         android:id="@+id/date"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         app:dateTextNormalColor="@color/textColor"/>
 <!--    <DatePicker-->
 <!--        android:id="@+id/date"-->

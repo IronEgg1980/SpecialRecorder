@@ -1,5 +1,10 @@
 package th.yzw.specialrecorder.view.common;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -7,9 +12,12 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,7 +36,8 @@ public class MyDatePicker extends LinearLayout {
         this.clickListener = clickListener;
     }
 
-    private int margin = 40;
+    private String TAG = "殷宗旺";
+    private int margin = 20;
     private DatePickerClickListener clickListener;
     public boolean isMultiSelect = false;
     private long[] selectDateRange;
@@ -42,6 +51,9 @@ public class MyDatePicker extends LinearLayout {
     private int currentIndex;
     private TextView preMonthView, titleView, nextMonthView;
     private LinearLayout dateViewGroup;
+    private AnimatorSet ltrAnimator,rtlAnimator,alphaAnimator;
+    private GestureDetector gestureDetector;
+    private GestureDetector.SimpleOnGestureListener simpleOnGestureListener;
 
     public MyDatePicker(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -99,12 +111,32 @@ public class MyDatePicker extends LinearLayout {
         monthDay = mCalendar.getTimeInMillis();
         currentIndex = -1;
         selectDateRange = new long[2];
-        selectDateRange[0] = today;
-        selectDateRange[1] = today;
         ids = new int[42];
         for (int i = 0; i < 42; i++) {
             ids[i] = generateViewId();
         }
+        simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if(velocityX > 500){
+                    preMonthClick();
+                }else if(velocityX < -500){
+                    nextMonthClick();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                if(distanceX < -30){
+                    preMonthClick();
+                }else if(distanceX > 30){
+                    nextMonthClick();
+                }
+                return true;
+            }
+        };
+        gestureDetector = new GestureDetector(getContext(),simpleOnGestureListener);
     }
 
     private void initialViews() {
@@ -119,11 +151,10 @@ public class MyDatePicker extends LinearLayout {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(HORIZONTAL);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(margin, 0, margin, 0);
+        lp.setMargins(margin, margin / 2, margin, margin / 2);
 
         preMonthView = new TextView(getContext());
         preMonthView.setGravity(Gravity.CENTER);
-        preMonthView.setPadding(margin / 4, 0, margin/4, 0);
         preMonthView.setTextSize(20);
         preMonthView.setText("<");
         preMonthView.setTextColor(dateTextNormalColor);
@@ -136,7 +167,6 @@ public class MyDatePicker extends LinearLayout {
 
         titleView = new TextView(getContext());
         titleView.setGravity(Gravity.CENTER);
-        titleView.setPadding(8, 8, 8, 8);
         titleView.setTextSize(20);
         titleView.setText("");
         titleView.setTextColor(dateTextNormalColor);
@@ -149,7 +179,6 @@ public class MyDatePicker extends LinearLayout {
 
         nextMonthView = new TextView(getContext());
         nextMonthView.setGravity(Gravity.CENTER);
-        nextMonthView.setPadding(8, 8, 8, 8);
         nextMonthView.setTextSize(20);
         nextMonthView.setText(">");
         nextMonthView.setTextColor(dateTextNormalColor);
@@ -192,11 +221,11 @@ public class MyDatePicker extends LinearLayout {
         dateViewGroup = new LinearLayout(getContext());
         dateViewGroup.setOrientation(VERTICAL);
         LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(margin, 0, margin, 0);
+        lp.setMargins(margin, 0, margin, margin/2);
         LayoutParams _lp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
-        _lp.setMargins(0,margin / 4,0,margin/4);
+        _lp.setMargins(0,0,0,margin/4);
         LayoutParams childLP = new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
-        childLP.setMargins(margin / 4 ,0,margin/4,0);
+        childLP.setMargins(0, 0, margin / 4, 0);
         LayoutParams child_child_LP = new LayoutParams(120, 120);
         child_child_LP.gravity = Gravity.CENTER;
         int index = 0;
@@ -206,7 +235,6 @@ public class MyDatePicker extends LinearLayout {
             for (int j = 0; j < 7; j++) {
                 LinearLayout ll = new LinearLayout(getContext());
                 final FlagTextView textView = new FlagTextView(getContext());
-                textView.setPadding(10, 10, 10, 10);
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextSize(16);
                 final int position = index;
@@ -229,6 +257,85 @@ public class MyDatePicker extends LinearLayout {
             dateViewGroup.addView(linearLayout, _lp);
         }
         addView(dateViewGroup, lp);
+    }
+
+    private void startLeftToRightAnimation(){
+        if(ltrAnimator == null) {
+            ltrAnimator = new AnimatorSet();
+            int width = dateViewGroup.getMeasuredWidth();
+            ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", 0, width);
+            objectAnimator1.setDuration(100);
+            objectAnimator1.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    dateViewGroup.setVisibility(INVISIBLE);
+                }
+            });
+            ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", 0, -width);
+            objectAnimator2.setDuration(10);
+            ObjectAnimator objectAnimator3 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", -width, 0);
+            objectAnimator3.setDuration(100);
+            objectAnimator3.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    setDateView(monthDay);
+                    dateViewGroup.setVisibility(VISIBLE);
+                }
+            });
+            ltrAnimator.playSequentially(objectAnimator1, objectAnimator2, objectAnimator3);
+        }
+        ltrAnimator.start();
+    }
+
+    private void startRightToLeftAnimation(){
+        if(rtlAnimator == null) {
+            rtlAnimator = new AnimatorSet();
+            int width = dateViewGroup.getMeasuredWidth();
+            ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", 0, -width);
+            objectAnimator1.setDuration(100);
+            objectAnimator1.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    dateViewGroup.setVisibility(INVISIBLE);
+                }
+            });
+            ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", 0, width);
+            objectAnimator2.setDuration(10);
+            ObjectAnimator objectAnimator3 = ObjectAnimator.ofFloat(dateViewGroup, "translationX", width, 0);
+            objectAnimator3.setDuration(100);
+            objectAnimator3.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    setDateView(monthDay);
+                    dateViewGroup.setVisibility(VISIBLE);
+                }
+            });
+            rtlAnimator.playSequentially(objectAnimator1, objectAnimator2, objectAnimator3);
+        }
+        rtlAnimator.start();
+    }
+
+    private void startAlphaAnimation(){
+        if(alphaAnimator == null) {
+            alphaAnimator = new AnimatorSet();
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(dateViewGroup, "alpha", 1f, 0f);
+            objectAnimator.setDuration(100);
+            ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(dateViewGroup, "alpha", 0f, 1f);
+            objectAnimator1.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    setDateView(monthDay);
+                }
+            });
+            objectAnimator1.setDuration(100);
+            alphaAnimator.playSequentially(objectAnimator,objectAnimator1);
+        }
+        alphaAnimator.start();
     }
 
     private void dateViewMultiClick(int position) {
@@ -266,19 +373,17 @@ public class MyDatePicker extends LinearLayout {
                 if (isMultiSelect) {
                     int startDiff = compareDay(time, selectDateRange[0]);
                     int endDiff = compareDay(time, selectDateRange[1]);
-
-                    if (startDiff >= 0 && endDiff <= 0) {
-                        if (startDiff == 0) {
-                            textView.showLeftTopFlag();
-                        }
-                        if (isFirstSelect && endDiff == 0) {
-                            textView.showRightBottomFlag();
-                        }
+                    if(startDiff >= 0 && endDiff <=0){
                         textView.setTextColor(dateTextSelectedColor);
                         if (selectedBGDrawable != null) {
                             textView.setBackground(selectedBGDrawable);
                         } else {
                             textView.setBackgroundColor(dateSelectedBG);
+                        }
+                        if(startDiff == 0)
+                            textView.showLeftTopFlag();
+                        if (isFirstSelect && endDiff == 0) {
+                            textView.showRightBottomFlag();
                         }
                     }
                 } else if (compareDay(time, selectedDay) == 0) {
@@ -335,21 +440,21 @@ public class MyDatePicker extends LinearLayout {
         mCalendar.add(Calendar.MONTH, -1);
         mCalendar.set(Calendar.DAY_OF_MONTH, 15);
         monthDay = mCalendar.getTimeInMillis();
-        setDateView(monthDay);
+        startLeftToRightAnimation();
     }
 
     private void currentMonthClick() {
         mCalendar.setTimeInMillis(today);
         mCalendar.set(Calendar.DAY_OF_MONTH, 15);
         monthDay = mCalendar.getTimeInMillis();
-        setDateView(monthDay);
+        startAlphaAnimation();
     }
 
     private void nextMonthClick() {
         mCalendar.add(Calendar.MONTH, 1);
         mCalendar.set(Calendar.DAY_OF_MONTH, 15);
         monthDay = mCalendar.getTimeInMillis();
-        setDateView(monthDay);
+        startRightToLeftAnimation();
     }
 
     private int compareMonth(long d1, long d2) {
@@ -378,4 +483,11 @@ public class MyDatePicker extends LinearLayout {
         }
         return i;
     }
+
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return gestureDetector.onTouchEvent(ev);
+    }
+
 }
