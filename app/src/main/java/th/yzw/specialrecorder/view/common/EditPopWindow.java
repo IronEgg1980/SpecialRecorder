@@ -139,10 +139,10 @@ public class EditPopWindow extends PopupWindow {
     }
 
     public void show() {
+        darkenBackground(0.5f);
         isFirstClick = true;
         showInfo();
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        darkenBackground(0.7f);
     }
 
     public EditPopWindow setData(String name, int count) {

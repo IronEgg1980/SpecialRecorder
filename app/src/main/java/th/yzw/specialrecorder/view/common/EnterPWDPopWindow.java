@@ -120,8 +120,8 @@ public class EnterPWDPopWindow extends PopupWindow {
     }
 
     public void show() {
-        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
         darkenBackground(0.5f);
+        showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
         editText.requestFocus();
         editText.postDelayed(new Runnable() {
             @Override

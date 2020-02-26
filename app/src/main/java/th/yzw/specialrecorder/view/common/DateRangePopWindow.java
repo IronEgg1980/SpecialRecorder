@@ -27,6 +27,7 @@ public class DateRangePopWindow extends PopupWindow {
     private boolean isConfirm = false;
     private SimpleDateFormat simpleDateFormat;
     private String tips = "请在日历上选择";
+    private Activity mActivity;
 
     private void initialView(View view) {
         simpleDateFormat = new SimpleDateFormat("yyyy-M-d",Locale.CHINA);
@@ -96,6 +97,7 @@ public class DateRangePopWindow extends PopupWindow {
     }
 
     public DateRangePopWindow(Activity activity){
+        mActivity = activity;
         View view = LayoutInflater.from(activity).inflate(R.layout.select_startdate_endddate,null);
         initialView(view);
         setContentView(view);
@@ -112,21 +114,22 @@ public class DateRangePopWindow extends PopupWindow {
         if(onSelectDateRangeDismiss != null)
             onSelectDateRangeDismiss.onDissmiss(isConfirm, startDay, endDay);
         super.dismiss();
+        darkenBackground(1f);
     }
 
     public void show(View parent, OnSelectDateRangeDismiss onSelectDateRangeDismiss){
+        darkenBackground(0.5f);
         this.onSelectDateRangeDismiss = onSelectDateRangeDismiss;
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
-//        showAsDropDown(parent,0,0);
         showAtLocation(parent,Gravity.NO_GRAVITY,location[0],location[1]);
     }
-//    private void darkenBackground(Float bgcolor) {
-//        if(mActivity == null)
-//            return;
-//        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
-//        lp.alpha = bgcolor;
-//        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//        mActivity.getWindow().setAttributes(lp);
-//    }
+    private void darkenBackground(Float bgcolor) {
+        if(mActivity == null)
+            return;
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
+    }
 }

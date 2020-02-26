@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,8 +24,10 @@ public class DatePopWindow extends PopupWindow {
     private long date;
     private Calendar calendar;
     private OnSelectDateRangeDismiss onSelectDateRangeDismiss;
+    private Activity mActivity;
 
     public DatePopWindow(Activity activity,long date){
+        mActivity = activity;
         calendar = new GregorianCalendar(Locale.CHINA);
         this.date = date;
         createView(activity);
@@ -36,6 +39,7 @@ public class DatePopWindow extends PopupWindow {
         setAnimationStyle(R.style.DateRangePopWindowAnim);
     }
     public void show(View parent, OnSelectDateRangeDismiss onSelectDateRangeDismiss){
+        darkenBackground(0.5f);
         this.onSelectDateRangeDismiss = onSelectDateRangeDismiss;
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
@@ -43,7 +47,6 @@ public class DatePopWindow extends PopupWindow {
         moveDatePickerTitle();
         calendar.setTimeInMillis(date);
         datePicker.setSelectedDate(date);
-//        datePicker.updateDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
     }
     private void moveDatePickerTitle(){
         ViewGroup viewGroup = (ViewGroup)datePicker.getChildAt(0);
@@ -59,6 +62,7 @@ public class DatePopWindow extends PopupWindow {
         if(onSelectDateRangeDismiss != null)
             onSelectDateRangeDismiss.onDissmiss(isConfirm,date);
         super.dismiss();
+        darkenBackground(1f);
     }
 
     private void createView(Activity activity){
@@ -79,23 +83,13 @@ public class DatePopWindow extends PopupWindow {
 
             }
         });
-//        datePicker.setMaxDate(calendar.getTimeInMillis());
-//        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                isConfirm = false;
-//                dismiss();
-//            }
-//        });
-//        view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                isConfirm = true;
-//                calendar.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
-//                date = calendar.getTimeInMillis();
-//                dismiss();
-//            }
-//        });
         setContentView(view);
+    }
+
+    private void darkenBackground(Float bgcolor) {
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
     }
 }

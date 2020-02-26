@@ -92,10 +92,10 @@ public class ConfirmPopWindow extends PopupWindow {
     }
 
     public void toConfirm(String message) {
+        darkenBackground(0.5f);
         this.textView.setText(message);
         Window window = mActivity.getWindow();
         showAtLocation(window.getDecorView(), Gravity.BOTTOM, 0, 0);
-        darkenBackground(0.5f);
     }
 
     private void darkenBackground(Float bgcolor) {

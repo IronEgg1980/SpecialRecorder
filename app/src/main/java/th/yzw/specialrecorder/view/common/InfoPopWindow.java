@@ -47,9 +47,9 @@ public class InfoPopWindow extends PopupWindow {
     }
 
     public void show(String message){
+        darkenBackground(0.5f);
         textView.setText(message);
         showAtLocation(mActivity.getWindow().getDecorView(), Gravity.BOTTOM,0,0);
-        darkenBackground(0.5f);
     }
 
     private void darkenBackground(Float bgcolor) {
