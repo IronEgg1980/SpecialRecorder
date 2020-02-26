@@ -1,357 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <include
+        layout="@layout/toolbar_layout"
+        android:id="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <android.support.v7.widget.CardView
-            android:id="@+id/input_method_cardview"
+        android:layout_height="0dp"
+        android:background="@color/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <RadioGroup
-                android:id="@+id/input_method_group"
-                style="@style/GroupShape">
+            android:orientation="vertical">
 
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="输入方式" />
-
-                <RadioButton
-                    android:id="@+id/input_method_byKeyboard"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="键盘输入" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="使用键盘输入数字。" />
-
-                <RadioButton
-                    android:id="@+id/input_method_byTouch"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="点击输入" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="每次点击按钮数量加一。" />
-            </RadioGroup>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/button_columns_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <RadioGroup
-                android:id="@+id/button_columns_group"
-                style="@style/GroupShape">
-
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="按钮布局设置" />
-
-                <RadioButton
-                    android:id="@+id/button_2_columns"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="一列" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="每行显示一个按钮。" />
-
-                <RadioButton
-                    android:id="@+id/button_3_columns"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="两列" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="每行显示两个按钮。" />
-
-                <RadioButton
-                    android:id="@+id/button_4_columns"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="三列" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="每行显示三个按钮。" />
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/showGroupButtonSwitchCompat"
-                    style="@style/SetupSwitch"
-                    android:text="启用分组" />
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="输入项目按常用和不常用分组显示。" />
-            </RadioGroup>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/vibrate_setup_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <LinearLayout
-                android:id="@+id/vibrate_setup_group"
-                style="@style/GroupShape">
-
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="震动设置" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/vibrate_on"
-                    style="@style/SetupSwitch"
-                    android:text="开启震动" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="开启后点击按钮会有震动反馈效果。" />
-
-                <LinearLayout
-                    android:id="@+id/vibrate_level_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:layout_marginLeft="@dimen/switch_paddingLR"
-                    android:layout_marginRight="@dimen/switch_paddingLR"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
+            <android.support.v7.widget.CardView
+                android:id="@+id/input_method_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
+                <RadioGroup
+                    android:id="@+id/input_method_group"
+                    style="@style/GroupShape">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="震动强度"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        style="@style/GroupTitle"
+                        android:text="输入方式" />
 
-                    <SeekBar
-                        android:id="@+id/vibrate_level_seekbar"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:max="150" />
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/info_location_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <RadioGroup
-                android:id="@+id/info_location_group"
-                style="@style/GroupShape">
-
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="提示信息设置" />
-
-                <RadioButton
-                    android:id="@+id/info_location_none"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="文字信息" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="不显示提示框，仅显示文字信息。" />
-
-                <RadioButton
-                    android:id="@+id/info_location_button"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="按钮气泡" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="在点击的按钮上方显示气泡。" />
-
-                <RadioButton
-                    android:id="@+id/info_location_top"
-                    style="@style/SetupSwitch"
-                    android:button="@null"
-                    android:drawableRight="@drawable/radio_button"
-                    android:text="顶部弹窗" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="在标题栏位置显示信息弹窗。" />
-            </RadioGroup>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/data_safe_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <LinearLayout
-                android:id="@+id/data_safe_group"
-                style="@style/GroupShape">
-
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="数据安全设置" />
-
-                <LinearLayout
-                    android:id="@+id/data_safe_backup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/input_method_byKeyboard"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="数据备份"
-                        android:textColor="@android:color/black" />
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="键盘输入" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="备份文件以当前日期和时间命名。" />
-                </LinearLayout>
+                        android:text="使用键盘输入数字。" />
 
-                <LinearLayout
-                    android:id="@+id/data_safe_restore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/input_method_byTouch"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="数据恢复"
-                        android:textColor="@android:color/black" />
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="点击输入" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="从备份文件恢复数据。" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/data_safe_clearFiles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
+                        android:text="每次点击按钮数量加一。" />
+                </RadioGroup>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/button_columns_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
+                <RadioGroup
+                    android:id="@+id/button_columns_group"
+                    style="@style/GroupShape">
 
                     <TextView
+                        style="@style/GroupTitle"
+                        android:text="按钮布局设置" />
+
+                    <RadioButton
+                        android:id="@+id/button_2_columns"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="清理备份数据"
-                        android:textColor="@android:color/black" />
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="一列" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="清除备份文件，建议清理后立即备份一次。" />
-                </LinearLayout>
+                        android:text="每行显示一个按钮。" />
 
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/data_safe_alarm"
-                    style="@style/SetupSwitch"
-                    android:text="启用紧急模式" />
-
-                <TextView
-                    style="@style/SummaryTextView"
-                    android:text="紧急模式开启后，可输入特殊代码清除所有数据。" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:id="@+id/others_setup_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="8dp"
-            app:contentPadding="2dp">
-            <LinearLayout
-                android:id="@+id/others_setup_group"
-                style="@style/GroupShape">
-
-                <TextView
-                    style="@style/GroupTitle"
-                    android:text="其他设置" />
-
-                <LinearLayout
-                    android:id="@+id/others_setup_pwd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/button_3_columns"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="修改密码"
-                        android:textColor="@android:color/black" />
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="两列" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="修改进入程序的密码（数字部分）。" />
-                </LinearLayout>
+                        android:text="每行显示两个按钮。" />
 
-                <LinearLayout
-                    android:id="@+id/others_setup_updateItems"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/button_4_columns"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="同步项目"
-                        android:textColor="@android:color/black" />
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="三列" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="同步项目数据以统一项目名称，方便统计。" />
-                </LinearLayout>
+                        android:text="每行显示三个按钮。" />
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/showGroupButtonSwitchCompat"
+                        style="@style/SetupSwitch"
+                        android:text="启用分组" />
+                    <TextView
+                        style="@style/SummaryTextView"
+                        android:text="输入项目按常用和不常用分组显示。" />
+                </RadioGroup>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/vibrate_setup_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
+                <LinearLayout
+                    android:id="@+id/vibrate_setup_group"
+                    style="@style/GroupShape">
 
-                <RelativeLayout
-                    android:id="@+id/relativelayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    <TextView
+                        style="@style/GroupTitle"
+                        android:text="震动设置" />
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/vibrate_on"
+                        style="@style/SetupSwitch"
+                        android:text="开启震动" />
+
+                    <TextView
+                        style="@style/SummaryTextView"
+                        android:text="开启后点击按钮会有震动反馈效果。" />
 
                     <LinearLayout
-                        android:id="@+id/others_setup_update"
+                        android:id="@+id/vibrate_level_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="@dimen/switch_paddingLR"
+                        android:layout_marginRight="@dimen/switch_paddingLR"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="震动强度"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+
+                        <SeekBar
+                            android:id="@+id/vibrate_level_seekbar"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:max="150" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/info_location_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
+                <RadioGroup
+                    android:id="@+id/info_location_group"
+                    style="@style/GroupShape">
+
+                    <TextView
+                        style="@style/GroupTitle"
+                        android:text="提示信息设置" />
+
+                    <RadioButton
+                        android:id="@+id/info_location_none"
+                        style="@style/SetupSwitch"
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="文字信息" />
+
+                    <TextView
+                        style="@style/SummaryTextView"
+                        android:text="不显示提示框，仅显示文字信息。" />
+
+                    <RadioButton
+                        android:id="@+id/info_location_button"
+                        style="@style/SetupSwitch"
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="按钮气泡" />
+
+                    <TextView
+                        style="@style/SummaryTextView"
+                        android:text="在点击的按钮上方显示气泡。" />
+
+                    <RadioButton
+                        android:id="@+id/info_location_top"
+                        style="@style/SetupSwitch"
+                        android:button="@null"
+                        android:drawableRight="@drawable/radio_button"
+                        android:text="顶部弹窗" />
+
+                    <TextView
+                        style="@style/SummaryTextView"
+                        android:text="在标题栏位置显示信息弹窗。" />
+                </RadioGroup>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/data_safe_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
+                <LinearLayout
+                    android:id="@+id/data_safe_group"
+                    style="@style/GroupShape">
+
+                    <TextView
+                        style="@style/GroupTitle"
+                        android:text="数据安全设置" />
+
+                    <LinearLayout
+                        android:id="@+id/data_safe_backup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/setup_button_selector"
@@ -361,76 +249,204 @@
                             style="@style/SetupSwitch"
                             android:drawableRight="@drawable/ic_right_24dp"
                             android:gravity="center_vertical"
-                            android:text="程序更新"
+                            android:text="数据备份"
                             android:textColor="@android:color/black" />
 
                         <TextView
                             style="@style/SummaryTextView"
-                            android:text="通过网络或本地文件更新APP。" />
+                            android:text="备份文件以当前日期和时间命名。" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/appUpdatedFlag"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/data_safe_restore"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/others_setup_update"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="64dp"
-                        android:text="有新版本!"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="12sp" />
-                </RelativeLayout>
-                <LinearLayout
-                    android:id="@+id/others_setup_cleaning"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
 
-                    <TextView
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="数据恢复"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="从备份文件恢复数据。" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/data_safe_clearFiles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="清理备份数据"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="清除备份文件，建议清理后立即备份一次。" />
+                    </LinearLayout>
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/data_safe_alarm"
                         style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="清理缓存"
-                        android:textColor="@android:color/black" />
+                        android:text="启用紧急模式" />
 
                     <TextView
                         style="@style/SummaryTextView"
-                        android:text="清理缓存文件，保持手机系统干净。" />
+                        android:text="紧急模式开启后，可输入特殊代码清除所有数据。" />
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/others_setup_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="8dp"
+                app:contentPadding="2dp">
                 <LinearLayout
-                    android:id="@+id/others_setup_about"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/setup_button_selector"
-                    android:orientation="vertical">
+                    android:id="@+id/others_setup_group"
+                    style="@style/GroupShape">
 
                     <TextView
-                        style="@style/SetupSwitch"
-                        android:drawableRight="@drawable/ic_right_24dp"
-                        android:gravity="center_vertical"
-                        android:text="软件信息"
-                        android:textColor="@android:color/black" />
+                        style="@style/GroupTitle"
+                        android:text="其他设置" />
 
-                    <TextView
-                        style="@style/SummaryTextView"
-                        android:text="查看软件信息。" />
+                    <LinearLayout
+                        android:id="@+id/others_setup_pwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="修改密码"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="修改进入程序的密码（数字部分）。" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/others_setup_updateItems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="同步项目"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="同步项目数据以统一项目名称，方便统计。" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <LinearLayout
+                            android:id="@+id/others_setup_update"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/setup_button_selector"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/SetupSwitch"
+                                android:drawableRight="@drawable/ic_right_24dp"
+                                android:gravity="center_vertical"
+                                android:text="程序更新"
+                                android:textColor="@android:color/black" />
+
+                            <TextView
+                                style="@style/SummaryTextView"
+                                android:text="通过网络或本地文件更新APP。" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/appUpdatedFlag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/others_setup_update"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="64dp"
+                            android:text="有新版本!"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/others_setup_cleaning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="清理缓存"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="清理缓存文件，保持手机系统干净。" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/others_setup_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/setup_button_selector"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/SetupSwitch"
+                            android:drawableRight="@drawable/ic_right_24dp"
+                            android:gravity="center_vertical"
+                            android:text="软件信息"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            style="@style/SummaryTextView"
+                            android:text="查看软件信息。" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <TextView
-            android:id="@+id/coloseApp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@color/background"
-            android:gravity="center"
-            android:padding="12dp"
-            android:text="退出"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+            </android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/coloseApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@color/background"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="退出"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

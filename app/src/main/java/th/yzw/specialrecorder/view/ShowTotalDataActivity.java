@@ -1,9 +1,6 @@
-package th.yzw.specialrecorder.view.show_total;
+package th.yzw.specialrecorder.view;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,19 +8,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.hjq.permissions.Permission;
@@ -45,32 +40,32 @@ import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
 import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
-import th.yzw.specialrecorder.interfaces.MyClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
-import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.view.RecorderActivity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
-public class ShowTotalDataFragment extends Fragment {
+public class ShowTotalDataActivity extends MyActivity {
     protected class ShowTotalAdapter extends RecyclerView.Adapter<ShowTotalAdapter.ViewHolder> {
         void updateList(long start, long end) {
             recordEntityList.clear();
             List<SumTotalRecord> temp = SumTotalOperator.getSumData(start, end);
             for (SumTotalRecord record : temp) {
                 record.setPhoneId(phoneId);
-                record.setMonth(start + 28 * MyDateUtils.ONE_DAY_MILLIS - 1);
+                calendar.setTimeInMillis(start);
+                calendar.add(Calendar.DAY_OF_MONTH,28);
+                calendar.add(Calendar.MILLISECOND,-1);
+                record.setMonth(calendar.getTimeInMillis());
                 recordEntityList.add(record);
             }
             notifyDataSetChanged();
@@ -109,10 +104,7 @@ public class ShowTotalDataFragment extends Fragment {
         }
     }
 
-    //    private DialogFactory dialogFactory;
     private InfoPopWindow infoPopWindow;
-    //    private ToastFactory toastFactory;
-    private RecorderActivity activity;
     private List<SumTotalRecord> recordEntityList;
     private TextView showTotalNodata;
     private MarqueeView marqueeview;
@@ -126,7 +118,7 @@ public class ShowTotalDataFragment extends Fragment {
     private String phoneId;
 
     private void selectDateRange() {
-        new DateRangePopWindow(activity).show(changeDate, new OnSelectDateRangeDismiss() {
+        new DateRangePopWindow(this).show(changeDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
                 if (isConfirm) {
@@ -157,7 +149,7 @@ public class ShowTotalDataFragment extends Fragment {
         final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
         loadingDialog.setCancelClick(null);
         loadingDialog.setCancelable(false);
-        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(getContext(), "backup");
+        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(this, "backup");
         dataBackuper.setOnFinish(new IDialogDismiss() {
             @Override
             public void onDismiss(Result result, Object... values) {
@@ -165,19 +157,19 @@ public class ShowTotalDataFragment extends Fragment {
                 if (result == Result.OK) {
                     RecordEntityOperator.deleAllBetweenDate(start, end);
                     adapter.updateList(start, end);
-                    new ToastFactory(getContext()).showCenterToast("备份后删除数据成功");
+                    new ToastFactory(ShowTotalDataActivity.this).showCenterToast("备份后删除数据成功");
                 } else {
                     String s = (String) values[0];
                     infoPopWindow.show(s);
                 }
             }
         });
-        loadingDialog.show(getFragmentManager(), "loading");
+        loadingDialog.show(getSupportFragmentManager(), "loading");
         dataBackuper.execute();
     }
 
     private void showConfirmDeleDialog() {
-        new ConfirmPopWindow(activity)
+        new ConfirmPopWindow(this)
                 .setOtherButton("立即备份")
                 .setDialogDismiss(new IDialogDismiss() {
                     @Override
@@ -187,7 +179,7 @@ public class ShowTotalDataFragment extends Fragment {
                         } else if (result == Result.OK) {
                             RecordEntityOperator.deleAllBetweenDate(start, end);
                             adapter.updateList(start, end);
-                            new ToastFactory(getContext()).showCenterToast("删除成功");
+                            new ToastFactory(ShowTotalDataActivity.this).showCenterToast("删除成功");
                         }
                     }
                 })
@@ -199,7 +191,7 @@ public class ShowTotalDataFragment extends Fragment {
             infoPopWindow.show("当前列表内没有数据");
             return;
         }
-        final ConfirmPopWindow popWindow = new ConfirmPopWindow(getActivity());
+        final ConfirmPopWindow popWindow = new ConfirmPopWindow(this);
         popWindow.setDialogDismiss(new IDialogDismiss() {
             @Override
             public void onDismiss(Result result, Object... values) {
@@ -212,31 +204,37 @@ public class ShowTotalDataFragment extends Fragment {
                 .toConfirm("是否要删除【 " + format.format(start) + " 】至【 " + format.format(end) + " 】内的所有数据？");
     }
 
-    private void initialView(View view) {
-        showTotalNodata = view.findViewById(R.id.show_total_nodata);
-        marqueeview = view.findViewById(R.id.marqueeview);
-        changeDate = view.findViewById(R.id.changeDate);
+    private void initialView() {
+        showTotalNodata = findViewById(R.id.show_total_nodata);
+        marqueeview = findViewById(R.id.marqueeview);
+        changeDate = findViewById(R.id.changeDate);
         changeDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectDateRange();
             }
         });
-        showTotalFragmentRecycler = view.findViewById(R.id.show_total_fragment_recycler);
-        showTotalFragmentRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        showTotalFragmentRecycler = findViewById(R.id.show_total_fragment_recycler);
+        showTotalFragmentRecycler.setLayoutManager(new LinearLayoutManager(this));
         showTotalFragmentRecycler.setAdapter(adapter);
-        showTotalFragmentRecycler.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        showTotalFragmentRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = (RecorderActivity) getActivity();
-        activity.setTitle("汇总记录");
-        setHasOptionsMenu(true);
-        infoPopWindow = new InfoPopWindow(activity);
-//        dialogFactory = new DialogFactory(getContext());
-//        toastFactory = new ToastFactory(getContext());
+        setContentView(R.layout.show_total_data_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("查看/发送汇总数据");
+        toolbar.setNavigationIcon(R.mipmap.back2);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        infoPopWindow = new InfoPopWindow(this);
         recordEntityList = new ArrayList<>();
         calendar = new GregorianCalendar(Locale.CHINA);
         end = calendar.getTimeInMillis();
@@ -250,15 +248,8 @@ public class ShowTotalDataFragment extends Fragment {
         phoneId = AppSetupOperator.getPhoneId();
         adapter = new ShowTotalAdapter();
         adapter.updateList(start, end);
-        cacheDir = activity.getCacheDir();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.show_total_data_fragment_layout2, container, false);
-        initialView(view);
-        return view;
+        cacheDir = getCacheDir();
+        initialView();
     }
 
     @Override
@@ -277,7 +268,7 @@ public class ShowTotalDataFragment extends Fragment {
             return;
         }
         if (Build.VERSION.SDK_INT >= 24) {
-            fileUri = FileProvider.getUriForFile(getContext(), "th.yzw.specialrecorder.fileprovider", file);
+            fileUri = FileProvider.getUriForFile(this, "th.yzw.specialrecorder.fileprovider", file);
         } else {
             fileUri = Uri.fromFile(file);
         }
@@ -294,7 +285,7 @@ public class ShowTotalDataFragment extends Fragment {
             infoPopWindow.show("该时间段内没有汇总数据！");
             return;
         }
-        new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
             public void hasPermission() {
                 share();
@@ -346,9 +337,9 @@ public class ShowTotalDataFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.showtotal_toolbar_menu, menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.showtotal_toolbar_menu,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

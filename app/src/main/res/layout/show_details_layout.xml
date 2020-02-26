@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/show_details_nodata"
         android:layout_width="match_parent"
@@ -18,31 +25,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
-
+        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="@color/colorPrimary"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <TextView
             android:id="@+id/show_details_fragment_preMonth"
-            android:layout_margin="4dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
+            android:layout_margin="4dp"
             android:background="@drawable/mergedata_button_selector"
             android:drawableLeft="@drawable/ic_keyboard_arrow_left_24dp"
-            android:text="@string/last_month"
             android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="@string/last_month"
             android:textColor="@color/colorPrimary" />
 
         <TextSwitcher
@@ -50,35 +56,21 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            android:layout_weight="1.5"/>
+            android:layout_weight="1.5" />
 
         <TextView
             android:id="@+id/show_details_fragment_nextMonth"
-            android:layout_margin="4dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_margin="4dp"
             android:background="@drawable/mergedata_button_selector"
             android:drawableRight="@drawable/ic_chevron_right_24dp"
-            android:text="@string/next_month"
             android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="@string/next_month"
             android:textColor="@color/colorPrimary" />
     </LinearLayout>
-
-    <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:id="@+id/show_details_fragment_swiperefresh"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/linearLayout2"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent">-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/show_details_fragment_recycler"
@@ -91,6 +83,5 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
     </android.support.v7.widget.RecyclerView>
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
 </android.support.constraint.ConstraintLayout>

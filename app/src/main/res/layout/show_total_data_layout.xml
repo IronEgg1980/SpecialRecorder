@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
-        android:paddingRight="8dp"
-        android:paddingLeft="8dp"
         android:id="@+id/relativelayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/colorPrimary"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <com.marquee.dingrui.marqueeviewlib.MarqueeView
             android:id="@+id/marqueeview"
@@ -27,7 +34,6 @@
             app:marqueeview_text_size="14.0"
             app:marqueeview_text_speed="2"
             app:marqueeview_text_startlocationdistance="0.5" />
-
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/changeDate"
             android:layout_width="wrap_content"
@@ -40,8 +46,6 @@
             android:paddingRight="12dp"
             android:text="日期范围"
             android:textColor="@color/colorPrimary" />
-
-
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -50,19 +54,16 @@
         android:layout_height="0dp"
         android:background="@color/background"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="8dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativelayout">
 
     </android.support.v7.widget.RecyclerView>
-
     <TextView
-
         android:id="@+id/show_total_nodata"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -73,5 +74,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativelayout" />
+
+
 
 </android.support.constraint.ConstraintLayout>

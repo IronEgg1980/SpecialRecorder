@@ -44,6 +44,7 @@ import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.JSON.ItemStatisticJSONHelper;
 import th.yzw.specialrecorder.JSON.JSONHelper;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
@@ -58,7 +59,7 @@ import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
-public class ChartActivity extends AppCompatActivity {
+public class ChartActivity extends MyActivity {
     private final String microMsgPath = Environment.getExternalStorageDirectory() + "/tencent/MicroMsg/download/";
 
     private PieChart pieChart1, pieChart2;

@@ -1,44 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.RecorderActivity">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    android:id="@+id/drawerLayout">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/container"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/Theme.AppCompat.Light"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
-        />
+        android:layout_height="match_parent"
+        tools:context=".view.RecorderActivity">
 
-    <FrameLayout
-        android:id="@+id/framelayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="1dp"
-        android:background="@color/background"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        <include layout="@layout/toolbar_layout"/>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="@color/background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_tab_menu" />
+        <FrameLayout
+            android:id="@+id/framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+    </android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.NavigationView
+        android:background="@android:color/transparent"
+        android:layout_gravity = "start"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/menu_container">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+            <LinearLayout
+                android:background="@color/white"
+                android:showDividers="middle"
+                android:divider="@android:drawable/divider_horizontal_textfield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/menu_show_details_tv"
+                    android:drawableLeft="@mipmap/details"
+                    android:text="查看/修改数据"
+                    style="@style/MenuTextView"/>
+                <TextView
+                    android:id="@+id/menu_show_all_tv"
+                    android:drawableLeft="@mipmap/summary"
+                    android:text="发送汇总数据"
+                    style="@style/MenuTextView"/>
+                <TextView
+                    android:id="@+id/menu_merge_tv"
+                    android:drawableLeft="@mipmap/merge"
+                    android:text="合并数据"
+                    style="@style/MenuTextView"/>
+                <RelativeLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content">
+                    <TextView
+                        android:id="@+id/menu_setup_tv"
+                        android:drawableLeft="@mipmap/set_up"
+                        android:text="设置"
+                        style="@style/MenuTextView"/>
+                    <TextView
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/appUpdatedFlag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/app_update_info_bg"
+                        android:padding="4dp"
+                        android:text="new!"
+                        android:textStyle="italic"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
+                </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>

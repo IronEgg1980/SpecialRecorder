@@ -68,8 +68,20 @@ public class DateRangePopWindow extends PopupWindow {
 
     private void getDate() {
         long[] times = datePicker.getSelectDateRange();
-        startDay = times[0];
-        endDay = times[1];
+        Calendar calendar = new GregorianCalendar(Locale.CHINA);
+        calendar.setTimeInMillis(times[0]);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        startDay = calendar.getTimeInMillis();
+
+        calendar.setTimeInMillis(times[1]);
+        calendar.set(Calendar.HOUR_OF_DAY,23);
+        calendar.set(Calendar.MINUTE,59);
+        calendar.set(Calendar.SECOND,59);
+        calendar.set(Calendar.MILLISECOND,999);
+        endDay = calendar.getTimeInMillis();
     }
 
     private void showStartEndDate(boolean isFirstClick){

@@ -97,7 +97,6 @@ public class TouchInputDataFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (RecorderActivity) getActivity();
-        activity.setTitle("首页");
         setHasOptionsMenu(true);
         vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
         showInfoMode = AppSetupOperator.getShowInformationMode();

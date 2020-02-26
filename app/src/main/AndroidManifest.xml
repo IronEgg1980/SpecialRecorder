@@ -43,7 +43,15 @@
         </activity>
         <activity android:name=".view.show_all_data.ShowDataActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".view.show_details.ShowDetailsActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".view.setup.EditItemActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.ShowTotalDataActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.merge_data.MergeDataActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.setup.SetupActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">

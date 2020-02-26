@@ -87,7 +87,10 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         preIndex = position;
     }
 
-    private void showMenu(final View view, final int position) {
+    private void showMenu(SonViewHolder sonViewHolder) {
+        final int position = sonViewHolder.getAdapterPosition();
+        DetailsItemGroupView view = sonViewHolder.root;
+        int[] location = view.getClickPosition();
         click(position);
         String[] menuitem = {"修改", "删除"};
         Drawable[] icons = new Drawable[2];
@@ -110,7 +113,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                 click(position);
             }
         });
-        popWindow.showAsDropDown(view);
+        popWindow.showAtLocation(view,Gravity.NO_GRAVITY,location[0],location[1]);
     }
 
     protected void editData() {
@@ -149,14 +152,13 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
 
     @Override
     public void onBindViewHolder(@NonNull final SonViewHolder sonViewHolder, int i) {
-        final int index = sonViewHolder.getAdapterPosition();
-        RecordEntity entity = mList.get(index);
+        RecordEntity entity = mList.get(i);
         sonViewHolder.showItemName.setText(entity.getName());
         sonViewHolder.showItemCount.setText(String.valueOf(entity.getCount()));
         sonViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMenu(sonViewHolder.root, index);
+                showMenu(sonViewHolder);
             }
         });
         if (entity.isSelected()) {
@@ -174,7 +176,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     }
 
     protected class SonViewHolder extends RecyclerView.ViewHolder {
-        private RelativeLayout root;
+        private DetailsItemGroupView root;
         private TextView showItemName;
         private TextView showItemCount;
 

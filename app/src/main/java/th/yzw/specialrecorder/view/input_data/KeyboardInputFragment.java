@@ -60,7 +60,6 @@ public class KeyboardInputFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         RecorderActivity activity = (RecorderActivity) getActivity();
-        activity.setTitle("首页");
         setHasOptionsMenu(true);
         currentIndex = -1;
         list = ItemNameOperator.findAll(true);

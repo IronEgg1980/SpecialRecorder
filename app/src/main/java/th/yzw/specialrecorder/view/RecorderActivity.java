@@ -4,20 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,59 +21,93 @@ import th.yzw.specialrecorder.ActivityManager;
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.AppUpdater;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
+import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.input_data.KeyboardInputFragment;
-import th.yzw.specialrecorder.view.merge_data.MergeDataFragment;
-import th.yzw.specialrecorder.view.setup.SetupFragment;
+import th.yzw.specialrecorder.view.merge_data.MergeDataActivity;
+import th.yzw.specialrecorder.view.setup.SetupActivity;
 import th.yzw.specialrecorder.view.setup.ShowAppUpdateInfomationDialog;
-import th.yzw.specialrecorder.view.show_details.ShowDetailsFragment;
-import th.yzw.specialrecorder.view.show_total.ShowTotalDataFragment;
 import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
+import th.yzw.specialrecorder.view.show_details.ShowDetailsActivity;
 
-public class RecorderActivity extends AppCompatActivity {
+public class RecorderActivity extends MyActivity {
     private String TAG = "殷宗旺";
 
     private FragmentManager fragmentManager;
     private long firstTouch;
     private android.support.v7.widget.Toolbar toolbar;
-    private BottomNavigationView navigation;
     private BroadcastReceiver receiver;
-    private TextView textView;
     private ToastFactory toastFactory;
+    private DrawerLayout drawerLayout;
+    private TextView badgeView;
 
 
     private void initialView() {
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        drawerLayout=findViewById(R.id.drawerLayout);
+        findViewById(R.id.menu_show_details_tv).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return navigationClick(item.getItemId());
+            public void onClick(View v) {
+                showDetails();
             }
         });
-        navigation.setSelectedItemId(R.id.input);
-        //获取整个的NavigationView
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-//这里就是获取所添加的每一个Tab(或者叫menu)，
-        BottomNavigationItemView itemView = (BottomNavigationItemView) menuView.getChildAt(4);
-//加载我们的角标View，新创建的一个布局
-        View badge = LayoutInflater.from(this).inflate(R.layout.setup_badge, itemView, false);
-//添加到Tab上
-        itemView.addView(badge);
-        textView = badge.findViewById(R.id.appUpdatedFlag);
+        findViewById(R.id.menu_show_all_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAll();
+            }
+        });
+        findViewById(R.id.menu_merge_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mergeData();
+            }
+        });
+        findViewById(R.id.menu_setup_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setup();
+            }
+        });
+        badgeView = findViewById(R.id.appUpdatedFlag);
+    }
+
+    private void showDetails(){
+        drawerLayout.closeDrawers();
+        Intent intent = new Intent(RecorderActivity.this, ShowDetailsActivity.class);
+        startActivity(intent);
+    }
+
+    private void showAll(){
+        drawerLayout.closeDrawers();
+        Intent intent = new Intent(RecorderActivity.this, ShowTotalDataActivity.class);
+        startActivity(intent);
+    }
+
+    private void mergeData(){
+        drawerLayout.closeDrawers();
+        Intent intent = new Intent(RecorderActivity.this, MergeDataActivity.class);
+        startActivity(intent);
+    }
+
+    private void setup(){
+        drawerLayout.closeDrawers();
+        Intent intent = new Intent(RecorderActivity.this, SetupActivity.class);
+        startActivity(intent);
     }
 
     private void showUpdateInfo() {
         long currentVersion = AppSetupOperator.getLastAppVersion();
         long downloadVersion = AppSetupOperator.getDownloadAppVersion();
         if (downloadVersion > currentVersion) {
-            textView.setVisibility(View.VISIBLE);
+            badgeView.setVisibility(View.VISIBLE);
             if (AppSetupOperator.isForceUpdate()) {
                 //force update
                 showForceUpdateDialog();
@@ -88,7 +115,7 @@ public class RecorderActivity extends AppCompatActivity {
                 showUpdateDialog();
             }
         } else {
-            textView.setVisibility(View.INVISIBLE);
+            badgeView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -165,47 +192,6 @@ public class RecorderActivity extends AppCompatActivity {
                 });
     }
 
-    private boolean navigationClick(int id) {
-        switch (id) {
-            case R.id.input:
-                //输入数据
-                toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.input_white_24dp));
-                Fragment fragment = null;
-                if (AppSetupOperator.getInputMethod() == 1) {
-                    fragment = new KeyboardInputFragment();
-                } else {
-                    fragment = new TouchInputDataFragment();
-                }
-                fragmentManager.beginTransaction().replace(R.id.framelayout, fragment).commit();
-                return true;
-            case R.id.show_details:
-                //详细记录
-                toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.show_white_24dp));
-                Fragment fragment1 = new ShowDetailsFragment();
-                fragmentManager.beginTransaction().replace(R.id.framelayout, fragment1).commit();
-                return true;
-            case R.id.show_alldata:
-                //汇总记录
-                toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.showtotal2_white_24dp));
-                Fragment fragment2 = new ShowTotalDataFragment();
-                fragmentManager.beginTransaction().replace(R.id.framelayout, fragment2).commit();
-                return true;
-            case R.id.merge_data:
-                //合并数据
-                toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.merge2_white_24dp));
-                Fragment fragment3 = new MergeDataFragment();
-                fragmentManager.beginTransaction().replace(R.id.framelayout, fragment3).commit();
-                return true;
-            case R.id.setup:
-                //设置
-                toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.settings_white_24dp));
-                Fragment fragment4 = new SetupFragment();
-                fragmentManager.beginTransaction().replace(R.id.framelayout, fragment4).commit();
-                return true;
-        }
-        return false;
-    }
-
     private void initialBroadcastReceiver() {
         receiver = new BroadcastReceiver() {
             @Override
@@ -222,9 +208,15 @@ public class RecorderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder);
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.input_white_24dp));
-        setTitle("SpecialRecorder");
+        toolbar.setNavigationIcon(R.mipmap.menu_right);
+        setTitle("首页");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
         ActivityManager.add(this);
         firstTouch = 0;
         fragmentManager = getSupportFragmentManager();
@@ -236,6 +228,13 @@ public class RecorderActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Fragment fragment = null;
+        if (AppSetupOperator.getInputMethod() == 1) {
+            fragment = new KeyboardInputFragment();
+        } else {
+            fragment = new TouchInputDataFragment();
+        }
+        fragmentManager.beginTransaction().replace(R.id.framelayout, fragment).commit();
         showUpdateInfo();
     }
 
@@ -246,13 +245,13 @@ public class RecorderActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void setTitle(String s) {
-        toolbar.setTitle(s);
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if(drawerLayout.isDrawerOpen(Gravity.START)){
+                drawerLayout.closeDrawers();
+                return true;
+            }
             long touchTime = System.currentTimeMillis();
             if (touchTime - firstTouch > 2000) {
                 firstTouch = touchTime;
@@ -265,16 +264,5 @@ public class RecorderActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public Resources getResources() {
-        Resources resources = super.getResources();
-        if (resources != null && resources.getConfiguration().fontScale != 1.0f) {
-            android.content.res.Configuration configuration = resources.getConfiguration();
-            configuration.fontScale = 1.0f;
-            resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-        }
-        return resources;
     }
 }

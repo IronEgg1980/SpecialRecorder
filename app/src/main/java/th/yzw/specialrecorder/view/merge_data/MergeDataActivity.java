@@ -10,15 +10,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +41,7 @@ import th.yzw.specialrecorder.DAO.ImportFileOperator;
 import th.yzw.specialrecorder.DAO.ShowDataOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
 import th.yzw.specialrecorder.JSON.ShowDataJSONHelper;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
@@ -54,7 +53,6 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
-import th.yzw.specialrecorder.view.RecorderActivity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
@@ -62,10 +60,8 @@ import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.SelectMonthPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
-import th.yzw.specialrecorder.unuse.ShareTotalDataDialogFragment;
 
-public class MergeDataFragment extends Fragment {
-    private String TAG = "殷宗旺";
+public class MergeDataActivity extends MyActivity {
 
     protected class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -113,7 +109,6 @@ public class MergeDataFragment extends Fragment {
     private Button mergeDataImportrecord;
     private Button mergeDataImportfiles;
     private Button mergeDataClearfiles;
-    private RecorderActivity activity;
     private String phoneId;
     private SimpleDateFormat format, format1;
     private List<SumTotalRecord> list;
@@ -128,37 +123,38 @@ public class MergeDataFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isCreate = true;
-        activity = (RecorderActivity) getActivity();
-        activity.setTitle("数据合并");
-        setHasOptionsMenu(true);
-        mergeMonth = System.currentTimeMillis();
         isHideMode = AppSetupOperator.isHideMode();
+        if (isHideMode){
+            setContentView(R.layout.setup_layout);
+        }else{
+            setContentView(R.layout.merge_data_layout);
+        }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.back2);
+        toolbar.setTitle("合并数据");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        isCreate = true;
+        mergeMonth = System.currentTimeMillis();
         phoneId = AppSetupOperator.getPhoneId();
         format = new SimpleDateFormat("yyyy年M月份", Locale.CHINA);
         format1 = new SimpleDateFormat("yyyyMM", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
-//        toast = new ToastFactory(getContext());
         initialData();
+        initialView();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (isHideMode) {
-            return inflater.inflate(R.layout.setup_layout, container, false);
-        }
-        View view = inflater.inflate(R.layout.merge_data_fragment, container, false);
-        initialView(view);
-        changeButtonStatus(hasData);
-        infoPopWindow = new InfoPopWindow(activity);
-        return view;
-    }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
-        inflater.inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -170,40 +166,42 @@ public class MergeDataFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initialView(View view) {
-        dateTextView = view.findViewById(R.id.dateTextView);
-        mergeDataBegin = view.findViewById(R.id.merge_data_begin);
+    private void initialView() {
+        dateTextView =findViewById(R.id.dateTextView);
+        mergeDataBegin = findViewById(R.id.merge_data_begin);
         mergeDataBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 beginMergeClick(v);
             }
         });
-        mergeDataImportrecord = view.findViewById(R.id.merge_data_importrecord);
+        mergeDataImportrecord = findViewById(R.id.merge_data_importrecord);
         mergeDataImportrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 importThisDataClick(v);
             }
         });
-        mergeDataImportfiles = view.findViewById(R.id.merge_data_importfiles);
+        mergeDataImportfiles =findViewById(R.id.merge_data_importfiles);
         mergeDataImportfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 importFileClick();
             }
         });
-        mergeDataClearfiles = view.findViewById(R.id.merge_data_clearfiles);
+        mergeDataClearfiles = findViewById(R.id.merge_data_clearfiles);
         mergeDataClearfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clearReceivedFiles(v);
             }
         });
-        RecyclerView mergeDataRecyclerView = view.findViewById(R.id.merge_data_recyclerView);
-        mergeDataRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView mergeDataRecyclerView = findViewById(R.id.merge_data_recyclerView);
+        mergeDataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(list);
         mergeDataRecyclerView.setAdapter(adapter);
+        changeButtonStatus(hasData);
+        infoPopWindow = new InfoPopWindow(this);
     }
 
     private void playAnimation() {
@@ -245,14 +243,6 @@ public class MergeDataFragment extends Fragment {
         animator222.setInterpolator(interpolator);
         AnimatorSet animationSet = new AnimatorSet();
         animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222);
-//        animationSet.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                mergeDataImportrecord.setVisibility(View.VISIBLE);
-//                mergeDataImportfiles.setVisibility(View.VISIBLE);
-//            }
-//        });
         animationSet.start();
     }
 
@@ -309,7 +299,7 @@ public class MergeDataFragment extends Fragment {
     }
 
     private void reMergeData() {
-        new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
+        new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {
             @Override
             public void onDismiss(Result result, Object... values) {
                 if (result == Result.OK) {
@@ -318,7 +308,7 @@ public class MergeDataFragment extends Fragment {
                     updateList();
                     hasData = false;
                     changeButtonStatus(hasData);
-                    new ToastFactory(getContext()).showCenterToast("数据已清除");
+                    new ToastFactory(MergeDataActivity.this).showCenterToast("数据已清除");
                 }
             }
         }).toConfirm("是否清除列表内所有数据并重新合并？");
@@ -336,33 +326,23 @@ public class MergeDataFragment extends Fragment {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             if (!FileTools.isMicroMsgPathExist())
                 infoPopWindow.show("未找到数据文件目录");
-            new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
+            new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {
                 @Override
                 public void onDismiss(Result result, Object... value) {
                     if (result == Result.OK) {
                         FileTools.delMergeFiles();
-                        new ToastFactory(getContext()).showCenterToast("数据文件已清理干净");
+                        new ToastFactory(MergeDataActivity.this).showCenterToast("数据文件已清理干净");
                     }
                 }
             }).toConfirm("是否清理所有数据文件？");
-//            new ConfirmPopWindow(getActivity()).show("是否清理所有数据文件？", new IDialogDismiss() {
-//                @Override
-//                public void onDismiss(boolean isConfirmed, Object... values) {
-//                    if (isConfirmed) {
-//                        FileTools.delMergeFiles();
-//                        infoPopWindow.show("数据文件已清理干净");
-//                    }
-//                }
-//            });
         } else {
             infoPopWindow.show("外置存储卡未准备好，请稍后重试！");
-//            toast.showCenterToast("外置存储卡未准备好，请稍后重试！");
         }
     }
 
     // 清空接收到的文件
     public void clearReceivedFiles(View view) {
-        new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
             public void hasPermission() {
                 clear();
@@ -375,7 +355,7 @@ public class MergeDataFragment extends Fragment {
             infoPopWindow.show(FileTools.MICROMSG_DIR + " 目录内没有找到数据文件");
             return;
         }
-        SelectItemPopWindow popWindow = new SelectItemPopWindow(activity, fileList, true);
+        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, fileList, true);
         popWindow.show(new IDialogDismiss() {
             @Override
             public void onDismiss(Result result, Object... values) {
@@ -386,7 +366,7 @@ public class MergeDataFragment extends Fragment {
                             String name = fileList[(int) value];
                             list.add(new File(FileTools.MICROMSG_DIR, name));
                         }
-                        dataMerger = new DataMerger(getContext(), list, mergeMonth);
+                        dataMerger = new DataMerger(MergeDataActivity.this, list, mergeMonth);
                         dataMerger.setOnFinished(new IDialogDismiss() {
                             @Override
                             public void onDismiss(Result result1, Object... values) {
@@ -398,10 +378,10 @@ public class MergeDataFragment extends Fragment {
                                 updateList();
                             }
                         });
-                        dataWatingDialog.show(getFragmentManager(), "loading");
+                        dataWatingDialog.show(getSupportFragmentManager(), "loading");
                         dataMerger.execute();
                     } else
-                        new ToastFactory(activity).showCenterToast("未选择数据文件");
+                        new ToastFactory(MergeDataActivity.this).showCenterToast("未选择数据文件");
                 }
             }
         });
@@ -409,7 +389,7 @@ public class MergeDataFragment extends Fragment {
 
     //导入数据
     public void importFileClick() {
-        new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
             public void hasPermission() {
                 importFile(FileTools.getMergeFileList());
@@ -418,7 +398,7 @@ public class MergeDataFragment extends Fragment {
     }
 
     private void importThisData() {
-        DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(activity);
+        DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(this);
         dateRangePopWindow.show(mergeDataImportrecord, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
@@ -438,7 +418,7 @@ public class MergeDataFragment extends Fragment {
                     SumTotalOperator.saveAll(temp);
                     ImportedFile importedFile = new ImportedFile(mergeMonth, phoneId, "local");
                     importedFile.save();
-                    new ToastFactory(getContext()).showCenterToast("导入完成！");
+                    new ToastFactory(MergeDataActivity.this).showCenterToast("导入完成！");
                 }
                 updateList();
             }
@@ -448,7 +428,7 @@ public class MergeDataFragment extends Fragment {
     private void importThisDataClick(View view) {
         final ImportedFile localData = ImportFileOperator.findSingleByPhoneId(phoneId);
         if (localData != null) {
-            new ConfirmPopWindow(getActivity()).setDialogDismiss(new IDialogDismiss() {
+            new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {
                 @Override
                 public void onDismiss(Result result, Object... values) {
                     if (result == Result.OK) {
@@ -465,8 +445,8 @@ public class MergeDataFragment extends Fragment {
 
     private void share() {
         OtherTools.checkFileUriExposure();
-        new EnterPWDPopWindow(activity, "发送数据", "请设置密码")
-                .setIcon(activity.getDrawable(R.drawable.ic_send_18dp))
+        new EnterPWDPopWindow(this, "发送数据", "请设置密码")
+                .setIcon(getDrawable(R.drawable.ic_send_18dp))
                 .setDialogDismiss(new IDialogDismiss() {
                     @Override
                     public void onDismiss(Result result, Object... values) {
@@ -475,7 +455,7 @@ public class MergeDataFragment extends Fragment {
                             String pwd = OtherTools.getTotalDataFilePWD((String) values[0]);
                             File file = getShareFile(pwd);
                             if (Build.VERSION.SDK_INT >= 24) {
-                                fileUri = FileProvider.getUriForFile(getContext(), "th.yzw.specialrecorder.fileprovider", file);
+                                fileUri = FileProvider.getUriForFile(MergeDataActivity.this, "th.yzw.specialrecorder.fileprovider", file);
                             } else {
                                 fileUri = Uri.fromFile(file);
                             }
@@ -488,30 +468,6 @@ public class MergeDataFragment extends Fragment {
                         }
                     }
                 }).show();
-
-//        ShareTotalDataDialogFragment fragment = new ShareTotalDataDialogFragment();
-//        fragment.setOnDismissListener(new IDialogDismiss() {
-//            @Override
-//            public void onDismiss(Result result, Object... values) {
-//                if (result == Result.OK) {
-//                    Uri fileUri = null;
-//                    String pwd = OtherTools.getTotalDataFilePWD((String) values[0]);
-//                    File file = getShareFile(pwd);
-//                    if (Build.VERSION.SDK_INT >= 24) {
-//                        fileUri = FileProvider.getUriForFile(getContext(), "th.yzw.specialrecorder.fileprovider", file);
-//                    } else {
-//                        fileUri = Uri.fromFile(file);
-//                    }
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setType("*/*");
-//                    intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-//                    intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(Intent.createChooser(intent, "发送给："));
-//                }
-//            }
-//        });
-//        fragment.show(getFragmentManager(), "share");
     }
 
     private void shareData() {
@@ -519,7 +475,7 @@ public class MergeDataFragment extends Fragment {
             infoPopWindow.show("列表内没有数据！\n请先合并数据，全部完成后再发送。");
             return;
         }
-        new PermissionHelper(activity, getContext(), new PermissionHelper.OnResult() {
+        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
             public void hasPermission() {
                 share();
@@ -529,14 +485,14 @@ public class MergeDataFragment extends Fragment {
 
     //生成加密的分享文件
     File getShareFile(String pwd) {
-        FileTools.clearFiles(getContext().getCacheDir());
+        FileTools.clearFiles(getCacheDir());
         String fileName = format1.format(mergeMonth) + ".total";
         if (FileTools.isMicroMsgPathExist()) {
             File microMsgFile = new File(FileTools.MICROMSG_DIR, fileName);
             if (microMsgFile.exists())
                 microMsgFile.delete();
         }
-        File file = new File(getContext().getCacheDir(), fileName);
+        File file = new File(getCacheDir(), fileName);
         if (file.exists()) {
             file.delete();
         }
