@@ -73,6 +73,11 @@ public class DatePopWindow extends PopupWindow {
                 date = calendar.getTimeInMillis();
                 dismiss();
             }
+
+            @Override
+            public void onMultiClick(boolean isFirstClick) {
+
+            }
         });
 //        datePicker.setMaxDate(calendar.getTimeInMillis());
 //        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {

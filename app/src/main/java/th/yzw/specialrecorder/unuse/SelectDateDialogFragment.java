@@ -57,6 +57,11 @@ public class SelectDateDialogFragment extends DialogFragment {
                 date = calendar.getTimeInMillis();
                 dismiss();
             }
+
+            @Override
+            public void onMultiClick(boolean isFirstClick) {
+
+            }
         });
 //        datePicker.setMaxDate(calendar.getTimeInMillis());
 //        TextView cancel = view.findViewById(R.id.cancel);
