@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,77 +10,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/dateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:text="当前合并月份：2019年7月"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorPrimary"
         android:orientation="horizontal"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateTextView">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
         <RelativeLayout
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="1dp"
-            android:background="@color/background">
+            android:layout_width="120dp"
+            android:layout_height="match_parent">
             <Button
                 android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/merge_data_begin"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/mergedata_button_selector"
                 android:text="开始合并数据"
                 android:textColor="@color/textColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <Button
                 android:layout_below="@+id/merge_data_begin"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/merge_data_importrecord"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/mergedata_button_selector"
                 android:text="@string/import_record"
                 android:textColor="@color/textColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <Button
                 android:layout_below="@id/merge_data_importrecord"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/merge_data_importfiles"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:background="@drawable/mergedata_button_selector"
                 android:text="@string/import_files"
                 android:textColor="@color/textColor"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
             <Button
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/merge_data_clearfiles"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:background="@drawable/mergedata_button_selector"
                 android:text="@string/clear_imported_files"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
@@ -140,10 +124,10 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/merge_data_recyclerView"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/background"
-            android:padding="8dp" />
+            android:background="@color/white"
+            android:padding="8dp"/>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

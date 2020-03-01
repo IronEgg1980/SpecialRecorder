@@ -104,13 +104,12 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private MergeDataWatingDialog dataWatingDialog;
-    private TextView dateTextView;
     private Button mergeDataBegin;
     private Button mergeDataImportrecord;
     private Button mergeDataImportfiles;
     private Button mergeDataClearfiles;
     private String phoneId;
-    private SimpleDateFormat format, format1;
+    private SimpleDateFormat format;
     private List<SumTotalRecord> list;
     private MyAdapter adapter;
     private long mergeMonth;
@@ -142,8 +141,7 @@ public class MergeDataActivity extends MyActivity {
         isCreate = true;
         mergeMonth = System.currentTimeMillis();
         phoneId = AppSetupOperator.getPhoneId();
-        format = new SimpleDateFormat("yyyy年M月份", Locale.CHINA);
-        format1 = new SimpleDateFormat("yyyyMM", Locale.CHINA);
+        format = new SimpleDateFormat("正在合并\nyyyy年\nM月数据", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
         initialData();
         initialView();
@@ -167,7 +165,6 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void initialView() {
-        dateTextView =findViewById(R.id.dateTextView);
         mergeDataBegin = findViewById(R.id.merge_data_begin);
         mergeDataBegin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,10 +264,8 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void changeButtonStatus(boolean flag) {
-        String title = flag ? "正在合并" + format.format(mergeMonth) + "数据" : "没有合并数据╭(╯^╰)╮";
-        String s = flag ? "重新合并" : "开始合并";
-        dateTextView.setText(title);
-        mergeDataBegin.setText(s);
+        String title = flag ? format.format(mergeMonth): "开始合并";
+        mergeDataBegin.setText(title);
         if (flag) {
             if (isCreate) {
                 mergeDataImportrecord.setVisibility(View.VISIBLE);
@@ -309,6 +304,7 @@ public class MergeDataActivity extends MyActivity {
                     hasData = false;
                     changeButtonStatus(hasData);
                     new ToastFactory(MergeDataActivity.this).showCenterToast("数据已清除");
+                    showSelectMonthDialog();
                 }
             }
         }).toConfirm("是否清除列表内所有数据并重新合并？");
@@ -486,7 +482,7 @@ public class MergeDataActivity extends MyActivity {
     //生成加密的分享文件
     File getShareFile(String pwd) {
         FileTools.clearFiles(getCacheDir());
-        String fileName = format1.format(mergeMonth) + ".total";
+        String fileName = format.format(mergeMonth) + ".total";
         if (FileTools.isMicroMsgPathExist()) {
             File microMsgFile = new File(FileTools.MICROMSG_DIR, fileName);
             if (microMsgFile.exists())

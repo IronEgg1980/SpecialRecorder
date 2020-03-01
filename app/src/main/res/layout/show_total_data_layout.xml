@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,69 +12,78 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/relativelayout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary"
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/relativelayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:background="@color/background"-->
+<!--        android:paddingLeft="8dp"-->
+<!--        android:paddingRight="8dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/toolbar">-->
+
+<!--        <com.marquee.dingrui.marqueeviewlib.MarqueeView-->
+<!--            android:id="@+id/marqueeview"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:marqueeview_is_resetLocation="true"-->
+<!--            app:marqueeview_repet_type="repet_continuous"-->
+<!--            app:marqueeview_text_color="@color/textColor"-->
+<!--            app:marqueeview_text_distance="100"-->
+<!--            app:marqueeview_text_size="14.0"-->
+<!--            app:marqueeview_text_speed="2"-->
+<!--            app:marqueeview_text_startlocationdistance="0.5" />-->
+<!--        -->
+<!--    </RelativeLayout>-->
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/changeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_date_bg"
+        android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="2020年12月12日 至 2020年12月12日"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <com.marquee.dingrui.marqueeviewlib.MarqueeView
-            android:id="@+id/marqueeview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:marqueeview_is_resetLocation="true"
-            app:marqueeview_repet_type="repet_continuous"
-            app:marqueeview_text_color="@color/white"
-            app:marqueeview_text_distance="100"
-            app:marqueeview_text_size="14.0"
-            app:marqueeview_text_speed="2"
-            app:marqueeview_text_startlocationdistance="0.5" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/changeDate"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:background="@drawable/select_date_bg"
-            android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
-            android:gravity="center"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:text="日期范围"
-            android:textColor="@color/colorPrimary" />
-    </RelativeLayout>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/show_total_fragment_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/background"
-        android:paddingStart="20dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativelayout">
+        app:layout_constraintTop_toBottomOf="@+id/changeDate">
 
     </android.support.v7.widget.RecyclerView>
+
     <TextView
         android:id="@+id/show_total_nodata"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="没有该时间段的汇总记录"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativelayout" />
-
-
-
+        app:layout_constraintTop_toBottomOf="@+id/changeDate" />
 </android.support.constraint.ConstraintLayout>

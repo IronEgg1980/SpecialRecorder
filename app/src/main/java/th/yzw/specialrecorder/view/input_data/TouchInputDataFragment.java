@@ -42,7 +42,7 @@ public class TouchInputDataFragment extends Fragment {
     TouchInputAdapter adapter;
     SimpleDateFormat dateFormat;
     long date;
-    TextView dateTextView, textView, selectDate;
+    TextView textView, selectDate;
     int count;
     String currentName, selectName;
     RecyclerView recyclerView;
@@ -109,7 +109,7 @@ public class TouchInputDataFragment extends Fragment {
         date = System.currentTimeMillis();
         firstTouchTime = System.currentTimeMillis();
         dateFormat = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
-        adapter = new TouchInputAdapter(getResources().getColor(R.color.textColor));
+        adapter = new TouchInputAdapter(getContext());
         adapter.setMyClickListener(new MyClickListener() {
             @Override
             public void OnClick(View view, Object o) {
@@ -130,9 +130,8 @@ public class TouchInputDataFragment extends Fragment {
             radioGroup.setVisibility(View.VISIBLE);
         else
             radioGroup.setVisibility(View.GONE);
-        dateTextView = view.findViewById(R.id.add_activity2_dateTextView);
         selectDate = view.findViewById(R.id.changeDate);
-        dateTextView.setText(dateFormat.format(date));
+        selectDate.setText(dateFormat.format(date));
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -310,7 +309,7 @@ public class TouchInputDataFragment extends Fragment {
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
                 if(isConfirm){
                     date = timeInMillis[0];
-                    dateTextView.setText(dateFormat.format(date));
+                    selectDate.setText(dateFormat.format(date));
                 }
             }
         });

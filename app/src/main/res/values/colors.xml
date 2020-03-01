@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#318c8f</color>-->
-    <!--<color name="colorPrimaryDark">#318c8f</color>-->
-    <!--<color name="colorAccent">#ff4242</color>-->
-    <!--<color name="button_background">#d6b39a</color>-->
-    <!--<color name="colorPrimary">#59c1ce</color>-->
-    <!--<color name="colorPrimaryDark">#59c1ce</color>-->
-    <!--<color name="colorAccent">#e8436d</color>-->
-    <!--<color name="button_background">#e0d39c</color>-->
     <color name="colorPrimary">#01a2ac</color>
-    <color name="colorPrimaryAlpha">#2201a2ac</color>
+    <color name="colorPrimaryAlpha">#1001a2ac</color>
     <color name="colorPrimaryDark">#01a2ac</color>
     <color name="colorAccent">#e53d57</color>
     <color name="alphaAccent">#eee53d57</color>
     <color name="pop2_gb">#8f000000</color>
     <color name="pop2_center">#af000000</color>
-    <color name="button_background">#88b9f1e4</color>
+    <color name="button_background">#1001a2ac</color>
+    <color name="itemTop10TextColor">#01a2ac</color>
+    <color name="itemNormalTextColor">#01a2ac</color>
+    <color name="itemUnuseTextColor">#bbbbbb</color>
     <color name="background">#eeeeee</color>
     <color name="textColor">#444444</color>
     <color name="white">#ffffff</color>

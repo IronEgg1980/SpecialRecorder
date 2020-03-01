@@ -27,21 +27,32 @@
     <android.support.design.widget.NavigationView
         android:background="@android:color/transparent"
         android:layout_gravity = "start"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:id="@+id/menu_container">
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/menuGroup"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent">
             <LinearLayout
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:background="@color/white"
-                android:showDividers="middle"
-                android:divider="@android:drawable/divider_horizontal_textfield"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
+                <th.yzw.specialrecorder.view.TipsTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:gravity="center"
+                    android:textColor="#30000000"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:text="向左滑动关闭菜单"/>
+
                 <TextView
                     android:id="@+id/menu_show_details_tv"
                     android:drawableLeft="@mipmap/details"

@@ -22,6 +22,13 @@ public final class RecordEntityOperator {
         return LitePal.order("date desc").find(RecordEntity.class);
     }
 
+    public static List<RecordEntity> findOrderByDateDescWithOffset(int offset){
+        return LitePal.order("date desc")
+                .limit(100)
+                .offset(offset)
+                .find(RecordEntity.class);
+    }
+
     public static void update(RecordEntity recordEntity,int newValue){
         recordEntity.setCount(newValue);
         recordEntity.save();

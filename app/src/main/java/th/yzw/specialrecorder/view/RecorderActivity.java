@@ -76,6 +76,12 @@ public class RecorderActivity extends MyActivity {
                 setup();
             }
         });
+        findViewById(R.id.menuGroup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+            }
+        });
         badgeView = findViewById(R.id.appUpdatedFlag);
     }
 

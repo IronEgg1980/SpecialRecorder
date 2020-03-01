@@ -42,7 +42,7 @@ public class KeyboardInputFragment extends Fragment {
     private String TAG = "殷宗旺";
 
     private long date;
-    private TextView dateTextView, selectDate;
+    private TextView selectDate;
     private SimpleDateFormat dateformat;
     private MyPopupWin2 popupWin2;
     private MyPopWindow3 popWindow3;
@@ -98,10 +98,8 @@ public class KeyboardInputFragment extends Fragment {
             }
         });
         flowLayout.setDataSource(list);
-        dateTextView = view.findViewById(R.id.add_activity_dateTextView);
         selectDate = view.findViewById(R.id.changeDate);
-        dateTextView.setFocusable(true);
-        dateTextView.setText(dateformat.format(date));
+        selectDate.setText(dateformat.format(date));
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,14 +215,13 @@ public class KeyboardInputFragment extends Fragment {
     }
 
     private void selectDate(View view) {
-        dateTextView.requestFocus();
         DatePopWindow datePopWindow = new DatePopWindow(getActivity(), date);
         datePopWindow.show(selectDate, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
                 if (isConfirm) {
                     date = timeInMillis[0];
-                    dateTextView.setText(dateformat.format(date));
+                    selectDate.setText(dateformat.format(date));
                 }
             }
         });

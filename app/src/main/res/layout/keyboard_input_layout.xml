@@ -1,52 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <RelativeLayout
-        android:id="@+id/relativelayout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+    <TextView
+        android:id="@+id/changeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_date_bg"
+        android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+        android:drawablePadding="12dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
+        android:text="2019年7月31日"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/relativelayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:background="#10000000"-->
+<!--        android:paddingLeft="8dp"-->
+<!--        android:paddingRight="8dp">-->
 
 
-        <TextView
-            android:id="@+id/add_activity_dateTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="2019年7月31日"
-            android:textColor="@color/white" />
+<!--        <TextView-->
+<!--            android:id="@+id/add_activity_dateTextView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:clickable="true"-->
+<!--            android:focusable="true"-->
+<!--            android:gravity="center"-->
+<!--            android:text="2019年7月31日"-->
+<!--            android:textColor="@color/textColor" />-->
 
-        <TextView
-            android:id="@+id/changeDate"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:background="@drawable/select_date_bg"
-            android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:text="选择日期"
-            android:textColor="@color/colorPrimary" />
+<!--        <TextView-->
+<!--            android:id="@+id/changeDate"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:background="@drawable/select_date_bg"-->
+<!--            android:drawableLeft="@drawable/ic_date_range_cyan_600_24dp"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:paddingLeft="12dp"-->
+<!--            android:paddingRight="12dp"-->
+<!--            android:text="选择日期"-->
+<!--            android:textColor="@color/colorPrimary" />-->
 
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
     <ScrollView
         android:id="@+id/recyclerviewGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/relativelayout"
+        android:layout_height="0dp"
+        android:layout_below="@id/changeDate"
         android:layout_alignParentBottom="true"
-        android:padding="8dp">
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDate">
 
         <th.yzw.specialrecorder.view.common.FlowLayout
             android:id="@+id/flowLayout"
@@ -54,4 +81,4 @@
             android:layout_height="wrap_content" />
     </ScrollView>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -107,7 +107,7 @@ public class ShowTotalDataActivity extends MyActivity {
     private InfoPopWindow infoPopWindow;
     private List<SumTotalRecord> recordEntityList;
     private TextView showTotalNodata;
-    private MarqueeView marqueeview;
+//    private MarqueeView marqueeview;
     private AppCompatTextView changeDate;
     private RecyclerView showTotalFragmentRecycler;
     private long start, end;
@@ -132,7 +132,8 @@ public class ShowTotalDataActivity extends MyActivity {
     }
 
     private void showInfo() {
-        marqueeview.setContent(format.format(start) + " 至 " + format.format(end));
+        String s = format.format(start) + " 至 " + format.format(end);
+        changeDate.setText(s);
         if (adapter.getItemCount() == 0) {
             showTotalNodata.setVisibility(View.VISIBLE);
         } else {
@@ -206,7 +207,7 @@ public class ShowTotalDataActivity extends MyActivity {
 
     private void initialView() {
         showTotalNodata = findViewById(R.id.show_total_nodata);
-        marqueeview = findViewById(R.id.marqueeview);
+//        marqueeview = findViewById(R.id.marqueeview);
         changeDate = findViewById(R.id.changeDate);
         changeDate.setOnClickListener(new View.OnClickListener() {
             @Override

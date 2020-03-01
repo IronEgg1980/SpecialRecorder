@@ -26,7 +26,7 @@ public class TouchInputAdapter extends RecyclerView.Adapter<TouchInputAdapter.Ad
 
     private List<ItemName> items;
     private List<String> top10, allInformation;
-    private int textColor;
+    private int normalTextColor,top10TextColor,unuseTextColor;
     private boolean isShowGropFlag;
 
     public List<ItemName> getItemsList() {
@@ -50,8 +50,10 @@ public class TouchInputAdapter extends RecyclerView.Adapter<TouchInputAdapter.Ad
         this.myClickListener = myClickListener;
     }
 
-    public TouchInputAdapter(int textColor) {
-        this.textColor = textColor;
+    public TouchInputAdapter(Context context) {
+        this.normalTextColor = context.getColor(R.color.itemNormalTextColor);
+        this.top10TextColor = context.getColor(R.color.itemTop10TextColor);
+        this.unuseTextColor = context.getColor(R.color.itemUnuseTextColor);
         this.isShowGropFlag = AppSetupOperator.getShowGroupButtonStatus();
         update(true);
     }
@@ -67,13 +69,13 @@ public class TouchInputAdapter extends RecyclerView.Adapter<TouchInputAdapter.Ad
         String name = items.get(i).getName();
         addViewHolder.textView.setText(name);
         if (top10.contains(name)) {
-            addViewHolder.textView.setTextColor(Color.BLACK);
+            addViewHolder.textView.setTextColor(top10TextColor);
             addViewHolder.textView.setTypeface(Typeface.DEFAULT_BOLD);
         } else if (allInformation.contains(name)) {
-            addViewHolder.textView.setTextColor(textColor);
+            addViewHolder.textView.setTextColor(normalTextColor);
             addViewHolder.textView.setTypeface(Typeface.DEFAULT);
         } else {
-            addViewHolder.textView.setTextColor(Color.GRAY);
+            addViewHolder.textView.setTextColor(unuseTextColor);
             addViewHolder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
         }
 

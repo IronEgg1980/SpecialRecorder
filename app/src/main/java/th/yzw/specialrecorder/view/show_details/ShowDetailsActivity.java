@@ -124,7 +124,7 @@ public class ShowDetailsActivity extends MyActivity {
         });
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ShowDetailsItemDecoration(this));
+//        recyclerView.addItemDecoration(new ShowDetailsItemDecoration(this));
     }
 
     @Override
