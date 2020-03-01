@@ -37,7 +37,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     private int preIndex;
     private Context mContext;
     private ShowDetailsFatherAdapter fatherAdapter;
-    private TranslateAnimation showAnim;
+//    private TranslateAnimation showAnim;
     private EditPopWindow editPopWindow;
 
     public ShowDetailsSonAdapter(final List<RecordEntity> list, Context context, AppCompatActivity activity, ShowDetailsFatherAdapter fatherAdapter) {
@@ -62,16 +62,16 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                 }
             }
         });
-        initialAnim();
+//        initialAnim();
     }
 
-    private void initialAnim() {
-        this.showAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -1.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f);
-        this.showAnim.setDuration(400);
-    }
+//    private void initialAnim() {
+//        this.showAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+//                Animation.RELATIVE_TO_SELF, 0.0f,
+//                Animation.RELATIVE_TO_SELF, -1.0f,
+//                Animation.RELATIVE_TO_SELF, 0.0f);
+//        this.showAnim.setDuration(400);
+//    }
 
     protected void click(int position) {
         if (preIndex >= 0 && preIndex != position) {
@@ -113,6 +113,11 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                 click(position);
             }
         });
+        View view1 = popWindow.getContentView();
+        view1.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int width = view1.getMeasuredWidth();
+        int height = view1.getMeasuredHeight();
+        popWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width / 2, location[1] - height - 20);
         popWindow.showAtLocation(view,Gravity.NO_GRAVITY,location[0],location[1]);
     }
 

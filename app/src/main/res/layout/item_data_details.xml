@@ -2,12 +2,14 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:layout_marginTop="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginBottom="16dp"
-    android:elevation="16dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp">
 
     <LinearLayout
         android:id="@+id/linearTop"
@@ -15,28 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:paddingLeft="12dp"
+        <TextView
+            android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+            android:id="@+id/dateTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:padding="6dp"
-                android:layout_width="32dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_date_range_cyan_600_24dp"/>
-            <TextView
-                android:id="@+id/dateTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:padding="12dp"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimary"
-                android:text="2019年7月23日" />
-        </LinearLayout>
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:drawablePadding="12dp"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:text="2019年7月23日" />
         <LinearLayout
-            android:paddingLeft="48dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -46,7 +40,6 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingLeft="12dp"
                 android:textSize="12sp"
                 android:textColor="@android:color/darker_gray"
                 android:text="记录时间：12:35" />
@@ -57,7 +50,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|end"
                 android:textSize="12sp"
-                android:paddingRight="12dp"
                 android:textColor="@android:color/darker_gray"
                 android:text="10条记录" />
             <ImageView
@@ -76,20 +68,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="fitEnd"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="40dp"
                 android:src="@drawable/zhengsanjiao" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="56dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/details_shape"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"/>
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/details_shape"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
