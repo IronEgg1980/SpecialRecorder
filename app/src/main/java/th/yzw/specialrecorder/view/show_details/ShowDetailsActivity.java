@@ -5,13 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,22 +15,25 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import th.yzw.specialrecorder.ActivityManager;
 import th.yzw.specialrecorder.DAO.ShowDetailsOperator;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.model.ShowDetailsItemFatherEntity;
-import th.yzw.specialrecorder.view.RecorderActivity;
+import th.yzw.specialrecorder.view.common.SelectMonthPopWindow;
+import th.yzw.specialrecorder.view.common.HeadPaddingItemDecoration;
 
 public class ShowDetailsActivity extends MyActivity {
 
     private List<ShowDetailsItemFatherEntity> list;
     private Calendar calendar;
     private TextView nodata;
-    private TextSwitcher dateSwitcher;
+    private SelectMonthPopWindow popWindow;
+//    private TextSwitcher dateSwitcher;
     private ShowDetailsFatherAdapter adapter;
     private RecyclerView recyclerView;
     private SimpleDateFormat format;
+    private TextView dataTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +63,7 @@ public class ShowDetailsActivity extends MyActivity {
         } else {
             nodata.setVisibility(View.GONE);
         }
+        dataTextView.setText(format.format(calendar.getTime()));
     }
 
     public void initialView() {
@@ -72,50 +71,65 @@ public class ShowDetailsActivity extends MyActivity {
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         format = new SimpleDateFormat("yyyy年M月", Locale.CHINA);
         nodata = findViewById(R.id.show_details_nodata);
+        dataTextView = findViewById(R.id.changeDate);
+        dataTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWindow.setDate(calendar.getTimeInMillis()).show(dataTextView);
+            }
+        });
+        popWindow =  new SelectMonthPopWindow(this);
+        popWindow.setDisMiss(new OnSelectDateRangeDismiss() {
+            @Override
+            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
+                if (isConfirm) {
+                    changeDate(timeInMillis[0]);
+                }
+            }
+        });
         updateList();
         recyclerView = findViewById(R.id.show_details_fragment_recycler);
-        dateSwitcher = findViewById(R.id.show_details_fagment_textswitcher);
-        dateSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView tv = new TextView(ShowDetailsActivity.this);
-                tv.setTextSize(16);
-                tv.setTextColor(getResources().getColor(android.R.color.white));
-                tv.setSingleLine(true);
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                tv.setGravity(Gravity.CENTER);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                lp.gravity = Gravity.CENTER;
-                tv.setLayoutParams(lp);
-                tv.setClickable(false);
-                return tv;
-            }
-        });
-        dateSwitcher.setCurrentText(format.format(calendar.getTime()));
-        dateSwitcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentMonth(v);
-            }
-        });
-        findViewById(R.id.show_details_fragment_preMonth).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                preMonth(v);
-            }
-        });
-        findViewById(R.id.show_details_fragment_nextMonth).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextMonth(v);
-            }
-        });
+//        dateSwitcher = findViewById(R.id.show_details_fagment_textswitcher);
+//        dateSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+//            @Override
+//            public View makeView() {
+//                TextView tv = new TextView(ShowDetailsActivity.this);
+//                tv.setTextSize(16);
+//                tv.setTextColor(getResources().getColor(android.R.color.white));
+//                tv.setSingleLine(true);
+//                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+//                tv.setGravity(Gravity.CENTER);
+//                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                lp.gravity = Gravity.CENTER;
+//                tv.setLayoutParams(lp);
+//                tv.setClickable(false);
+//                return tv;
+//            }
+//        });
+//        dateSwitcher.setCurrentText(format.format(calendar.getTime()));
+//        dateSwitcher.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                currentMonth(v);
+//            }
+//        });
+//        findViewById(R.id.show_details_fragment_preMonth).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                preMonth(v);
+//            }
+//        });
+//        findViewById(R.id.show_details_fragment_nextMonth).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                nextMonth(v);
+//            }
+//        });
         LinearLayoutManager manager = new LinearLayoutManager(this);
         adapter = new ShowDetailsFatherAdapter(list, this, this);
         adapter.setClickItem(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                adapter.notifyDataSetChanged();
                 boolean b = (boolean) v.getTag();
                 if (b) {
                     scrollRecyclerView(adapter.getPreIndex());
@@ -124,7 +138,7 @@ public class ShowDetailsActivity extends MyActivity {
         });
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-//        recyclerView.addItemDecoration(new ShowDetailsItemDecoration(this));
+        recyclerView.addItemDecoration(new HeadPaddingItemDecoration(this));
     }
 
     @Override
@@ -145,8 +159,9 @@ public class ShowDetailsActivity extends MyActivity {
         }
     }
 
-    public void preMonth(View view) {
-        calendar.add(Calendar.MONTH, -1);
+
+    private void changeDate(long time){
+        calendar.setTimeInMillis(time);
         updateList();
         adapter.notifyDataSetChanged();
         if (adapter.getItemCount() > 0) {
@@ -154,37 +169,5 @@ public class ShowDetailsActivity extends MyActivity {
             adapter.expand(adapter.getPreIndex());
             scrollRecyclerView(adapter.getPreIndex());
         }
-        dateSwitcher.setInAnimation(this, R.anim.rtl_in);
-        dateSwitcher.setOutAnimation(this, R.anim.rtl_out);
-        dateSwitcher.setText(format.format(calendar.getTime()));
     }
-
-    public void currentMonth(View view) {
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        updateList();
-        adapter.notifyDataSetChanged();
-        if (adapter.getItemCount() > 0) {
-            adapter.setPreIndex(adapter.getItemCount() - 1);
-            adapter.expand(adapter.getPreIndex());
-            scrollRecyclerView(adapter.getPreIndex());
-        }
-        dateSwitcher.setInAnimation(this, android.R.anim.fade_in);
-        dateSwitcher.setOutAnimation(this, android.R.anim.fade_out);
-        dateSwitcher.setText(format.format(calendar.getTime()));
-    }
-
-    public void nextMonth(View view) {
-        calendar.add(Calendar.MONTH, 1);
-        updateList();
-        adapter.notifyDataSetChanged();
-        if (adapter.getItemCount() > 0) {
-            adapter.setPreIndex(adapter.getItemCount() - 1);
-            adapter.expand(adapter.getPreIndex());
-            scrollRecyclerView(adapter.getPreIndex());
-        }
-        dateSwitcher.setInAnimation(this, R.anim.lft_in);
-        dateSwitcher.setOutAnimation(this, R.anim.lft_out);
-        dateSwitcher.setText(format.format(calendar.getTime()));
-    }
-
 }

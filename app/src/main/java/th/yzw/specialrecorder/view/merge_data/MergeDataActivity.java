@@ -104,10 +104,12 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private MergeDataWatingDialog dataWatingDialog;
+    private TextView dateTextView;
     private Button mergeDataBegin;
     private Button mergeDataImportrecord;
     private Button mergeDataImportfiles;
     private Button mergeDataClearfiles;
+    private Button shareData;
     private String phoneId;
     private SimpleDateFormat format;
     private List<SumTotalRecord> list;
@@ -118,6 +120,7 @@ public class MergeDataActivity extends MyActivity {
     private DataMerger dataMerger;
     private boolean isCreate;
     private InfoPopWindow infoPopWindow;
+    private SelectMonthPopWindow selectMonthPopWindow;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,7 +131,7 @@ public class MergeDataActivity extends MyActivity {
         }else{
             setContentView(R.layout.merge_data_layout);
         }
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.include);
         toolbar.setNavigationIcon(R.mipmap.back2);
         toolbar.setTitle("合并数据");
         setSupportActionBar(toolbar);
@@ -141,30 +144,42 @@ public class MergeDataActivity extends MyActivity {
         isCreate = true;
         mergeMonth = System.currentTimeMillis();
         phoneId = AppSetupOperator.getPhoneId();
-        format = new SimpleDateFormat("正在合并\nyyyy年\nM月数据", Locale.CHINA);
+        format = new SimpleDateFormat("正在合并 yyyy年M月份 数据", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
+        selectMonthPopWindow= new SelectMonthPopWindow(this);
+        selectMonthPopWindow.setDisMiss(new OnSelectDateRangeDismiss() {
+            @Override
+            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
+                if (isConfirm) {
+                    mergeMonth = timeInMillis[0];
+                    hasData = true;
+                    changeButtonStatus(hasData);
+                }
+            }
+        });
         initialData();
         initialView();
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.clear();
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.share_data) {
-            shareData();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        menu.clear();
+//        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.share_data) {
+//            shareData();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void initialView() {
+        dateTextView = findViewById(R.id.dateTextView);
         mergeDataBegin = findViewById(R.id.merge_data_begin);
         mergeDataBegin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +206,13 @@ public class MergeDataActivity extends MyActivity {
             @Override
             public void onClick(View v) {
                 clearReceivedFiles(v);
+            }
+        });
+        shareData = findViewById(R.id.share_data);
+        shareData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareData();
             }
         });
         RecyclerView mergeDataRecyclerView = findViewById(R.id.merge_data_recyclerView);
@@ -238,8 +260,29 @@ public class MergeDataActivity extends MyActivity {
         animator222.setDuration(500);
         animator222.setStartDelay(200);
         animator222.setInterpolator(interpolator);
+
+        ObjectAnimator animator3 = ObjectAnimator.ofFloat(shareData, "alpha", 0.5f, 1f);
+        animator3.setDuration(500);
+        animator3.setStartDelay(400);
+        animator3.setInterpolator(interpolator);
+        animator3.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                shareData.setVisibility(View.VISIBLE);
+            }
+        });
+        ObjectAnimator animator33 = ObjectAnimator.ofFloat(shareData, "scaleY", 0.4f, 1.1f, 1f);
+        animator33.setStartDelay(400);
+        animator33.setDuration(500);
+        animator33.setInterpolator(interpolator);
+        ObjectAnimator animator333 = ObjectAnimator.ofFloat(shareData, "scaleX", 0.4f, 1.1f, 1f);
+        animator333.setDuration(500);
+        animator333.setStartDelay(400);
+        animator333.setInterpolator(interpolator);
+
         AnimatorSet animationSet = new AnimatorSet();
-        animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222);
+        animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222,animator3,animator33,animator333);
         animationSet.start();
     }
 
@@ -264,33 +307,28 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void changeButtonStatus(boolean flag) {
-        String title = flag ? format.format(mergeMonth): "开始合并";
+        String title = flag ? "重新合并": "开始合并";
+        String dateString = flag?format.format(mergeMonth):"轻触左侧按钮开始合并数据...";
+        dateTextView.setText(dateString);
         mergeDataBegin.setText(title);
         if (flag) {
             if (isCreate) {
                 mergeDataImportrecord.setVisibility(View.VISIBLE);
                 mergeDataImportfiles.setVisibility(View.VISIBLE);
+                shareData.setVisibility(View.VISIBLE);
             } else {
                 playAnimation();
             }
         } else {
-            mergeDataImportrecord.setVisibility(View.GONE);
-            mergeDataImportfiles.setVisibility(View.GONE);
+            mergeDataImportrecord.setVisibility(View.INVISIBLE);
+            mergeDataImportfiles.setVisibility(View.INVISIBLE);
+            shareData.setVisibility(View.INVISIBLE);
         }
         isCreate = false;
     }
 
     private void showSelectMonthDialog() {
-        new SelectMonthPopWindow(mergeDataBegin).show(new OnSelectDateRangeDismiss() {
-            @Override
-            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-                if (isConfirm) {
-                    mergeMonth = timeInMillis[0];
-                    hasData = true;
-                    changeButtonStatus(hasData);
-                }
-            }
-        });
+        selectMonthPopWindow.setDate(mergeMonth).show(mergeDataBegin);
     }
 
     private void reMergeData() {
@@ -508,7 +546,6 @@ public class MergeDataActivity extends MyActivity {
         } catch (JSONException ex) {
             ex.printStackTrace();
             infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
-//            dialogFactory.showInfoDialog("生成文件出错！原因为：" + ex.getMessage());
             return null;
         }
     }

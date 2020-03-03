@@ -15,14 +15,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hjq.permissions.Permission;
-import com.marquee.dingrui.marqueeviewlib.MarqueeView;
 
 import org.json.JSONException;
 
@@ -35,8 +34,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import th.yzw.specialrecorder.DAO.DataBackupAndRestore;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
+import th.yzw.specialrecorder.DAO.DataBackupAndRestore;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
 import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
@@ -47,10 +46,11 @@ import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.OtherTools;
+import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
+import th.yzw.specialrecorder.view.common.HeadPaddingItemDecoration;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
@@ -93,13 +93,12 @@ public class ShowTotalDataActivity extends MyActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView name, count;
-            View view;
-
+            RelativeLayout root;
             ViewHolder(View itemView) {
                 super(itemView);
-                view = itemView;
                 name = itemView.findViewById(R.id.show_item_name);
                 count = itemView.findViewById((R.id.show_item_count));
+                root = itemView.findViewById(R.id.root);
             }
         }
     }
@@ -107,8 +106,7 @@ public class ShowTotalDataActivity extends MyActivity {
     private InfoPopWindow infoPopWindow;
     private List<SumTotalRecord> recordEntityList;
     private TextView showTotalNodata;
-//    private MarqueeView marqueeview;
-    private AppCompatTextView changeDate;
+    private AppCompatTextView dateInfo;
     private RecyclerView showTotalFragmentRecycler;
     private long start, end;
     private Calendar calendar;
@@ -116,9 +114,10 @@ public class ShowTotalDataActivity extends MyActivity {
     private ShowTotalAdapter adapter;
     private File path, cacheDir;
     private String phoneId;
+    private Button changeDateBT,deleBT,shareBT;
 
     private void selectDateRange() {
-        new DateRangePopWindow(this).show(changeDate, new OnSelectDateRangeDismiss() {
+        new DateRangePopWindow(this).show(changeDateBT, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
                 if (isConfirm) {
@@ -133,11 +132,12 @@ public class ShowTotalDataActivity extends MyActivity {
 
     private void showInfo() {
         String s = format.format(start) + " 至 " + format.format(end);
-        changeDate.setText(s);
+        dateInfo.setText(s);
         if (adapter.getItemCount() == 0) {
             showTotalNodata.setVisibility(View.VISIBLE);
         } else {
             showTotalNodata.setVisibility(View.GONE);
+            showTotalFragmentRecycler.smoothScrollToPosition(0);
         }
     }
 
@@ -207,12 +207,26 @@ public class ShowTotalDataActivity extends MyActivity {
 
     private void initialView() {
         showTotalNodata = findViewById(R.id.show_total_nodata);
-//        marqueeview = findViewById(R.id.marqueeview);
-        changeDate = findViewById(R.id.changeDate);
-        changeDate.setOnClickListener(new View.OnClickListener() {
+        dateInfo = findViewById(R.id.dateTextView);
+        changeDateBT = findViewById(R.id.changeDate);
+        changeDateBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectDateRange();
+            }
+        });
+        deleBT = findViewById(R.id.dele_data);
+        deleBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dele();
+            }
+        });
+        shareBT = findViewById(R.id.send_data);
+        shareBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareData();
             }
         });
         showTotalFragmentRecycler = findViewById(R.id.show_total_fragment_recycler);
@@ -337,22 +351,4 @@ public class ShowTotalDataActivity extends MyActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.showtotal_toolbar_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.share_data:
-                shareData();
-                break;
-            case R.id.dele_data:
-                dele();
-                break;
-        }
-        return true;
-    }
 }

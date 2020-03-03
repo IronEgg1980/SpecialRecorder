@@ -3,39 +3,34 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:id="@+id/show_item_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentStart="true">
-        <TextView
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:id="@+id/show_item_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_weight="2"
-            android:text="aqmsghxj0.125"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
+        android:gravity="center_vertical"
+        android:text="aqmsghxj0.125"
+        android:textColor="@color/textColor"
+        android:textSize="16sp" />
 
-        <TextView
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:id="@+id/show_item_count"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical|end"
-            android:text="9999"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-    </LinearLayout>
+    <TextView
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:id="@+id/show_item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="9999"
+        android:textColor="@color/textColor"
+        android:textSize="16sp" />
 
 <!--    <LinearLayout-->
 <!--        android:layout_centerVertical="true"-->

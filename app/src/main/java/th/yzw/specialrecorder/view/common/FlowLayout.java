@@ -84,6 +84,14 @@ public class FlowLayout extends RelativeLayout {
         int alignTopAnchor = generateViewId();
         int endOfId = -1;
         int textViewPadding = OtherTools.dip2px(getContext(),6);
+
+        View headerView = new View(getContext());
+        headerView.setId(alignTopAnchor);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,OtherTools.dip2px(getContext(),40));
+        layoutParams.bottomMargin = textViewMargin;
+        layoutParams.addRule(ALIGN_PARENT_TOP,1);
+        addView(headerView,layoutParams);
+
         for (int i = 0; i < mList.size(); i++) {
             final TextView view = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.itemname_list_item, null);
             view.setId(index);

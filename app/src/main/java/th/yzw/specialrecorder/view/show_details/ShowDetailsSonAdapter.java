@@ -7,15 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -95,7 +89,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         String[] menuitem = {"修改", "删除"};
         Drawable[] icons = new Drawable[2];
         icons[0] = view.getContext().getDrawable(R.drawable.ic_edit_18dp);
-        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_white_24dp);
+        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_24dp);
         final MenuPopWindow popWindow = new MenuPopWindow(view, menuitem, icons);
         popWindow.setClickListener(new MyClickListener() {
             @Override

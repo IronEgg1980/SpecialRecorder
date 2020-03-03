@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,78 +11,90 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/relativelayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:background="@color/background"-->
-<!--        android:paddingLeft="8dp"-->
-<!--        android:paddingRight="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/toolbar">-->
-
-<!--        <com.marquee.dingrui.marqueeviewlib.MarqueeView-->
-<!--            android:id="@+id/marqueeview"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:marqueeview_is_resetLocation="true"-->
-<!--            app:marqueeview_repet_type="repet_continuous"-->
-<!--            app:marqueeview_text_color="@color/textColor"-->
-<!--            app:marqueeview_text_distance="100"-->
-<!--            app:marqueeview_text_size="14.0"-->
-<!--            app:marqueeview_text_speed="2"-->
-<!--            app:marqueeview_text_startlocationdistance="0.5" />-->
-<!--        -->
-<!--    </RelativeLayout>-->
-    <android.support.v7.widget.AppCompatTextView
+    <Button
         android:id="@+id/changeDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_date_bg"
-        android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
-        android:drawablePadding="8dp"
-        android:gravity="center"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="2020年12月12日 至 2020年12月12日"
-        android:textColor="@color/colorPrimary"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/mergedata_button_selector"
+        android:drawableTop="@drawable/ic_date_range_cyan_600_24dp"
+        android:paddingTop="8dp"
+        android:text="日期范围"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/show_total_fragment_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeDate">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/show_total_nodata"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="没有该时间段的汇总记录"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <Button
+        android:id="@+id/dele_data"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:paddingTop="8dp"
+        android:background="@drawable/mergedata_button_selector"
+        android:drawableTop="@drawable/ic_delete_24dp"
+        android:text="删除数据"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changeDate" />
-</android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/send_data"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:paddingTop="8dp"
+        android:background="@drawable/mergedata_button_selector"
+        android:drawableTop="@drawable/ic_share_24dp"
+        android:text="发送数据"
+        android:textColor="@color/textColor"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dele_data" />
+
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dele_data"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="2020年12月12日 至 2020年12月12日"
+            android:textColor="@color/colorPrimary" />
+        <android.support.v7.widget.RecyclerView
+            android:background="@color/white"
+            android:id="@+id/show_total_fragment_recycler"
+            android:layout_marginTop="32dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:background="@color/white"
+            android:id="@+id/show_total_nodata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="没有该时间段的汇总记录"
+            android:textSize="18sp" />
+    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>

@@ -1,9 +1,11 @@
 package th.yzw.specialrecorder.view.common;
 
+import android.app.Activity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.NumberPicker;
 import android.widget.PopupWindow;
@@ -22,10 +24,10 @@ public class SelectMonthPopWindow extends PopupWindow {
     private DatePicker datePicker;
     private long date;
     private Calendar calendar;
-    private View mParent;
+    private Activity mActivity;
 
-    public SelectMonthPopWindow(View parent){
-        mParent = parent;
+    public SelectMonthPopWindow(Activity activity){
+        mActivity = activity;
         calendar = new GregorianCalendar(Locale.CHINA);
 
         createView();
@@ -36,14 +38,30 @@ public class SelectMonthPopWindow extends PopupWindow {
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.DateRangePopWindowAnim);
-
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                darkenBackground(1.0f);
+            }
+        });
     }
 
-    public void show(OnSelectDateRangeDismiss onDismiss){
+    public SelectMonthPopWindow setDate(long timeInMillis){
+        calendar.setTimeInMillis(timeInMillis);
+        return this;
+    }
+
+    public SelectMonthPopWindow setDisMiss(OnSelectDateRangeDismiss onDismiss){
         this.onSelectDateRangeDismiss = onDismiss;
+        return this;
+    }
+
+    public void show(View parent){
+        darkenBackground(0.5f);
         int[] location = new int[2];
-        mParent.getLocationOnScreen(location);
-        showAtLocation(mParent, Gravity.NO_GRAVITY,location[0],location[1]);
+        parent.getLocationOnScreen(location);
+        datePicker.updateDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),28);
+        showAtLocation(parent, Gravity.NO_GRAVITY,location[0],location[1]);
     }
 
     private void hideDayNumpicker(DatePicker _datePicker){
@@ -64,7 +82,7 @@ public class SelectMonthPopWindow extends PopupWindow {
     }
 
     private void createView(){
-        View view = LayoutInflater.from(mParent.getContext()).inflate(R.layout.select_month,null);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.select_month,null);
         datePicker = view.findViewById(R.id.date);
         hideDayNumpicker(datePicker);
         datePicker.setMaxDate(calendar.getTimeInMillis());
@@ -89,6 +107,13 @@ public class SelectMonthPopWindow extends PopupWindow {
             }
         });
         setContentView(view);
+    }
+
+    private void darkenBackground(Float bgcolor) {
+        WindowManager.LayoutParams lp = mActivity.getWindow().getAttributes();
+        lp.alpha = bgcolor;
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        mActivity.getWindow().setAttributes(lp);
     }
 
 }

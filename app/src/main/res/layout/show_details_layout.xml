@@ -24,62 +24,80 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearLayout2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:paddingLeft="8dp"-->
+<!--        android:paddingRight="8dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/toolbar">-->
 
-        <TextView
-            android:id="@+id/show_details_fragment_preMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:background="@drawable/mergedata_button_selector"
-            android:drawableLeft="@drawable/ic_keyboard_arrow_left_24dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:text="@string/last_month"
-            android:textColor="@color/colorPrimary" />
+<!--        <TextView-->
+<!--            android:id="@+id/show_details_fragment_preMonth"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:background="@drawable/mergedata_button_selector"-->
+<!--            android:drawableLeft="@drawable/ic_keyboard_arrow_left_24dp"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:paddingLeft="12dp"-->
+<!--            android:paddingRight="12dp"-->
+<!--            android:text="@string/last_month"-->
+<!--            android:textColor="@color/colorPrimary" />-->
 
-        <TextSwitcher
-            android:id="@+id/show_details_fagment_textswitcher"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:layout_weight="1.5" />
+<!--        <TextSwitcher-->
+<!--            android:id="@+id/show_details_fagment_textswitcher"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:layout_weight="1.5" />-->
 
-        <TextView
-            android:id="@+id/show_details_fragment_nextMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp"
-            android:background="@drawable/mergedata_button_selector"
-            android:drawableRight="@drawable/ic_chevron_right_24dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:text="@string/next_month"
-            android:textColor="@color/colorPrimary" />
-    </LinearLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/show_details_fragment_nextMonth"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="4dp"-->
+<!--            android:background="@drawable/mergedata_button_selector"-->
+<!--            android:drawableRight="@drawable/ic_chevron_right_24dp"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:paddingLeft="12dp"-->
+<!--            android:paddingRight="12dp"-->
+<!--            android:text="@string/next_month"-->
+<!--            android:textColor="@color/colorPrimary" />-->
+<!--    </LinearLayout>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/show_details_fragment_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
-    </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/changeDate"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_date_bg"
+        android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="2020年12月12日"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
 
 </android.support.constraint.ConstraintLayout>

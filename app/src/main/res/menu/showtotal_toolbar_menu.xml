@@ -8,10 +8,10 @@
     <item android:id="@+id/dele_data"
         android:title="删除数据"
         app:showAsAction="always"
-        android:icon="@drawable/ic_delete_white_24dp"/>
+        android:icon="@drawable/ic_delete_24dp"/>
     <item android:id="@+id/share_data"
         android:title="分享数据"
-        android:icon="@mipmap/share_white_24dp"
+        android:icon="@drawable/ic_share_24dp"
         app:showAsAction="always"
         />
 </menu>

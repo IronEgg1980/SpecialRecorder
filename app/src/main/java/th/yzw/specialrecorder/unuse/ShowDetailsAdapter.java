@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view.show_details;
+package th.yzw.specialrecorder.unuse;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -11,10 +11,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
@@ -26,6 +23,7 @@ import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 import th.yzw.specialrecorder.view.common.MenuPopWindow;
+import th.yzw.specialrecorder.view.show_details.DetailsItemGroupView;
 
 public class ShowDetailsAdapter extends RecyclerView.Adapter {
     private List<RecordEntity> mList;
@@ -151,7 +149,7 @@ public class ShowDetailsAdapter extends RecyclerView.Adapter {
         String[] menuitem = {"修改", "删除"};
         Drawable[] icons = new Drawable[2];
         icons[0] = view.getContext().getDrawable(R.drawable.ic_edit_18dp);
-        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_white_24dp);
+        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_24dp);
         final MenuPopWindow popWindow = new MenuPopWindow(view, menuitem, icons);
         popWindow.setClickListener(new MyClickListener() {
             @Override
