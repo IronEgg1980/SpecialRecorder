@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -105,11 +109,12 @@ public class MergeDataActivity extends MyActivity {
 
     private MergeDataWatingDialog dataWatingDialog;
     private TextView dateTextView;
-    private Button mergeDataBegin;
-    private Button mergeDataImportrecord;
-    private Button mergeDataImportfiles;
-    private Button mergeDataClearfiles;
-    private Button shareData;
+    private View mergeDataBegin;
+    private View mergeDataImportrecord;
+    private View mergeDataImportfiles;
+    private View mergeDataClearfiles;
+    private View shareData;
+    private TextView textView1,textView2,textView3,textView4;
     private String phoneId;
     private SimpleDateFormat format;
     private List<SumTotalRecord> list;
@@ -161,6 +166,15 @@ public class MergeDataActivity extends MyActivity {
         initialView();
     }
 
+    private Animator buttonClickAnima(View view){
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-30f);
+        animator.setDuration(50);
+        animator.setRepeatCount(1);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        return animator;
+    }
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,46 +193,91 @@ public class MergeDataActivity extends MyActivity {
 //    }
 
     private void initialView() {
+        textView1 = findViewById(R.id.textview1);
+        textView2 = findViewById(R.id.textview2);
+        textView3 = findViewById(R.id.textview3);
+        textView4 = findViewById(R.id.textview4);
         dateTextView = findViewById(R.id.dateTextView);
         mergeDataBegin = findViewById(R.id.merge_data_begin);
         mergeDataBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                beginMergeClick(v);
+                Animator animator = buttonClickAnima(mergeDataBegin);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        beginMergeClick(mergeDataBegin);
+                    }
+                });
+                animator.start();
             }
         });
         mergeDataImportrecord = findViewById(R.id.merge_data_importrecord);
         mergeDataImportrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importThisDataClick(v);
+                Animator animator = buttonClickAnima(mergeDataImportrecord);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        importThisDataClick(mergeDataImportrecord);
+                    }
+                });
+                animator.start();
             }
         });
         mergeDataImportfiles =findViewById(R.id.merge_data_importfiles);
         mergeDataImportfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importFileClick();
+                Animator animator = buttonClickAnima(mergeDataImportfiles);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        importFileClick();
+                    }
+                });
+                animator.start();
             }
         });
         mergeDataClearfiles = findViewById(R.id.merge_data_clearfiles);
         mergeDataClearfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearReceivedFiles(v);
+                Animator animator = buttonClickAnima(mergeDataClearfiles);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        clearReceivedFiles();
+                    }
+                });
+                animator.start();
             }
         });
         shareData = findViewById(R.id.share_data);
         shareData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareData();
+                Animator animator = buttonClickAnima(shareData);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        shareData();
+                    }
+                });
+                animator.start();
             }
         });
         RecyclerView mergeDataRecyclerView = findViewById(R.id.merge_data_recyclerView);
         mergeDataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(list);
         mergeDataRecyclerView.setAdapter(adapter);
+        mergeDataRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         changeButtonStatus(hasData);
         infoPopWindow = new InfoPopWindow(this);
     }
@@ -232,6 +291,12 @@ public class MergeDataActivity extends MyActivity {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 mergeDataImportrecord.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                textView2.setVisibility(View.VISIBLE);
             }
         });
         ObjectAnimator animator11 = ObjectAnimator.ofFloat(mergeDataImportrecord, "scaleX", 0.4f, 1.1f, 1f);
@@ -250,6 +315,12 @@ public class MergeDataActivity extends MyActivity {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 mergeDataImportfiles.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                textView3.setVisibility(View.VISIBLE);
             }
         });
         ObjectAnimator animator22 = ObjectAnimator.ofFloat(mergeDataImportfiles, "scaleY", 0.4f, 1.1f, 1f);
@@ -270,6 +341,12 @@ public class MergeDataActivity extends MyActivity {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 shareData.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                textView4.setVisibility(View.VISIBLE);
             }
         });
         ObjectAnimator animator33 = ObjectAnimator.ofFloat(shareData, "scaleY", 0.4f, 1.1f, 1f);
@@ -310,12 +387,15 @@ public class MergeDataActivity extends MyActivity {
         String title = flag ? "重新合并": "开始合并";
         String dateString = flag?format.format(mergeMonth):"轻触左侧按钮开始合并数据...";
         dateTextView.setText(dateString);
-        mergeDataBegin.setText(title);
+        textView1.setText(title);
         if (flag) {
             if (isCreate) {
                 mergeDataImportrecord.setVisibility(View.VISIBLE);
                 mergeDataImportfiles.setVisibility(View.VISIBLE);
                 shareData.setVisibility(View.VISIBLE);
+                textView2.setVisibility(View.VISIBLE);
+                textView3.setVisibility(View.VISIBLE);
+                textView4.setVisibility(View.VISIBLE);
             } else {
                 playAnimation();
             }
@@ -323,6 +403,9 @@ public class MergeDataActivity extends MyActivity {
             mergeDataImportrecord.setVisibility(View.INVISIBLE);
             mergeDataImportfiles.setVisibility(View.INVISIBLE);
             shareData.setVisibility(View.INVISIBLE);
+            textView2.setVisibility(View.INVISIBLE);
+            textView3.setVisibility(View.INVISIBLE);
+            textView4.setVisibility(View.INVISIBLE);
         }
         isCreate = false;
     }
@@ -375,7 +458,7 @@ public class MergeDataActivity extends MyActivity {
     }
 
     // 清空接收到的文件
-    public void clearReceivedFiles(View view) {
+    public void clearReceivedFiles() {
         new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
             public void hasPermission() {

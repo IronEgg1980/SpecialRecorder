@@ -29,7 +29,6 @@ public class ShowDetailsActivity extends MyActivity {
     private Calendar calendar;
     private TextView nodata;
     private SelectMonthPopWindow popWindow;
-//    private TextSwitcher dateSwitcher;
     private ShowDetailsFatherAdapter adapter;
     private RecyclerView recyclerView;
     private SimpleDateFormat format;
@@ -89,53 +88,8 @@ public class ShowDetailsActivity extends MyActivity {
         });
         updateList();
         recyclerView = findViewById(R.id.show_details_fragment_recycler);
-//        dateSwitcher = findViewById(R.id.show_details_fagment_textswitcher);
-//        dateSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-//            @Override
-//            public View makeView() {
-//                TextView tv = new TextView(ShowDetailsActivity.this);
-//                tv.setTextSize(16);
-//                tv.setTextColor(getResources().getColor(android.R.color.white));
-//                tv.setSingleLine(true);
-//                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//                tv.setGravity(Gravity.CENTER);
-//                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                lp.gravity = Gravity.CENTER;
-//                tv.setLayoutParams(lp);
-//                tv.setClickable(false);
-//                return tv;
-//            }
-//        });
-//        dateSwitcher.setCurrentText(format.format(calendar.getTime()));
-//        dateSwitcher.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                currentMonth(v);
-//            }
-//        });
-//        findViewById(R.id.show_details_fragment_preMonth).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                preMonth(v);
-//            }
-//        });
-//        findViewById(R.id.show_details_fragment_nextMonth).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                nextMonth(v);
-//            }
-//        });
         LinearLayoutManager manager = new LinearLayoutManager(this);
         adapter = new ShowDetailsFatherAdapter(list, this, this);
-        adapter.setClickItem(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean b = (boolean) v.getTag();
-                if (b) {
-                    scrollRecyclerView(adapter.getPreIndex());
-                }
-            }
-        });
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new HeadPaddingItemDecoration(this));
@@ -149,12 +103,16 @@ public class ShowDetailsActivity extends MyActivity {
         }
     }
 
-    private void scrollRecyclerView(int position) {
+    private void scrollRecyclerView(final int position) {
         if (recyclerView != null && adapter != null) {
-            LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+            final LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
             if (llm != null) {
-                llm.scrollToPositionWithOffset(position, 0);
-                llm.setStackFromEnd(false);
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        llm.scrollToPositionWithOffset(position, 0);
+                    }
+                },200);
             }
         }
     }
@@ -165,9 +123,7 @@ public class ShowDetailsActivity extends MyActivity {
         updateList();
         adapter.notifyDataSetChanged();
         if (adapter.getItemCount() > 0) {
-            adapter.setPreIndex(adapter.getItemCount() - 1);
-            adapter.expand(adapter.getPreIndex());
-            scrollRecyclerView(adapter.getPreIndex());
+            scrollRecyclerView(adapter.getItemCount() - 1);
         }
     }
 }

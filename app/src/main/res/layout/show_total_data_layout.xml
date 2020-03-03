@@ -11,50 +11,71 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/changeDate"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:drawableTop="@drawable/ic_date_range_cyan_600_24dp"
-        android:paddingTop="8dp"
-        android:text="日期范围"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:background="@drawable/oval_button_bg"
+        android:src="@drawable/ic_date_range_cyan_600_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <Button
-        android:id="@+id/dele_data"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:paddingTop="8dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:drawableTop="@drawable/ic_delete_24dp"
-        android:text="删除数据"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+    <TextView
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeDate" />
+        app:layout_constraintTop_toBottomOf="@+id/changeDate"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview1"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="日期范围"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/send_data"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:paddingTop="8dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:drawableTop="@drawable/ic_share_24dp"
-        android:text="发送数据"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:background="@drawable/oval_button_bg"
+        android:src="@drawable/ic_share_24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dele_data" />
+        app:layout_constraintTop_toBottomOf="@+id/textview1" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/send_data"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview2"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="发送数据"/>
+
+    <ImageButton
+        android:id="@+id/dele_data"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/oval_button_bg"
+        android:src="@drawable/ic_delete_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview2" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dele_data"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview3"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="删除数据"/>
 
 
     <FrameLayout

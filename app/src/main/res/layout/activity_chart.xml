@@ -18,7 +18,6 @@
             android:padding="8dp"/>
 
         <com.github.mikephil.charting.charts.BarChart
-            android:background="@drawable/mergedata_button_selector"
             android:id="@+id/barChart"
             android:layout_width="match_parent"
             android:layout_height="300dp"

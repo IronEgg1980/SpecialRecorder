@@ -35,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:id="@+id/exit_editmode_bt"
-            android:background="@drawable/mergedata_button_selector"
             android:text="修改好了"/>
     </LinearLayout>
     <FrameLayout

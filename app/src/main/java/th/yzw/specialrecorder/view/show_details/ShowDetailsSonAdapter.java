@@ -28,11 +28,15 @@ import th.yzw.specialrecorder.view.common.MenuPopWindow;
 public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAdapter.SonViewHolder> {
     private List<RecordEntity> mList;
     private AppCompatActivity mActivity;
-    private int preIndex;
+    private int preIndex,fatherIndex = -1;
     private Context mContext;
     private ShowDetailsFatherAdapter fatherAdapter;
 //    private TranslateAnimation showAnim;
     private EditPopWindow editPopWindow;
+
+    public void setFatherIndex(int fatherIndex) {
+        this.fatherIndex = fatherIndex;
+    }
 
     public ShowDetailsSonAdapter(final List<RecordEntity> list, Context context, AppCompatActivity activity, ShowDetailsFatherAdapter fatherAdapter) {
         this.mList = list;
@@ -131,10 +135,10 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                             ItemStatisticalInformationOperator.del(r.getName(), r.getCount());
                             mList.remove(preIndex);
                             if (getItemCount() > 0) {
-                                fatherAdapter.flushCurrent();
+                                fatherAdapter.flushCurrent(fatherIndex);
                                 preIndex = -1;
                             } else {
-                                fatherAdapter.noData();
+                                fatherAdapter.noData(fatherIndex);
                             }
                         }
                     }

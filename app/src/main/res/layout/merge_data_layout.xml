@@ -25,75 +25,114 @@
         app:layout_constraintStart_toEndOf="@id/merge_data_begin"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    <Button
+    <ImageButton
         android:id="@+id/merge_data_begin"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:text="开始合并"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:background="@drawable/oval_button_bg"
+        android:src="@mipmap/merge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/merge_data_begin"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview1"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="开始合并"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/merge_data_importrecord"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:text="@string/import_record"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:src="@mipmap/merge"
+        android:background="@drawable/oval_button_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_begin" />
-
-    <Button
+        app:layout_constraintTop_toBottomOf="@+id/textview1" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/merge_data_importrecord"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview2"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="导入\n本机记录"/>
+    <ImageButton
         android:id="@+id/merge_data_importfiles"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:text="@string/import_files"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/oval_button_bg"
+        android:src="@mipmap/merge"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_importrecord" />
+        app:layout_constraintTop_toBottomOf="@+id/textview2" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/merge_data_importfiles"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview3"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="导入\n数据文件"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/share_data"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:paddingTop="8dp"
-        android:drawableTop="@drawable/ic_share_24dp"
-        android:text="发送数据"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_share_24dp"
+        android:background="@drawable/oval_button_bg"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_importfiles" />
+        app:layout_constraintTop_toBottomOf="@+id/textview3" />
+    <TextView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/share_data"
+        android:layout_marginStart="12dp"
+        android:id="@+id/textview4"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="发送数据"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/merge_data_clearfiles"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/mergedata_button_selector"
-        android:drawableTop="@drawable/ic_delete_24dp"
-        android:paddingTop="8dp"
-        android:text="@string/clear_imported_files"
-        android:textColor="@color/colorAccent"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_delete_24dp"
+        android:background="@drawable/oval_button_bg"
+        app:layout_constraintBottom_toTopOf="@id/textview5"
         app:layout_constraintStart_toStartOf="parent" />
-
+    <TextView
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="12dp"
+        android:id="@+id/textview5"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/itemUnuseTextColor"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="清除\n数据文件"/>
 
 
     <android.support.v7.widget.RecyclerView

@@ -1,5 +1,9 @@
 package th.yzw.specialrecorder.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +21,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -114,7 +123,16 @@ public class ShowTotalDataActivity extends MyActivity {
     private ShowTotalAdapter adapter;
     private File path, cacheDir;
     private String phoneId;
-    private Button changeDateBT,deleBT,shareBT;
+    private View changeDateBT,deleBT,shareBT;
+
+    private Animator buttonClickAnima(View view){
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-30f);
+        animator.setDuration(50);
+        animator.setRepeatCount(1);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        return animator;
+    }
 
     private void selectDateRange() {
         new DateRangePopWindow(this).show(changeDateBT, new OnSelectDateRangeDismiss() {
@@ -212,21 +230,45 @@ public class ShowTotalDataActivity extends MyActivity {
         changeDateBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDateRange();
+                Animator animator = buttonClickAnima(changeDateBT);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        selectDateRange();
+                    }
+                });
+                animator.start();
             }
         });
         deleBT = findViewById(R.id.dele_data);
         deleBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dele();
+                Animator animator = buttonClickAnima(deleBT);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        dele();
+                    }
+                });
+                animator.start();
             }
         });
         shareBT = findViewById(R.id.send_data);
         shareBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareData();
+                Animator animator = buttonClickAnima(shareBT);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        shareData();
+                    }
+                });
+                animator.start();
             }
         });
         showTotalFragmentRecycler = findViewById(R.id.show_total_fragment_recycler);
