@@ -43,8 +43,6 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
-import th.yzw.specialrecorder.view.common.DialogFactory;
-import th.yzw.specialrecorder.unuse.EditDataDialogFragment;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;

@@ -131,7 +131,7 @@ public class UpdateActivity extends AppCompatActivity {
 //            OtherTools.startInstallPermissionSettingActivity(UpdateActivity.this);
             AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setTitle("提示")
-                    .setIcon(R.drawable.ic_info_cyan_800_18dp)
+                    .setIcon(R.drawable.ic_info_18dp)
                     .setMessage("请授予安装未知来源软件的权限。")
                     .setPositiveButton("去授权", new DialogInterface.OnClickListener() {
                         @Override

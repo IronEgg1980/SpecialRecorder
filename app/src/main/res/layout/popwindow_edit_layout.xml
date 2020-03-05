@@ -50,6 +50,8 @@
             <ImageView
                 android:scaleType="fitCenter"
                 android:layout_width="72dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_backspace_24dp"
                 android:id="@+id/backspace_IV"/>
@@ -71,15 +73,15 @@
             <ImageView
                 android:id="@+id/num1_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_1"/>
+                android:src="@mipmap/num_1"/>
             <ImageView
                 android:id="@+id/num2_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_2"/>
+                android:src="@mipmap/num_2"/>
             <ImageView
                 android:id="@+id/num3_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_3"/>
+                android:src="@mipmap/num_3"/>
         </LinearLayout>
         <LinearLayout
             android:layout_below="@id/linearLayout2"
@@ -88,15 +90,15 @@
             <ImageView
                 android:id="@+id/num4_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_4"/>
+                android:src="@mipmap/num_4"/>
             <ImageView
                 android:id="@+id/num5_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_5"/>
+                android:src="@mipmap/num_5"/>
             <ImageView
                 android:id="@+id/num6_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_6"/>
+                android:src="@mipmap/num_6"/>
         </LinearLayout>
         <LinearLayout
             android:layout_below="@id/linearLayout3"
@@ -105,15 +107,15 @@
             <ImageView
                 android:id="@+id/num7_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_7"/>
+                android:src="@mipmap/num_7"/>
             <ImageView
                 android:id="@+id/num8_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_8"/>
+                android:src="@mipmap/num_8"/>
             <ImageView
                 android:id="@+id/num9_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_9"/>
+                android:src="@mipmap/num_9"/>
         </LinearLayout>
         <LinearLayout
             android:layout_below="@id/linearLayout4"
@@ -122,15 +124,15 @@
             <ImageView
                 android:id="@+id/num0_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/num_0"/>
+                android:src="@mipmap/num_0"/>
             <ImageView
                 android:id="@+id/cancel_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/cancel"/>
+                android:src="@mipmap/cancel"/>
             <ImageView
                 android:id="@+id/ok_IV"
                 style="@style/NumImageView"
-                android:src="@drawable/confirm"/>
+                android:src="@mipmap/confirm"/>
         </LinearLayout>
     </RelativeLayout>
 </FrameLayout>

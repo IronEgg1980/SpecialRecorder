@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/textView2"
         style="@style/TitleTextView"
-        android:drawableLeft="@drawable/ic_info_cyan_800_18dp"
+        android:drawableLeft="@drawable/ic_info_18dp"
         android:text="程序更新"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

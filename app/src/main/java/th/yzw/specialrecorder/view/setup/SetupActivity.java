@@ -220,7 +220,6 @@ public class SetupActivity extends MyActivity {
             @Override
             public void onClick(View v) {
                 new EditPWDPopWindow(SetupActivity.this).show();
-//                new EditPassWordDialogFragment().show(getFragmentManager(), "editpassword");
             }
         });
         othersSetupUpdateItems.setOnClickListener(new View.OnClickListener() {

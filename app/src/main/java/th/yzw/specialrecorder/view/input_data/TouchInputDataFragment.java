@@ -313,17 +313,5 @@ public class TouchInputDataFragment extends Fragment {
                 }
             }
         });
-
-//        SelectDateDialogFragment fragment = new SelectDateDialogFragment();
-//        fragment.setOnSelectDateRangeDismiss(new OnSelectDateRangeDismiss() {
-//            @Override
-//            public void onDissmiss(boolean isConfirm, long... timeInMillis) {
-//                if (isConfirm) {
-//                    date = timeInMillis[0];
-//                    dateTextView.setText(dateFormat.format(date));
-//                }
-//            }
-//        });
-//        fragment.show(getFragmentManager(), "selectDate");
     }
 }
