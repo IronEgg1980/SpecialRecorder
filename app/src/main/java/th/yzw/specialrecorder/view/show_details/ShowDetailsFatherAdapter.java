@@ -1,11 +1,19 @@
 package th.yzw.specialrecorder.view.show_details;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +76,7 @@ public class ShowDetailsFatherAdapter extends RecyclerView.Adapter<ShowDetailsFa
         }
     }
 
-    private String getDateString(long time) {
+    private SpannableString getDateString(long time) {
         StringBuilder stringBuilder = new StringBuilder();
         calendar.setTimeInMillis(time);
         stringBuilder.append(calendar.get(Calendar.DAY_OF_MONTH)).append("\n");
@@ -95,7 +103,12 @@ public class ShowDetailsFatherAdapter extends RecyclerView.Adapter<ShowDetailsFa
                 stringBuilder.append("周日");
                 break;
         }
-        return stringBuilder.toString();
+        SpannableString spannableString = new SpannableString(stringBuilder);
+        spannableString.setSpan(new RelativeSizeSpan(2f),0,stringBuilder.length() - 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD),0,stringBuilder.length() - 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new UnderlineSpan(),0,stringBuilder.length() - 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(Color.GRAY),stringBuilder.length() - 2,stringBuilder.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     public void flushCurrent(int position) {

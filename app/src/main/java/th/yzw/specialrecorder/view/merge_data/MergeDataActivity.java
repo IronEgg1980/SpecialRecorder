@@ -149,7 +149,7 @@ public class MergeDataActivity extends MyActivity {
         isCreate = true;
         mergeMonth = System.currentTimeMillis();
         phoneId = AppSetupOperator.getPhoneId();
-        format = new SimpleDateFormat("正在合并 yyyy年M月份 数据", Locale.CHINA);
+        format = new SimpleDateFormat("正在合并【yyyy年M月份】数据", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
         selectMonthPopWindow= new SelectMonthPopWindow(this);
         selectMonthPopWindow.setDisMiss(new OnSelectDateRangeDismiss() {
@@ -174,23 +174,6 @@ public class MergeDataActivity extends MyActivity {
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         return animator;
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        menu.clear();
-//        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.share_data) {
-//            shareData();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     private void initialView() {
         textView1 = findViewById(R.id.textview1);

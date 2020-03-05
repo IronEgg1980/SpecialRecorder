@@ -7,4 +7,5 @@
     <dimen name="popwindow_marginBottom">8dp</dimen>
     <dimen name="popwindow_marginStart">4dp</dimen>
     <dimen name="popwindow_marginEnd">4dp</dimen>
+    <dimen name="oval_button_radius">56dp</dimen>
 </resources>

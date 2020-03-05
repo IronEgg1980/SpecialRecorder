@@ -11,11 +11,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/dateTextView"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:gravity="center"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -27,8 +28,8 @@
 
     <ImageButton
         android:id="@+id/merge_data_begin"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/oval_button_bg"
@@ -40,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/merge_data_begin"
         android:layout_marginStart="12dp"
         android:id="@+id/textview1"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -49,11 +50,11 @@
 
     <ImageButton
         android:id="@+id/merge_data_importrecord"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:src="@mipmap/merge"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/mydata"
         android:background="@drawable/oval_button_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview1" />
@@ -62,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/merge_data_importrecord"
         android:layout_marginStart="12dp"
         android:id="@+id/textview2"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -70,12 +71,11 @@
         android:text="导入\n本机记录"/>
     <ImageButton
         android:id="@+id/merge_data_importfiles"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
         android:background="@drawable/oval_button_bg"
-        android:src="@mipmap/merge"
+        android:src="@mipmap/import_file"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview2" />
     <TextView
@@ -83,7 +83,7 @@
         app:layout_constraintTop_toBottomOf="@+id/merge_data_importfiles"
         android:layout_marginStart="12dp"
         android:id="@+id/textview3"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -92,11 +92,10 @@
 
     <ImageButton
         android:id="@+id/share_data"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/ic_share_24dp"
+        android:src="@mipmap/send"
         android:background="@drawable/oval_button_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview3" />
@@ -105,7 +104,7 @@
         app:layout_constraintTop_toBottomOf="@+id/share_data"
         android:layout_marginStart="12dp"
         android:id="@+id/textview4"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -114,10 +113,10 @@
 
     <ImageButton
         android:id="@+id/merge_data_clearfiles"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:src="@drawable/ic_delete_24dp"
+        android:src="@mipmap/clear"
         android:background="@drawable/oval_button_bg"
         app:layout_constraintBottom_toTopOf="@id/textview5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -125,9 +124,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:id="@+id/textview5"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -139,7 +138,7 @@
         android:id="@+id/merge_data_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginBottom="8dp"
         android:background="@color/white"
         android:paddingStart="8dp"

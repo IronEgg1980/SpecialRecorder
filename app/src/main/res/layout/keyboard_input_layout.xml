@@ -2,9 +2,9 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/recyclerviewGroup"
@@ -32,7 +32,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/button_normal"
-        android:drawableStart="@drawable/ic_date_range_cyan_600_24dp"
+        android:drawableStart="@mipmap/date"
         android:drawablePadding="12dp"
         android:gravity="center_vertical"
         android:paddingStart="12dp"

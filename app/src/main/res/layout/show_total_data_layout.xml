@@ -13,12 +13,12 @@
 
     <ImageButton
         android:id="@+id/changeDate"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/oval_button_bg"
-        android:src="@drawable/ic_date_range_cyan_600_24dp"
+        android:src="@mipmap/date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
     <TextView
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@+id/changeDate"
         android:layout_marginStart="12dp"
         android:id="@+id/textview1"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -35,12 +35,12 @@
 
     <ImageButton
         android:id="@+id/send_data"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/oval_button_bg"
-        android:src="@drawable/ic_share_24dp"
+        android:src="@mipmap/send"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview1" />
     <TextView
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/send_data"
         android:layout_marginStart="12dp"
         android:id="@+id/textview2"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -57,12 +57,12 @@
 
     <ImageButton
         android:id="@+id/dele_data"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/oval_button_radius"
+        android:layout_height="@dimen/oval_button_radius"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/oval_button_bg"
-        android:src="@drawable/ic_delete_24dp"
+        android:src="@mipmap/dele"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview2" />
     <TextView
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dele_data"
         android:layout_marginStart="12dp"
         android:id="@+id/textview3"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/oval_button_radius"
         android:layout_height="wrap_content"
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
@@ -91,7 +91,6 @@
             android:id="@+id/dateTextView"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:drawablePadding="8dp"
             android:gravity="center"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
