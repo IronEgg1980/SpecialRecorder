@@ -26,7 +26,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.hjq.permissions.Permission;
-import com.marquee.dingrui.marqueeviewlib.MarqueeView;
 
 import org.json.JSONException;
 
@@ -184,8 +183,8 @@ public class EditItemActivity extends AppCompatActivity {
                 showSelectDialog(2);
             }
         });
-        MarqueeView marqueeView = findViewById(R.id.marqueeview);
-        marqueeView.setContent("输入项目名称后点击添加按钮可以添加项目，点击某个项目可以删除。");
+        TextView marqueeView = findViewById(R.id.marqueeview);
+        marqueeView.setText("输入项目名称后点击添加按钮可以添加项目，点击某个项目可以删除。");
     }
 
     @Override
@@ -197,22 +196,17 @@ public class EditItemActivity extends AppCompatActivity {
         itemFormalation = -1;
         itemTypeList = DataTool.getItemTypeAll();
         itemFormalationList = DataTool.getItemFomalationAll();
-//        builder = new AlertDialog.Builder(EditItemActivity.this);
-//        builder.setTitle("请选择")
-//                .setIcon(R.drawable.ic_info_cyan_800_18dp)
-//                .setNegativeButton("取消", null);
         adapter = new EditItemSetupAdapter();
         manager = new LinearLayoutManager(EditItemActivity.this);
         initialView();
         if (adapter.getItemCount() > 0)
             recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//        editText.requestFocus();
     }
 
     private void showSelectDialog(final int mode) {
         if (mode == 1) {
-            MenuPopWindow menuPopWindow = new MenuPopWindow(itemtypeTextView,itemTypeList,null);
+            MenuPopWindow menuPopWindow = new MenuPopWindow(this,itemTypeList,null);
             menuPopWindow.setClickListener(new MyClickListener() {
                 @Override
                 public void OnClick(View view, Object o) {
@@ -224,7 +218,7 @@ public class EditItemActivity extends AppCompatActivity {
             });
             menuPopWindow.showAsDropDown(itemtypeTextView);
         } else {
-            MenuPopWindow menuPopWindow = new MenuPopWindow(itemformalationTextView,itemFormalationList,null);
+            MenuPopWindow menuPopWindow = new MenuPopWindow(this,itemFormalationList,null);
             menuPopWindow.setClickListener(new MyClickListener() {
                 @Override
                 public void OnClick(View view, Object o) {

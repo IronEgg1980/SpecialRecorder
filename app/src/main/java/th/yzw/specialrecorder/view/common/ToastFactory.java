@@ -10,11 +10,9 @@ import android.widget.Toast;
 import th.yzw.specialrecorder.R;
 
 public final class ToastFactory {
-    private Context mContext;
     private Toast toast;
     private TextView textView;
     public ToastFactory(Context context){
-        this.mContext = context;
         this.toast = new Toast(context);
         View view = LayoutInflater.from(context).inflate(R.layout.toast_view,null);
         textView = view.findViewById(R.id.textView);
@@ -30,7 +28,7 @@ public final class ToastFactory {
     }
 
     public void showTopToast(String message){
-        showToast(message,Toast.LENGTH_SHORT,Gravity.TOP,0,0);
+        showToast(message,Toast.LENGTH_SHORT,Gravity.TOP,0,100);
     }
 
     public void showCenterToast(String message) {

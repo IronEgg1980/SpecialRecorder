@@ -25,13 +25,14 @@ public class MenuPopWindow extends PopupWindow {
     private MyClickListener clickListener;
     private String[] mList;
     private Drawable[] icos;
-    private View mParent;
+    private Activity mActivity;
 
     private void createView(){
-        View view = LayoutInflater.from(mParent.getContext()).inflate(R.layout.menu_popwindow_layout,null);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.menu_popwindow_layout,null);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mParent.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         recyclerView.setAdapter(new Adapter());
+        recyclerView.addItemDecoration(new MyDividerItemDecoration());
         setContentView(view);
     }
 
@@ -40,16 +41,16 @@ public class MenuPopWindow extends PopupWindow {
         return this;
     }
 
-    public MenuPopWindow(View parent, String[] itemNames, Drawable[] itemIcos){
+    public MenuPopWindow(Activity activity, String[] itemNames, Drawable[] itemIcos){
         mList = itemNames;
         icos = itemIcos;
-        mParent = parent;
+        mActivity = activity;
 
         createView();
 
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         int count = itemNames.length > 5?5:itemNames.length;
-        int height = OtherTools.dip2px(parent.getContext(),48) * count;
+        int height = OtherTools.dip2px(activity,56) * count;
         setHeight(height);
         setFocusable(true);
         setTouchable(true);
@@ -59,10 +60,8 @@ public class MenuPopWindow extends PopupWindow {
 
     protected class VH extends RecyclerView.ViewHolder{
         private TextView textView;
-        private LinearLayout root;
         public VH(@NonNull View itemView) {
             super(itemView);
-            root = itemView.findViewById(R.id.root);
             textView = itemView.findViewById(R.id.select_popwindow_item_tv);
         }
     }
@@ -80,10 +79,10 @@ public class MenuPopWindow extends PopupWindow {
         public void onBindViewHolder(@NonNull final VH vh, int i) {
             final int index = vh.getAdapterPosition();
             vh.textView.setText(mList[index]);
-            vh.root.setOnClickListener(new NoDoubleClickListener() {
+            vh.textView.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    clickListener.OnClick(vh.root,index);
+                    clickListener.OnClick(vh.textView,index);
                     dismiss();
                 }
             });

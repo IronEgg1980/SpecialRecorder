@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
-                <th.yzw.specialrecorder.view.TipsTextView
+                <th.yzw.specialrecorder.view.common.TipsTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"

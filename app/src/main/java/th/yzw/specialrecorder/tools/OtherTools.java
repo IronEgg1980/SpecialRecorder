@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 public final class OtherTools {
+    public static long lastClickTime = 0;
 
     public static String getRandomColor(int alpha){
         String c ="0123456789abcdef";

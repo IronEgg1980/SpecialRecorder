@@ -1,138 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_frameLayout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_marginTop="@dimen/popwindow_marginTop"
-        android:layout_marginStart="@dimen/popwindow_marginStart"
-        android:layout_marginEnd="@dimen/popwindow_marginEnd"
-        android:layout_marginBottom="@dimen/popwindow_marginBottom"
-        android:background="@drawable/popwindow_bg"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:background="@drawable/popwindow_bg">
+
+    <TextView
+        android:id="@+id/record_name_TV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingStart="20dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp"
+        android:text="item"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/record_name_TV"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
         <TextView
-            style="@style/TitleTextView"
-            android:layout_margin="8dp"
-            android:id="@+id/record_name_TV"
-            android:text=""/>
-        <LinearLayout
-            android:background="@android:color/black"
-            android:padding="8dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_below="@id/record_name_TV"
-            android:id="@+id/linearLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
-                android:text="请输入数量："
-                android:gravity="center_vertical"/>
-            <TextView
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:gravity="end"
-                android:textColor="@android:color/white"
-                android:text="999"
-                android:id="@+id/record_count_TV"/>
-            <ImageView
-                android:scaleType="fitCenter"
-                android:layout_width="72dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_backspace_24dp"
-                android:id="@+id/backspace_IV"/>
-        </LinearLayout>
-        <TextView
-            android:layout_below="@id/linearLayout1"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="请输入数量："
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/record_count_TV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="end"
-            android:textColor="@color/colorAccent"
-            android:text="提示信息"
-            android:id="@+id/info_TV"/>
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_below="@id/info_TV"
-            style="@style/NumImageViewGroup">
-            <ImageView
-                android:id="@+id/num1_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_1"/>
-            <ImageView
-                android:id="@+id/num2_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_2"/>
-            <ImageView
-                android:id="@+id/num3_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_3"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@id/linearLayout2"
-            android:id="@+id/linearLayout3"
-            style="@style/NumImageViewGroup">
-            <ImageView
-                android:id="@+id/num4_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_4"/>
-            <ImageView
-                android:id="@+id/num5_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_5"/>
-            <ImageView
-                android:id="@+id/num6_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_6"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@id/linearLayout3"
-            android:id="@+id/linearLayout4"
-            style="@style/NumImageViewGroup">
-            <ImageView
-                android:id="@+id/num7_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_7"/>
-            <ImageView
-                android:id="@+id/num8_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_8"/>
-            <ImageView
-                android:id="@+id/num9_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_9"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@id/linearLayout4"
-            android:id="@+id/linearLayout5"
-            style="@style/NumImageViewGroup">
-            <ImageView
-                android:id="@+id/num0_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/num_0"/>
-            <ImageView
-                android:id="@+id/cancel_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/cancel"/>
-            <ImageView
-                android:id="@+id/ok_IV"
-                style="@style/NumImageView"
-                android:src="@mipmap/confirm"/>
-        </LinearLayout>
-    </RelativeLayout>
-</FrameLayout>
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="999"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/backspace_IV"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_backspace_24dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/info_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout1"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="20dp"
+        android:gravity="end"
+        android:text="提示信息"
+        android:textColor="@color/colorAccent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        style="@style/NumImageViewGroup"
+        android:layout_below="@id/info_TV">
+
+        <ImageView
+            android:id="@+id/num1_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_1" />
+
+        <ImageView
+            android:id="@+id/num2_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_2" />
+
+        <ImageView
+            android:id="@+id/num3_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_3" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        style="@style/NumImageViewGroup"
+        android:layout_below="@id/linearLayout2">
+
+        <ImageView
+            android:id="@+id/num4_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_4" />
+
+        <ImageView
+            android:id="@+id/num5_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_5" />
+
+        <ImageView
+            android:id="@+id/num6_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_6" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        style="@style/NumImageViewGroup"
+        android:layout_below="@id/linearLayout3">
+
+        <ImageView
+            android:id="@+id/num7_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_7" />
+
+        <ImageView
+            android:id="@+id/num8_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_8" />
+
+        <ImageView
+            android:id="@+id/num9_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_9" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        style="@style/NumImageViewGroup"
+        android:layout_below="@id/linearLayout4">
+
+        <ImageView
+            android:id="@+id/num0_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/num_0" />
+
+        <ImageView
+            android:id="@+id/cancel_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/cancel" />
+
+        <ImageView
+            android:id="@+id/ok_IV"
+            style="@style/NumImageView"
+            android:src="@mipmap/confirm" />
+    </LinearLayout>
+</RelativeLayout>

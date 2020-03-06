@@ -259,9 +259,7 @@ public class RecorderActivity extends MyActivity {
             long touchTime = System.currentTimeMillis();
             if (touchTime - firstTouch > 2000) {
                 firstTouch = touchTime;
-                Toast toast = Toast.makeText(RecorderActivity.this, "再按一次退出", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                new ToastFactory(this).showCenterToast("再按一次退出");
             } else {
                 ActivityManager.closeAll();
             }

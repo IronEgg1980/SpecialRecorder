@@ -1,4 +1,4 @@
-package th.yzw.specialrecorder.view;
+package th.yzw.specialrecorder.view.common;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -19,6 +19,7 @@ import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
@@ -31,8 +32,9 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     private int preIndex,fatherIndex = -1;
     private Context mContext;
     private ShowDetailsFatherAdapter fatherAdapter;
-//    private TranslateAnimation showAnim;
+    private MenuPopWindow menuPopWindow;
     private EditPopWindow editPopWindow;
+    private int menuWidth,menuHeight;
 
     public void setFatherIndex(int fatherIndex) {
         this.fatherIndex = fatherIndex;
@@ -60,16 +62,33 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
                 }
             }
         });
-//        initialAnim();
+        String[] menuitem = {"修改", "删除"};
+        Drawable[] icons = new Drawable[2];
+        icons[0] = context.getDrawable(R.drawable.ic_edit_18dp);
+        icons[1] = context.getDrawable(R.drawable.ic_delete_24dp);
+        menuPopWindow = new MenuPopWindow(activity, menuitem, icons);
+        menuPopWindow.setClickListener(new MyClickListener() {
+            @Override
+            public void OnClick(View view, Object o) {
+                int index = (int) o;
+                if (index == 0)
+                    editData();
+                else
+                    delData();
+            }
+        });
+        menuPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                click(preIndex);
+            }
+        });
+        View view1 = menuPopWindow.getContentView();
+        view1.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        menuWidth = view1.getMeasuredWidth();
+        menuHeight = view1.getMeasuredHeight();
     }
 
-//    private void initialAnim() {
-//        this.showAnim = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-//                Animation.RELATIVE_TO_SELF, 0.0f,
-//                Animation.RELATIVE_TO_SELF, -1.0f,
-//                Animation.RELATIVE_TO_SELF, 0.0f);
-//        this.showAnim.setDuration(400);
-//    }
 
     protected void click(int position) {
         if (preIndex >= 0 && preIndex != position) {
@@ -86,37 +105,9 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     }
 
     private void showMenu(SonViewHolder sonViewHolder) {
-        final int position = sonViewHolder.getAdapterPosition();
         DetailsItemGroupView view = sonViewHolder.root;
         int[] location = view.getClickPosition();
-        click(position);
-        String[] menuitem = {"修改", "删除"};
-        Drawable[] icons = new Drawable[2];
-        icons[0] = view.getContext().getDrawable(R.drawable.ic_edit_18dp);
-        icons[1] = view.getContext().getDrawable(R.drawable.ic_delete_24dp);
-        final MenuPopWindow popWindow = new MenuPopWindow(view, menuitem, icons);
-        popWindow.setClickListener(new MyClickListener() {
-            @Override
-            public void OnClick(View view, Object o) {
-                int index = (int) o;
-                if (index == 0)
-                    editData();
-                else
-                    delData();
-            }
-        });
-        popWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                click(position);
-            }
-        });
-        View view1 = popWindow.getContentView();
-        view1.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int width = view1.getMeasuredWidth();
-        int height = view1.getMeasuredHeight();
-        popWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width / 2, location[1] - height - 20);
-        popWindow.showAtLocation(view,Gravity.NO_GRAVITY,location[0],location[1]);
+        menuPopWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - menuWidth / 2, location[1] - menuHeight * 6 / 5);
     }
 
     protected void editData() {
@@ -158,19 +149,20 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         RecordEntity entity = mList.get(i);
         sonViewHolder.showItemName.setText(entity.getName());
         sonViewHolder.showItemCount.setText(String.valueOf(entity.getCount()));
-        sonViewHolder.root.setOnClickListener(new View.OnClickListener() {
+        if (entity.isSelected()) {
+            sonViewHolder.showItemName.setTextColor(mContext.getColor(R.color.colorAccent));
+            sonViewHolder.showItemCount.setTextColor(mContext.getColor(R.color.colorAccent));
+        } else {
+            sonViewHolder.showItemName.setTextColor(mContext.getColor(R.color.textColor));
+            sonViewHolder.showItemCount.setTextColor(mContext.getColor(R.color.textColor));
+        }
+        sonViewHolder.root.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
+                click(sonViewHolder.getAdapterPosition());
                 showMenu(sonViewHolder);
             }
         });
-        if (entity.isSelected()) {
-            sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-            sonViewHolder.showItemCount.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-        } else {
-            sonViewHolder.showItemName.setTextColor(mContext.getResources().getColor(R.color.textColor));
-            sonViewHolder.showItemCount.setTextColor(mContext.getResources().getColor(R.color.textColor));
-        }
     }
 
     @Override

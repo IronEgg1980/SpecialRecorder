@@ -7,7 +7,6 @@ import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 
 public abstract class MyActivity extends AppCompatActivity {
-
     @Override
     public Resources getResources() {
         Resources resources = super.getResources();

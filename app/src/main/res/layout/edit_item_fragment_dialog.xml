@@ -15,16 +15,12 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colorAccent"/>
-        <com.marquee.dingrui.marqueeviewlib.MarqueeView
+        <th.yzw.specialrecorder.view.common.MaqueeTextView
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:id="@+id/marqueeview"
             android:layout_width="match_parent"
-            android:layout_height="16dp"
-            app:marqueeview_text_size="12"
-            app:marqueeview_text_speed="2"
-            app:marqueeview_text_color="@android:color/darker_gray"
-            app:marqueeview_repet_type="repet_interval"/>
+            android:layout_height="16dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/item_setup_recyclerview"

@@ -1,68 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_relativeLayout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentGroup"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:id="@+id/contentGroup"
-        android:layout_marginTop="@dimen/popwindow_marginTop"
-        android:layout_marginStart="@dimen/popwindow_marginStart"
-        android:layout_marginEnd="@dimen/popwindow_marginEnd"
-        android:layout_marginBottom="@dimen/popwindow_marginBottom"
-        android:background="@drawable/popwindow_bg"
+    android:layout_height="wrap_content"
+    android:background="@drawable/popwindow_bg">
+
+    <TextView
+        android:id="@+id/title_textview"
+        style="@style/TitleTextView"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:drawableLeft="@drawable/ic_info_18dp"
+        android:text="请选择" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="400dp"
+        android:layout_below="@id/title_textview"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:fadeScrollbars="false"
+        android:scrollbarSize="4dp"
+        android:scrollbarStyle="insideOverlay" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerview"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
         <TextView
-            android:layout_alignParentTop="true"
-            style="@style/TitleTextView"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:text="请选择"
-            android:drawableLeft="@drawable/ic_info_18dp"
-            android:id="@+id/title_textview"/>
-        <android.support.v7.widget.RecyclerView
-            android:scrollbarSize="4dp"
-            android:fadeScrollbars="false"
-            android:scrollbarStyle="insideOverlay"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_below="@id/title_textview"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:id="@+id/recyclerview"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:id="@+id/cancelTV"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recyclerview">
-            <View
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-            <TextView
-                android:id="@+id/cancelTV"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:text="关闭"
-                android:textColor="@color/colorAccent"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="关闭"
+            android:textColor="@color/colorAccent" />
 
-            <TextView
-                android:id="@+id/confirmTV"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:text="确定"
-                android:textColor="@color/colorAccent"/>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/confirmTV"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="@color/colorAccent" />
+    </LinearLayout>
 
-    </RelativeLayout>
-</FrameLayout>
+</RelativeLayout>

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/menu_popwindow_bg"
+    android:id="@+id/recyclerview"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:scrollbars="vertical"
-        android:scrollbarSize="2dp"
-        android:scrollbarStyle="insideOverlay"
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+    android:layout_height="match_parent"
+    android:scrollbarSize="2dp"
+    android:scrollbarStyle="insideOverlay"
+    android:scrollbars="vertical" />
