@@ -1,11 +1,9 @@
 package th.yzw.specialrecorder.view.setup;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -20,11 +18,11 @@ import java.io.InputStream;
 import th.yzw.specialrecorder.DAO.AppUpdater;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 
@@ -32,8 +30,6 @@ public class UpdateActivity extends AppCompatActivity {
     private LoadingDialog loadingDialog;
     private File zipFile;
     private AppUpdater updater;
-    private InfoPopWindow infoPopWindow;
-//    private DialogFactory dialogAndToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,34 +39,33 @@ public class UpdateActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
             Uri uri = intent.getData();
-            zipFile = readFile(uri);
+            readFile(uri);
         }
-        loadingDialog.setCancelClick(new View.OnClickListener() {
+        loadingDialog.setCancelClick(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 updater.cancleUpdate();
             }
         });
-        infoPopWindow = new InfoPopWindow(this);
     }
 
-    private File readFile(Uri uri) {
-        File result = null;
+    private void readFile(Uri uri) {
+        zipFile = null;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         try {
             inputStream = getContentResolver().openInputStream(uri);
-            result = new File(getCacheDir(), "updateApp.tmp");
+            zipFile = new File(getCacheDir(), "updateApp.tmp");
 //            if(updateFile.exists() && updateFile.delete())
 //                updateFile.createNewFile();
-            outputStream = new FileOutputStream(result);
+            outputStream = new FileOutputStream(zipFile);
             int c;
             byte[] buffer = new byte[8 * 1024];
             while ((c = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, c);
             }
         } catch (IOException e) {
-            result = null;
+            zipFile = null;
             e.printStackTrace();
         } finally {
             try {
@@ -82,12 +77,11 @@ public class UpdateActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        return result;
     }
 
     private void updateApp() {
         if (zipFile == null) {
-            infoPopWindow.show("打开文件失败");
+            new InfoPopWindow(this).show("打开文件失败");
             return;
         }
         updater = new AppUpdater(this, zipFile);
@@ -124,60 +118,49 @@ public class UpdateActivity extends AppCompatActivity {
         updater.execute();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&!getPackageManager().canRequestPackageInstalls()) {
-//            OtherTools.startInstallPermissionSettingActivity(UpdateActivity.this);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setTitle("提示")
-                    .setIcon(R.drawable.ic_info_18dp)
-                    .setMessage("请授予安装未知来源软件的权限。")
-                    .setPositiveButton("去授权", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            PermissionHelper helper = new PermissionHelper(UpdateActivity.this, UpdateActivity.this, new PermissionHelper.OnResult() {
-                                @Override
-                                public void hasPermission() {
-                                }
-                            });
-                            helper.setCancel(new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+    private void requestInstall(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getPackageManager().canRequestPackageInstalls()) {
+            ConfirmPopWindow confirmPopWindow = new ConfirmPopWindow(this);
+            confirmPopWindow.setDialogDismiss(new IDialogDismiss() {
+                @Override
+                public void onDismiss(Result result, Object... values) {
+                    if(result == Result.OK){
+                        PermissionHelper helper = new PermissionHelper(UpdateActivity.this, UpdateActivity.this, new PermissionHelper.OnResult() {
+                            @Override
+                            public void hasPermission(boolean flag) {
+                                if(flag) {
+                                    requestInstall();
+                                }else{
                                     finish();
                                 }
-                            });
-                            helper.request(Permission.REQUEST_INSTALL_PACKAGES);
-                        }
-                    })
-                    .setNegativeButton("取消操作", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-            builder.show();
-        } else if(!XXPermissions.isHasPermission(this,Permission.READ_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE)) {
+                            }
+                        });
+                        helper.request(Permission.REQUEST_INSTALL_PACKAGES);
+                    }else{
+                        finish();
+                    }
+                }
+            }).toConfirm("请授予安装未知来源软件的权限。");
+        } else if (!XXPermissions.isHasPermission(this, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)) {
             PermissionHelper helper = new PermissionHelper(UpdateActivity.this, UpdateActivity.this, new PermissionHelper.OnResult() {
                 @Override
-                public void hasPermission() {
-                    new ConfirmPopWindow(UpdateActivity.this).setDialogDismiss(new IDialogDismiss() {
-                        @Override
-                        public void onDismiss(Result result, Object... values) {
-                            finish();
-                        }
-                    }).toConfirm("已授权，请重新点击升级文件安装。");
-                }
-            });
-            helper.setCancel(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
+                public void hasPermission(boolean flag) {
+                    if(flag) {
+                        requestInstall();
+                    }else{
+                        finish();
+                    }
                 }
             });
             helper.request(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
-        }else{
+        } else {
             updateApp();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        requestInstall();
     }
 }

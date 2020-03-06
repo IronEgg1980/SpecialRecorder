@@ -28,6 +28,7 @@ import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ItemName;
@@ -100,9 +101,9 @@ public class KeyboardInputFragment extends Fragment {
         flowLayout.setDataSource(list);
         selectDate = view.findViewById(R.id.changeDate);
         selectDate.setText(dateformat.format(date));
-        selectDate.setOnClickListener(new View.OnClickListener() {
+        selectDate.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 selectDate(v);
             }
         });

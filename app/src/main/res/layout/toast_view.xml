@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pop2_shape"
+    android:padding="16dp"
+    android:text="测试文字"
+    android:textColor="#fff"
+    android:textSize="14sp" />

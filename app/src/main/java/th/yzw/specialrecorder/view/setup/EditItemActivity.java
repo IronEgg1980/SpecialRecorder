@@ -1,7 +1,6 @@
 package th.yzw.specialrecorder.view.setup;
 
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,7 +14,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,8 +45,8 @@ import th.yzw.specialrecorder.JSON.ItemNameJSONHelper;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
-import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.tools.DataTool;
 import th.yzw.specialrecorder.tools.FileTools;
@@ -56,11 +54,8 @@ import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.MenuPopWindow;
-import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
-import th.yzw.specialrecorder.view.common.ToastFactory;
 
 //import java.io.File;
 
@@ -99,9 +94,9 @@ public class EditItemActivity extends AppCompatActivity {
             viewHolder.itemTypeTextView.setText(type);
             viewHolder.itemFormalationTextView.setText(formalation);
             viewHolder.nameTextView.setText(itemName.getName());
-            viewHolder.root.setOnClickListener(new View.OnClickListener() {
+            viewHolder.root.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onNoDoubleClick(View v) {
                     new ConfirmPopWindow(EditItemActivity.this).setDialogDismiss(new IDialogDismiss() {
                         @Override
                         public void onDismiss(Result result, Object... values) {
@@ -132,28 +127,24 @@ public class EditItemActivity extends AppCompatActivity {
     private String[] itemTypeList, itemFormalationList;
     private List<ItemName> mItemNameList;
     private InfoPopWindow infoPopWindow;
-//    private DialogFactory dialogFactory;
-//    private ToastFactory toastFactory;
 
     private void initialView() {
-//        dialogFactory = new DialogFactory(this);
-//        toastFactory = new ToastFactory(this);
         infoPopWindow = new InfoPopWindow(this);
         recyclerView = findViewById(R.id.item_setup_recyclerview);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(manager);
         recyclerView.addItemDecoration(new DividerItemDecoration(EditItemActivity.this, DividerItemDecoration.VERTICAL));
         editText = findViewById(R.id.item_setup_name_edittext);
-        findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.confirm).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 addItemName(v);
             }
         });
         TextView title = findViewById(R.id.title);
-        title.setOnClickListener(new View.OnClickListener() {
+        title.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(EditItemActivity.this, v);
                 Menu menu = popupMenu.getMenu();
                 menu.add(1, 1, 1, "发送数据文件");
@@ -180,16 +171,16 @@ public class EditItemActivity extends AppCompatActivity {
             }
         });
         itemtypeTextView = findViewById(R.id.itemtypeTextView);
-        itemtypeTextView.setOnClickListener(new View.OnClickListener() {
+        itemtypeTextView.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 showSelectDialog(1);
             }
         });
         itemformalationTextView = findViewById(R.id.itemformalationTextView);
-        itemformalationTextView.setOnClickListener(new View.OnClickListener() {
+        itemformalationTextView.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 showSelectDialog(2);
             }
         });
@@ -307,29 +298,31 @@ public class EditItemActivity extends AppCompatActivity {
         if (mItemNameList != null && mItemNameList.size() > 0) {
             PermissionHelper helper = new PermissionHelper(this, this, new PermissionHelper.OnResult() {
                 @Override
-                public void hasPermission() {
-                    final int currentVersion = AppSetupOperator.getItemVersion() + 1;
-                    File path = new File(FileTools.ITEMNAME_EXPORT_DIR);
-                    if (!path.exists())
-                        path.mkdir();
-                    for (File file : path.listFiles()) {
-                        if (file.isFile())
-                            file.delete();
-                    }
-                    String fileName = "UpdateFileVersion_" + currentVersion + ".itemupdate";
-                    try {
-                        File file = new File(path, fileName);
-                        String s = new ItemNameJSONHelper().getUpdateFileJSONString(currentVersion);
-                        FileTools.writeDecryptFile(s, file);
-                        AppSetupOperator.setItemVersion(currentVersion);
-                        sendEmail(currentVersion,file);
-                        infoPopWindow.show("已导出文件至" + file.getAbsolutePath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
+                public void hasPermission(boolean flag) {
+                    if(flag) {
+                        final int currentVersion = AppSetupOperator.getItemVersion() + 1;
+                        File path = new File(FileTools.ITEMNAME_EXPORT_DIR);
+                        if (!path.exists())
+                            path.mkdir();
+                        for (File file : path.listFiles()) {
+                            if (file.isFile())
+                                file.delete();
+                        }
+                        String fileName = "UpdateFileVersion_" + currentVersion + ".itemupdate";
+                        try {
+                            File file = new File(path, fileName);
+                            String s = new ItemNameJSONHelper().getUpdateFileJSONString(currentVersion);
+                            FileTools.writeDecryptFile(s, file);
+                            AppSetupOperator.setItemVersion(currentVersion);
+                            sendEmail(currentVersion, file);
+                            infoPopWindow.show("已导出文件至" + file.getAbsolutePath());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
+                        }
                     }
                 }
             });

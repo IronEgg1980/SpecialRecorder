@@ -20,6 +20,7 @@ import th.yzw.specialrecorder.DAO.ItemNameOperator;
 import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.model.ItemName;
 
 public class TouchInputAdapter extends RecyclerView.Adapter<TouchInputAdapter.AddViewHolder> {
@@ -82,7 +83,6 @@ public class TouchInputAdapter extends RecyclerView.Adapter<TouchInputAdapter.Ad
         addViewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.setTag(items.get(i).getName());
                 position = i;
                 myClickListener.OnClick(v, i);
             }

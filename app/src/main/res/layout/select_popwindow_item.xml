@@ -12,7 +12,7 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:id="@+id/select_popwindow_item_iv"
-        android:src="@drawable/confirm"/>
+        android:src="@mipmap/confirm"/>
     <TextView
         android:id="@+id/select_popwindow_item_tv"
         android:text="被选择的项目名称"

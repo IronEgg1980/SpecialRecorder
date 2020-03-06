@@ -4,20 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +23,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
+import th.yzw.specialrecorder.tools.MyDateUtils;
 
 public class MyDatePicker extends LinearLayout {
     public interface DatePickerClickListener {
@@ -37,7 +36,7 @@ public class MyDatePicker extends LinearLayout {
         this.clickListener = clickListener;
     }
 
-    private String TAG = "殷宗旺";
+    private String TAG = "MyDatePicker";
     private int margin = 20;
     private DatePickerClickListener clickListener;
     public boolean isMultiSelect = false;
@@ -160,9 +159,9 @@ public class MyDatePicker extends LinearLayout {
         preMonthView.setTextSize(18);
         preMonthView.setText("<");
         preMonthView.setTextColor(dateTextNormalColor);
-        preMonthView.setOnClickListener(new OnClickListener() {
+        preMonthView.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 preMonthClick();
             }
         });
@@ -172,9 +171,9 @@ public class MyDatePicker extends LinearLayout {
         titleView.setTextSize(18);
         titleView.setText("");
         titleView.setTextColor(dateTextNormalColor);
-        titleView.setOnClickListener(new OnClickListener() {
+        titleView.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 currentMonthClick();
             }
         });
@@ -184,9 +183,9 @@ public class MyDatePicker extends LinearLayout {
         nextMonthView.setTextSize(18);
         nextMonthView.setText(">");
         nextMonthView.setTextColor(dateTextNormalColor);
-        nextMonthView.setOnClickListener(new OnClickListener() {
+        nextMonthView.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 nextMonthClick();
             }
         });
@@ -242,16 +241,17 @@ public class MyDatePicker extends LinearLayout {
             dateViewGroup.addView(linearLayout, _lp);
 
             for (int j = 0; j < 7; j++) {
-                FlagTextView textView = new FlagTextView(getContext());
+                final FlagTextView textView = new FlagTextView(getContext());
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextSize(16);
                 final int position = index;
                 textView.setId(ids[index++]);
                 textView.setTextColor(dateTextNormalColor);
                 textView.setBackgroundColor(dateNormalBG);
-                textView.setOnClickListener(new OnClickListener() {
+                textView.setOnClickListener(new NoDoubleClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onNoDoubleClick(View v) {
+                        textView.setEnabled(false);
                         if (isMultiSelect) {
                             dateViewMultiClick(position);
                         } else {
@@ -443,6 +443,7 @@ public class MyDatePicker extends LinearLayout {
             clickListener.onClick(year, month, day);
         }
         mCalendar.setTimeInMillis(monthDay);
+        textView.setEnabled(true);
     }
 
     private void preMonthClick() {
@@ -453,10 +454,18 @@ public class MyDatePicker extends LinearLayout {
     }
 
     private void currentMonthClick() {
-        mCalendar.setTimeInMillis(today);
-        mCalendar.set(Calendar.DAY_OF_MONTH, 15);
-        monthDay = mCalendar.getTimeInMillis();
-        startAlphaAnimation();
+        if(isMultiSelect){
+            selectDateRange = MyDateUtils.getMonthStartAndEndLong(monthDay);
+            isFirstSelect = true;
+            if(clickListener!=null)
+                clickListener.onMultiClick(false);
+            changeDateViewUI();
+        }else {
+            mCalendar.setTimeInMillis(today);
+            mCalendar.set(Calendar.DAY_OF_MONTH, 15);
+            monthDay = mCalendar.getTimeInMillis();
+            startAlphaAnimation();
+        }
     }
 
     private void nextMonthClick() {

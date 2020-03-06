@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 
 public class ConfirmPopWindow extends PopupWindow {
@@ -46,26 +47,26 @@ public class ConfirmPopWindow extends PopupWindow {
         View view = LayoutInflater.from(activity).inflate(R.layout.popwindow_confirm_layout, null);
         textView = view.findViewById(R.id.messageTV);
         thirdTV = view.findViewById(R.id.thirdTV);
-        thirdTV.setOnClickListener(new View.OnClickListener() {
+        thirdTV.setOnClickListener(new NoDoubleClickListener(){
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.OTHER;
                 dismiss();
             }
         });
         thirdTV.setVisibility(View.INVISIBLE);
         thirdTV.setEnabled(false);
-        view.findViewById(R.id.cancelTV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.cancelTV).setOnClickListener(new NoDoubleClickListener(){
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.CANCEL;
                 isResumeAlpha = true;
                 dismiss();
             }
         });
-        view.findViewById(R.id.confirmTV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.confirmTV).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.OK;
                 dismiss();
             }

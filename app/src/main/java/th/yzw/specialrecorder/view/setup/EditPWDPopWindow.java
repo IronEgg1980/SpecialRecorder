@@ -18,6 +18,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class EditPWDPopWindow extends PopupWindow {
@@ -87,9 +88,9 @@ public class EditPWDPopWindow extends PopupWindow {
         confirmPWDET = view.findViewById(R.id.setup_confirmPWD_edittext);
         confirmTV = view.findViewById(R.id.confirm);
         cancelTV = view.findViewById(R.id.cancel);
-        confirmTV.setOnClickListener(new View.OnClickListener() {
+        confirmTV.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 if(getInputValue()){
                     AppSetupOperator.savePassWord(value);
                     new ToastFactory(activity).showCenterToast("修改成功！");
@@ -97,9 +98,9 @@ public class EditPWDPopWindow extends PopupWindow {
                 }
             }
         });
-        cancelTV.setOnClickListener(new View.OnClickListener() {
+        cancelTV.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 dismiss();
             }
         });

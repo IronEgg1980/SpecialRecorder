@@ -1,6 +1,5 @@
 package th.yzw.specialrecorder.view.setup;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.PermissionHelper;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 
@@ -27,7 +25,6 @@ public class UpdateItemActivity extends AppCompatActivity {
     private File updateFile = null;
     private LoadingDialog loadingDialog;
     private InfoPopWindow infoPopWindow;
-//    private DialogFactory dialogAndToast;
 
     private void updateItem() {
         if (updateFile == null) {
@@ -53,8 +50,6 @@ public class UpdateItemActivity extends AppCompatActivity {
         try {
             inputStream = getContentResolver().openInputStream(uri);
             updateFile = new File(getCacheDir(), "updateItem.tmp");
-//            if(updateFile.exists() && updateFile.delete())
-//                updateFile.createNewFile();
             outputStream = new FileOutputStream(updateFile);
             int c;
             byte[] buffer = new byte[1024];
@@ -95,14 +90,11 @@ public class UpdateItemActivity extends AppCompatActivity {
         super.onStart();
         PermissionHelper helper = new PermissionHelper(UpdateItemActivity.this, UpdateItemActivity.this, new PermissionHelper.OnResult() {
             @Override
-            public void hasPermission() {
-                updateItem();
-            }
-        });
-        helper.setCancel(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
+            public void hasPermission(boolean flag) {
+                if(flag)
+                    updateItem();
+                else
+                    finish();
             }
         });
         helper.request(Permission.Group.STORAGE);

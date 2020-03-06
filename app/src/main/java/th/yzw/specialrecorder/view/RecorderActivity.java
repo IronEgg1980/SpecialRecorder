@@ -2,7 +2,6 @@ package th.yzw.specialrecorder.view;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,18 +23,18 @@ import th.yzw.specialrecorder.DAO.AppUpdater;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
-import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.view.common.DialogFactory;
+import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.input_data.KeyboardInputFragment;
+import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
 import th.yzw.specialrecorder.view.merge_data.MergeDataActivity;
 import th.yzw.specialrecorder.view.setup.SetupActivity;
 import th.yzw.specialrecorder.view.setup.ShowAppUpdateInfomationDialog;
-import th.yzw.specialrecorder.view.input_data.TouchInputDataFragment;
 import th.yzw.specialrecorder.view.show_details.ShowDetailsActivity;
 
 public class RecorderActivity extends MyActivity {
@@ -51,59 +50,59 @@ public class RecorderActivity extends MyActivity {
 
 
     private void initialView() {
-        drawerLayout=findViewById(R.id.drawerLayout);
-        findViewById(R.id.menu_show_details_tv).setOnClickListener(new View.OnClickListener() {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        findViewById(R.id.menu_show_details_tv).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 showDetails();
             }
         });
-        findViewById(R.id.menu_show_all_tv).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_show_all_tv).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 showAll();
             }
         });
-        findViewById(R.id.menu_merge_tv).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_merge_tv).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 mergeData();
             }
         });
-        findViewById(R.id.menu_setup_tv).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_setup_tv).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 setup();
             }
         });
-        findViewById(R.id.menuGroup).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menuGroup).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 drawerLayout.closeDrawers();
             }
         });
         badgeView = findViewById(R.id.appUpdatedFlag);
     }
 
-    private void showDetails(){
+    private void showDetails() {
         drawerLayout.closeDrawers();
         Intent intent = new Intent(RecorderActivity.this, ShowDetailsActivity.class);
         startActivity(intent);
     }
 
-    private void showAll(){
+    private void showAll() {
         drawerLayout.closeDrawers();
         Intent intent = new Intent(RecorderActivity.this, ShowTotalDataActivity.class);
         startActivity(intent);
     }
 
-    private void mergeData(){
+    private void mergeData() {
         drawerLayout.closeDrawers();
         Intent intent = new Intent(RecorderActivity.this, MergeDataActivity.class);
         startActivity(intent);
     }
 
-    private void setup(){
+    private void setup() {
         drawerLayout.closeDrawers();
         Intent intent = new Intent(RecorderActivity.this, SetupActivity.class);
         startActivity(intent);
@@ -117,7 +116,7 @@ public class RecorderActivity extends MyActivity {
             if (AppSetupOperator.isForceUpdate()) {
                 //force update
                 showForceUpdateDialog();
-            }else{
+            } else {
                 showUpdateDialog();
             }
         } else {
@@ -132,11 +131,11 @@ public class RecorderActivity extends MyActivity {
         if (files != null && files.length == 2) {
             return files[1];
         } else {
-           return null;
+            return null;
         }
     }
 
-    private void openUpdater(File zipFile){
+    private void openUpdater(File zipFile) {
         LoadingDialog loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", false);
         loadingDialog.setCancelable(false);
         final AppUpdater updater = new AppUpdater(RecorderActivity.this, zipFile);
@@ -158,7 +157,7 @@ public class RecorderActivity extends MyActivity {
         updater.execute();
     }
 
-    private void showUpdateDialog(){
+    private void showUpdateDialog() {
         String filePath = getFilesDir().getAbsolutePath() + File.separator +
                 "UpdateFiles" + File.separator + "VersionCode" +
                 AppSetupOperator.getDownloadAppVersion();
@@ -177,25 +176,24 @@ public class RecorderActivity extends MyActivity {
     }
 
     private void showForceUpdateDialog() {
-        new DialogFactory(this).showWarningDialog("重要更新", "需要更新至最新版本才能正常使用，否则将退出程序。请点击更新！",
-                "更新", new DialogInterface.OnClickListener() {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        File zipFile = getAppUpdateFile();
-                        if(zipFile == null){
-                            toastFactory.showCenterToast("未找到升级文件！");
-                            AppSetupOperator.setForceUpdate(false);
-                        }else{
-                            openUpdater(zipFile);
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OK) {
+                            File zipFile = getAppUpdateFile();
+                            if (zipFile == null) {
+                                toastFactory.showCenterToast("未找到升级文件！");
+                                AppSetupOperator.setForceUpdate(false);
+                            } else {
+                                openUpdater(zipFile);
+                            }
+                        } else {
+                            ActivityManager.closeAll();
                         }
                     }
-                },
-                "退出", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityManager.closeAll();
-                    }
-                });
+                })
+                .toConfirm("需要更新至最新版本才能正常使用，否则将退出程序。请点击更新！");
     }
 
     private void initialBroadcastReceiver() {
@@ -217,9 +215,9 @@ public class RecorderActivity extends MyActivity {
         toolbar.setNavigationIcon(R.mipmap.menu_right);
         setTitle("首页");
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 drawerLayout.openDrawer(Gravity.START);
             }
         });
@@ -254,7 +252,7 @@ public class RecorderActivity extends MyActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if(drawerLayout.isDrawerOpen(Gravity.START)){
+            if (drawerLayout.isDrawerOpen(Gravity.START)) {
                 drawerLayout.closeDrawers();
                 return true;
             }

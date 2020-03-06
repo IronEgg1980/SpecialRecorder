@@ -22,6 +22,7 @@ import java.util.List;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 
 public class SelectItemPopWindow extends PopupWindow {
@@ -63,9 +64,9 @@ public class SelectItemPopWindow extends PopupWindow {
         recyclerView.addItemDecoration(new DividerItemDecoration(mActivity,DividerItemDecoration.VERTICAL));
         TextView okTV = view.findViewById(R.id.confirmTV);
         okTV.setVisibility(isMutiSelectMode?View.VISIBLE:View.GONE);
-        okTV.setOnClickListener(new View.OnClickListener() {
+        okTV.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 List<Integer> selectedIndex = new ArrayList<>();
                 for(int i = 0;i<selectedFlag.length;i++){
                     boolean b1 = selectedFlag[i];
@@ -78,9 +79,9 @@ public class SelectItemPopWindow extends PopupWindow {
                 dismiss();
             }
         });
-        view.findViewById(R.id.cancelTV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.cancelTV).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 isResumeAlpha = true;
                 onDisMiss.onDismiss(Result.CANCEL);
                 dismiss();
@@ -135,9 +136,9 @@ public class SelectItemPopWindow extends PopupWindow {
             final boolean b = selectedFlag[index];
             vh.itemNameTV.setText(s);
             vh.selectedFlagIV.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
-            vh.root.setOnClickListener(new View.OnClickListener() {
+            vh.root.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onNoDoubleClick(View v) {
                     if (isMutiSelectMode) {
                         selectedFlag[index] = !b;
                         notifyItemChanged(index);

@@ -30,6 +30,7 @@ import java.util.Locale;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.model.ShowDetailsItemFatherEntity;
+import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
 
 public class ShowDetailsFatherAdapter extends RecyclerView.Adapter<ShowDetailsFatherAdapter.FatherViewHolder> {
 
@@ -168,7 +169,7 @@ public class ShowDetailsFatherAdapter extends RecyclerView.Adapter<ShowDetailsFa
         ShowDetailsSonAdapter adapter = new ShowDetailsSonAdapter(entity.getRecords(), mContext, mActivity, this);
         adapter.setFatherIndex(fatherViewHolder.getAdapterPosition());
         fatherViewHolder.recyclerview.setAdapter(adapter);
-        fatherViewHolder.recyclerview.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
+        fatherViewHolder.recyclerview.addItemDecoration(new MyDividerItemDecoration());
     }
 
     @Override

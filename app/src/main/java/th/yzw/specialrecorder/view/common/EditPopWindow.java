@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 
 public class EditPopWindow extends PopupWindow {
@@ -70,18 +71,18 @@ public class EditPopWindow extends PopupWindow {
                 backspaceClick(numTextView, infoTextView);
             }
         });
-        view.findViewById(R.id.cancel_IV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.cancel_IV).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 if (dialogDismiss != null) {
                     dialogDismiss.onDismiss(Result.CANCEL);
                     dismiss();
                 }
             }
         });
-        view.findViewById(R.id.ok_IV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.ok_IV).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 if (stringBuilder == null || stringBuilder.length() == 0) {
                     infoTextView.setText("请输入数字");
                     return;

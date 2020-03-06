@@ -17,6 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 
 public class DateRangePopWindow extends PopupWindow {
@@ -48,18 +49,16 @@ public class DateRangePopWindow extends PopupWindow {
                 showStartEndDate(isFirstClick);
             }
         });
-        TextView cancel = view.findViewById(R.id.cancel);
-        TextView confirm = view.findViewById(R.id.confirm);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.cancel).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 isConfirm = false;
                 dismiss();
             }
         });
-        confirm.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.confirm).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 isConfirm = true;
                 getDate();
                 dismiss();

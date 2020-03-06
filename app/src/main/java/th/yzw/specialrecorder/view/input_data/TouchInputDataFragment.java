@@ -31,6 +31,7 @@ import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnIndexBarPressedListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.view.RecorderActivity;
@@ -132,9 +133,9 @@ public class TouchInputDataFragment extends Fragment {
             radioGroup.setVisibility(View.GONE);
         selectDate = view.findViewById(R.id.changeDate);
         selectDate.setText(dateFormat.format(date));
-        selectDate.setOnClickListener(new View.OnClickListener() {
+        selectDate.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 selectDate(v);
             }
         });

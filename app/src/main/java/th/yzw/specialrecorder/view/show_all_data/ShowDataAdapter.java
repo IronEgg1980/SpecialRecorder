@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.model.ShowDataEntity;
 
 public class ShowDataAdapter extends RecyclerView.Adapter<ShowDataAdapter.ViewHolder> {
@@ -64,9 +65,9 @@ public class ShowDataAdapter extends RecyclerView.Adapter<ShowDataAdapter.ViewHo
         final ShowDataEntity sumTotalRecord = mList.get(i);
         viewHolder.tv1.setText(sumTotalRecord.getName());
         viewHolder.tv2.setText(String.valueOf(sumTotalRecord.getCount()));
-        viewHolder.root.setOnClickListener(new View.OnClickListener() {
+        viewHolder.root.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 clickListener.click(i);
             }
         });
@@ -100,9 +101,9 @@ public class ShowDataAdapter extends RecyclerView.Adapter<ShowDataAdapter.ViewHo
             }
             viewHolder.imageButton.setVisibility(View.VISIBLE);
             viewHolder.imageButton.setEnabled(true);
-            viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
+            viewHolder.imageButton.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onNoDoubleClick(View v) {
                     sumTotalRecord.setDone(!isDone);
                     sumTotalRecord.save();
                     notifyItemChanged(i);

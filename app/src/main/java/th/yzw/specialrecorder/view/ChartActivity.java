@@ -1,13 +1,10 @@
 package th.yzw.specialrecorder.view;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.ArrayMap;
 import android.view.View;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,9 +30,7 @@ import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -47,17 +42,15 @@ import th.yzw.specialrecorder.JSON.JSONHelper;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
-import th.yzw.specialrecorder.interfaces.SelectDialogClicker;
 import th.yzw.specialrecorder.model.ItemStatisticalInformation;
 import th.yzw.specialrecorder.tools.DataTool;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.view.common.DialogFactory;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
-import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class ChartActivity extends MyActivity {
     private final String microMsgPath = Environment.getExternalStorageDirectory() + "/tencent/MicroMsg/download/";
@@ -489,16 +482,16 @@ public class ChartActivity extends MyActivity {
         pieChart2 = findViewById(R.id.pieChart2);
         barChart = findViewById(R.id.barChart);
         phoneIdTV = findViewById(R.id.phoneIdTextView);
-        phoneIdTV.setOnClickListener(new View.OnClickListener() {
+        phoneIdTV.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 showSelectDataFileDialog();
             }
         });
         TextView resetData = findViewById(R.id.resetData);
-        resetData.setOnClickListener(new View.OnClickListener() {
+        resetData.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(final View v) {
+            public void onNoDoubleClick(View v) {
                 final String[] names = ItemStatisticalInformationOperator.getNameList();
                 if (names.length == 0) {
                     infoPopWindow.show("没有统计数据");

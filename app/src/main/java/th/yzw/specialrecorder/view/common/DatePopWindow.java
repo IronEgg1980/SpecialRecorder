@@ -59,9 +59,9 @@ public class DatePopWindow extends PopupWindow {
     }
     @Override
     public void dismiss() {
+        super.dismiss();
         if(onSelectDateRangeDismiss != null)
             onSelectDateRangeDismiss.onDissmiss(isConfirm,date);
-        super.dismiss();
         darkenBackground(1f);
     }
 

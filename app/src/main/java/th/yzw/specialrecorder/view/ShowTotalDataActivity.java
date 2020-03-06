@@ -51,6 +51,7 @@ import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
@@ -62,6 +63,7 @@ import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.HeadPaddingItemDecoration;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
+import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
 public class ShowTotalDataActivity extends MyActivity {
@@ -227,9 +229,9 @@ public class ShowTotalDataActivity extends MyActivity {
         showTotalNodata = findViewById(R.id.show_total_nodata);
         dateInfo = findViewById(R.id.dateTextView);
         changeDateBT = findViewById(R.id.changeDate);
-        changeDateBT.setOnClickListener(new View.OnClickListener() {
+        changeDateBT.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(changeDateBT);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -242,9 +244,9 @@ public class ShowTotalDataActivity extends MyActivity {
             }
         });
         deleBT = findViewById(R.id.dele_data);
-        deleBT.setOnClickListener(new View.OnClickListener() {
+        deleBT.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(deleBT);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -257,9 +259,9 @@ public class ShowTotalDataActivity extends MyActivity {
             }
         });
         shareBT = findViewById(R.id.send_data);
-        shareBT.setOnClickListener(new View.OnClickListener() {
+        shareBT.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(shareBT);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -274,7 +276,7 @@ public class ShowTotalDataActivity extends MyActivity {
         showTotalFragmentRecycler = findViewById(R.id.show_total_fragment_recycler);
         showTotalFragmentRecycler.setLayoutManager(new LinearLayoutManager(this));
         showTotalFragmentRecycler.setAdapter(adapter);
-        showTotalFragmentRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        showTotalFragmentRecycler.addItemDecoration(new MyDividerItemDecoration());
     }
 
     @Override
@@ -344,8 +346,9 @@ public class ShowTotalDataActivity extends MyActivity {
         }
         new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
-            public void hasPermission() {
-                share();
+            public void hasPermission(boolean flag) {
+                if(flag)
+                     share();
             }
         }).request(Permission.Group.STORAGE);
     }

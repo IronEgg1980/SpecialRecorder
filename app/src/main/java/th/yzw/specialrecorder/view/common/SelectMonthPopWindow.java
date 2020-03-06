@@ -16,6 +16,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 
 public class SelectMonthPopWindow extends PopupWindow {
@@ -88,17 +89,17 @@ public class SelectMonthPopWindow extends PopupWindow {
         datePicker.setMaxDate(calendar.getTimeInMillis());
         TextView cancel = view.findViewById(R.id.cancel);
         TextView confirm = view.findViewById(R.id.confirm);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancel.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 if(onSelectDateRangeDismiss!=null)
                     onSelectDateRangeDismiss.onDissmiss(false,date);
                 dismiss();
             }
         });
-        confirm.setOnClickListener(new View.OnClickListener() {
+        confirm.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 calendar.set(datePicker.getYear(),datePicker.getMonth(),28,23,59,59);
                 date = calendar.getTimeInMillis();
                 if(onSelectDateRangeDismiss!=null)

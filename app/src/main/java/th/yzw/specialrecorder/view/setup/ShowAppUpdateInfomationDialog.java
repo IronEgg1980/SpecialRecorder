@@ -29,6 +29,7 @@ import java.io.IOException;
 import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 
@@ -133,17 +134,17 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
     private void initialView(View view) {
         dialogAppupdateContentTextview = view.findViewById(R.id.dialog_appupdate_content_textview);
         TextView cancel = view.findViewById(R.id.cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancel.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.CANCEL;
                 dismiss();
             }
         });
         confirm = view.findViewById(R.id.confirm);
-        confirm.setOnClickListener(new View.OnClickListener() {
+        confirm.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.OK;
                 dismiss();
             }

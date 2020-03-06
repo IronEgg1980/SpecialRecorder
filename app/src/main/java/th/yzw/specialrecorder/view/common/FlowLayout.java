@@ -17,6 +17,7 @@ import java.util.Locale;
 import th.yzw.specialrecorder.DAO.ItemNameOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.tools.OtherTools;
 
@@ -25,7 +26,6 @@ public class FlowLayout extends RelativeLayout {
 
     private int lastIndex = -1;
     private List<ItemName> mList;
-    //    private List<String> firstLetters;
     private int textViewMargin = 30;
     private int mWidth;
     private boolean mInited = false;
@@ -60,7 +60,6 @@ public class FlowLayout extends RelativeLayout {
 
     public void setDataSource(List<ItemName> list) {
         this.mList = list;
-//        this.firstLetters = ItemNameOperator.getItemNameFistLetterList(list);
         createChildView();
     }
 
@@ -101,9 +100,9 @@ public class FlowLayout extends RelativeLayout {
             view.setFocusable(true);
             view.setClickable(true);
             final int finalI = i;
-            view.setOnClickListener(new OnClickListener() {
+            view.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onNoDoubleClick(View v) {
                     view.setBackground(getContext().getDrawable(R.drawable.keyboard_input_item_select_bg));
                     view.setTextColor(Color.WHITE);
                     if (lastIndex != -1 && lastIndex!=view.getId()) {

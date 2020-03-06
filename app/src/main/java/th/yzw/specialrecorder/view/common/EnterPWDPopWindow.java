@@ -17,10 +17,9 @@ import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.util.concurrent.RunnableFuture;
-
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 
 public class EnterPWDPopWindow extends PopupWindow {
@@ -31,7 +30,6 @@ public class EnterPWDPopWindow extends PopupWindow {
     private Result result;
     private IDialogDismiss dialogDismiss;
     private Activity activity;
-    //    private InputMethodManager imm;
     private String passWord;
 
     private void createView() {
@@ -39,17 +37,17 @@ public class EnterPWDPopWindow extends PopupWindow {
         textView = view.findViewById(R.id.title);
         editText = view.findViewById(R.id.edit_text);
         cancel = view.findViewById(R.id.cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancel.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 result = Result.CANCEL;
                 dismiss();
             }
         });
         confirm = view.findViewById(R.id.confirm);
-        confirm.setOnClickListener(new View.OnClickListener() {
+        confirm.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 if (confirmInput()) {
                     result = Result.OK;
                     dismiss();
@@ -130,7 +128,5 @@ public class EnterPWDPopWindow extends PopupWindow {
                         .toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         }, 500);
-//        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS);
-
     }
 }

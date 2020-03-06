@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.tools.OtherTools;
 
 public class MenuPopWindow extends PopupWindow {
@@ -57,13 +58,11 @@ public class MenuPopWindow extends PopupWindow {
     }
 
     protected class VH extends RecyclerView.ViewHolder{
-//        private ImageView imageView;
         private TextView textView;
         private LinearLayout root;
         public VH(@NonNull View itemView) {
             super(itemView);
             root = itemView.findViewById(R.id.root);
-//            imageView = itemView.findViewById(R.id.select_popwindow_item_iv);
             textView = itemView.findViewById(R.id.select_popwindow_item_tv);
         }
     }
@@ -81,9 +80,9 @@ public class MenuPopWindow extends PopupWindow {
         public void onBindViewHolder(@NonNull final VH vh, int i) {
             final int index = vh.getAdapterPosition();
             vh.textView.setText(mList[index]);
-            vh.root.setOnClickListener(new View.OnClickListener() {
+            vh.root.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onNoDoubleClick(View v) {
                     clickListener.OnClick(vh.root,index);
                     dismiss();
                 }

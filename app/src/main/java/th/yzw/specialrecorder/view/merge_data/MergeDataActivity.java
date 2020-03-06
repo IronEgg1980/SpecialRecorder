@@ -48,6 +48,7 @@ import th.yzw.specialrecorder.JSON.ShowDataJSONHelper;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ImportedFile;
@@ -61,6 +62,7 @@ import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
+import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.SelectMonthPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
@@ -114,7 +116,7 @@ public class MergeDataActivity extends MyActivity {
     private View mergeDataImportfiles;
     private View mergeDataClearfiles;
     private View shareData;
-    private TextView textView1,textView2,textView3,textView4;
+    private TextView textView1, textView2, textView3, textView4;
     private String phoneId;
     private SimpleDateFormat format;
     private List<SumTotalRecord> list;
@@ -131,9 +133,9 @@ public class MergeDataActivity extends MyActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isHideMode = AppSetupOperator.isHideMode();
-        if (isHideMode){
+        if (isHideMode) {
             setContentView(R.layout.setup_layout);
-        }else{
+        } else {
             setContentView(R.layout.merge_data_layout);
         }
         Toolbar toolbar = findViewById(R.id.include);
@@ -151,7 +153,7 @@ public class MergeDataActivity extends MyActivity {
         phoneId = AppSetupOperator.getPhoneId();
         format = new SimpleDateFormat("正在合并【yyyy年M月份】数据", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
-        selectMonthPopWindow= new SelectMonthPopWindow(this);
+        selectMonthPopWindow = new SelectMonthPopWindow(this);
         selectMonthPopWindow.setDisMiss(new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
@@ -166,8 +168,8 @@ public class MergeDataActivity extends MyActivity {
         initialView();
     }
 
-    private Animator buttonClickAnima(View view){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-30f);
+    private Animator buttonClickAnima(View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, -30f);
         animator.setDuration(50);
         animator.setRepeatCount(1);
         animator.setRepeatMode(ValueAnimator.REVERSE);
@@ -182,9 +184,9 @@ public class MergeDataActivity extends MyActivity {
         textView4 = findViewById(R.id.textview4);
         dateTextView = findViewById(R.id.dateTextView);
         mergeDataBegin = findViewById(R.id.merge_data_begin);
-        mergeDataBegin.setOnClickListener(new View.OnClickListener() {
+        mergeDataBegin.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(mergeDataBegin);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -197,9 +199,9 @@ public class MergeDataActivity extends MyActivity {
             }
         });
         mergeDataImportrecord = findViewById(R.id.merge_data_importrecord);
-        mergeDataImportrecord.setOnClickListener(new View.OnClickListener() {
+        mergeDataImportrecord.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(mergeDataImportrecord);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -211,10 +213,10 @@ public class MergeDataActivity extends MyActivity {
                 animator.start();
             }
         });
-        mergeDataImportfiles =findViewById(R.id.merge_data_importfiles);
-        mergeDataImportfiles.setOnClickListener(new View.OnClickListener() {
+        mergeDataImportfiles = findViewById(R.id.merge_data_importfiles);
+        mergeDataImportfiles.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(mergeDataImportfiles);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -227,9 +229,9 @@ public class MergeDataActivity extends MyActivity {
             }
         });
         mergeDataClearfiles = findViewById(R.id.merge_data_clearfiles);
-        mergeDataClearfiles.setOnClickListener(new View.OnClickListener() {
+        mergeDataClearfiles.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(mergeDataClearfiles);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -242,9 +244,9 @@ public class MergeDataActivity extends MyActivity {
             }
         });
         shareData = findViewById(R.id.share_data);
-        shareData.setOnClickListener(new View.OnClickListener() {
+        shareData.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 Animator animator = buttonClickAnima(shareData);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -260,7 +262,7 @@ public class MergeDataActivity extends MyActivity {
         mergeDataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(list);
         mergeDataRecyclerView.setAdapter(adapter);
-        mergeDataRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        mergeDataRecyclerView.addItemDecoration(new MyDividerItemDecoration());
         changeButtonStatus(hasData);
         infoPopWindow = new InfoPopWindow(this);
     }
@@ -342,7 +344,7 @@ public class MergeDataActivity extends MyActivity {
         animator333.setInterpolator(interpolator);
 
         AnimatorSet animationSet = new AnimatorSet();
-        animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222,animator3,animator33,animator333);
+        animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222, animator3, animator33, animator333);
         animationSet.start();
     }
 
@@ -367,8 +369,8 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void changeButtonStatus(boolean flag) {
-        String title = flag ? "重新合并": "开始合并";
-        String dateString = flag?format.format(mergeMonth):"轻触左侧按钮开始合并数据...";
+        String title = flag ? "重新合并" : "开始合并";
+        String dateString = flag ? format.format(mergeMonth) : "轻触左侧按钮开始合并数据...";
         dateTextView.setText(dateString);
         textView1.setText(title);
         if (flag) {
@@ -394,7 +396,8 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void showSelectMonthDialog() {
-        selectMonthPopWindow.setDate(mergeMonth).show(mergeDataBegin);
+        selectMonthPopWindow.setDate(mergeMonth)
+                .show(mergeDataBegin);
     }
 
     private void reMergeData() {
@@ -444,8 +447,9 @@ public class MergeDataActivity extends MyActivity {
     public void clearReceivedFiles() {
         new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
-            public void hasPermission() {
-                clear();
+            public void hasPermission(boolean flag) {
+                if(flag)
+                    clear();
             }
         }).request(Permission.Group.STORAGE);
     }
@@ -491,8 +495,9 @@ public class MergeDataActivity extends MyActivity {
     public void importFileClick() {
         new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
-            public void hasPermission() {
-                importFile(FileTools.getMergeFileList());
+            public void hasPermission(boolean flag) {
+                if(flag)
+                    importFile(FileTools.getMergeFileList());
             }
         }).request(Permission.Group.STORAGE);
     }
@@ -577,8 +582,9 @@ public class MergeDataActivity extends MyActivity {
         }
         new PermissionHelper(this, this, new PermissionHelper.OnResult() {
             @Override
-            public void hasPermission() {
-                share();
+            public void hasPermission(boolean flag) {
+                if (flag)
+                    share();
             }
         }).request(Permission.Group.STORAGE);
     }

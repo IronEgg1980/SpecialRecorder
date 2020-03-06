@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 
 public class InfoPopWindow extends PopupWindow {
     private Activity mActivity ;
@@ -37,9 +38,9 @@ public class InfoPopWindow extends PopupWindow {
         View view = LayoutInflater.from(mActivity).inflate(R.layout.popwindow_info_layout,null);
         textView = view.findViewById(R.id.messageTV);
         textView.setText("");
-        view.findViewById(R.id.confirmTV).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.confirmTV).setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 dismiss();
             }
         });

@@ -10,6 +10,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import th.yzw.specialrecorder.R;
+import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 
 public class MyPopupWin2 extends PopupWindow {
     public void setTextSize(float textSize) {
@@ -45,9 +46,9 @@ public class MyPopupWin2 extends PopupWindow {
         View contentView = LayoutInflater.from(context).inflate(R.layout.popwindow2_layout, null);
         mTvSign = contentView.findViewById(R.id.textView);
         ImageView close = contentView.findViewById(R.id.imageView);
-        close.setOnClickListener(new View.OnClickListener() {
+        close.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onNoDoubleClick(View v) {
                 dismiss2();
             }
         });
