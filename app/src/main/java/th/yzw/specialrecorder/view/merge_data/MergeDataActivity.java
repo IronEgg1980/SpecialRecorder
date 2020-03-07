@@ -77,8 +77,8 @@ public class MergeDataActivity extends MyActivity {
             ViewHolder(View itemView) {
                 super(itemView);
                 view = itemView;
-                name = (TextView) itemView.findViewById(R.id.show_item_name);
-                count = (TextView) itemView.findViewById((R.id.show_item_count));
+                name = itemView.findViewById(R.id.show_item_name);
+                count = itemView.findViewById((R.id.show_item_count));
             }
         }
 
@@ -118,7 +118,7 @@ public class MergeDataActivity extends MyActivity {
     private View shareData;
     private TextView textView1, textView2, textView3, textView4;
     private String phoneId;
-    private SimpleDateFormat format;
+    private SimpleDateFormat format,fileNameFormater;
     private List<SumTotalRecord> list;
     private MyAdapter adapter;
     private long mergeMonth;
@@ -152,6 +152,7 @@ public class MergeDataActivity extends MyActivity {
         mergeMonth = System.currentTimeMillis();
         phoneId = AppSetupOperator.getPhoneId();
         format = new SimpleDateFormat("正在合并【yyyy年M月份】数据", Locale.CHINA);
+        fileNameFormater = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
         dataWatingDialog = new MergeDataWatingDialog();
         selectMonthPopWindow = new SelectMonthPopWindow(this);
         selectMonthPopWindow.setDisMiss(new OnSelectDateRangeDismiss() {
@@ -592,7 +593,10 @@ public class MergeDataActivity extends MyActivity {
     //生成加密的分享文件
     File getShareFile(String pwd) {
         FileTools.clearFiles(getCacheDir());
-        String fileName = format.format(mergeMonth) + ".total";
+        String fileName = fileNameFormater.format(mergeMonth).substring(0, 7) +
+                "(汇总时间：" +
+                fileNameFormater.format(System.currentTimeMillis()) +
+                ").total";
         if (FileTools.isMicroMsgPathExist()) {
             File microMsgFile = new File(FileTools.MICROMSG_DIR, fileName);
             if (microMsgFile.exists())

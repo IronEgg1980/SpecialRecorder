@@ -204,7 +204,7 @@ public class ShowDataActivity extends AppCompatActivity {
     private void changeEditMode(boolean flag) {
         isEditMode = flag;
         if (flag) {
-            infoPopWindow.show("进入编辑模式，点击项目可以修改数据");
+            new ToastFactory(this).showCenterToast("进入编辑模式，点击项目可以修改数据");
             fileNameTV.setText("编辑模式(点击需要修改的项目)");
             frameLayout.setBackground(new ColorDrawable(Color.RED));
             exitEditModeBT.setVisibility(View.VISIBLE);
@@ -217,7 +217,7 @@ public class ShowDataActivity extends AppCompatActivity {
                 preIndex = -1;
             }
         } else {
-            infoPopWindow.show("退出编辑模式");
+            new ToastFactory(this).showCenterToast("退出编辑模式");
             fileNameTV.setText(mFileName);
             frameLayout.setBackground(new ColorDrawable(Color.TRANSPARENT));
             exitEditModeBT.setVisibility(View.GONE);

@@ -108,13 +108,13 @@
             android:background="@color/white"
             android:id="@+id/show_total_nodata"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="48dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="没有该时间段的汇总记录"
-            android:textSize="18sp" />
+            android:text="o(╥﹏╥)o\n\n在所选时间范围内没有找到数据"
+            android:textSize="16sp" />
     </FrameLayout>
     </android.support.constraint.ConstraintLayout>

@@ -248,10 +248,9 @@ public class MyDatePicker extends LinearLayout {
                 textView.setId(ids[index++]);
                 textView.setTextColor(dateTextNormalColor);
                 textView.setBackgroundColor(dateNormalBG);
-                textView.setOnClickListener(new NoDoubleClickListener() {
+                textView.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onNoDoubleClick(View v) {
-                        textView.setEnabled(false);
+                    public void onClick(View v) {
                         if (isMultiSelect) {
                             dateViewMultiClick(position);
                         } else {
@@ -443,7 +442,6 @@ public class MyDatePicker extends LinearLayout {
             clickListener.onClick(year, month, day);
         }
         mCalendar.setTimeInMillis(monthDay);
-        textView.setEnabled(true);
     }
 
     private void preMonthClick() {

@@ -28,6 +28,7 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.ForceUpdateDialog;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 import th.yzw.specialrecorder.view.input_data.KeyboardInputFragment;
@@ -109,6 +110,7 @@ public class RecorderActivity extends MyActivity {
     }
 
     private void showUpdateInfo() {
+        badgeView.setVisibility(View.INVISIBLE);
         long currentVersion = AppSetupOperator.getLastAppVersion();
         long downloadVersion = AppSetupOperator.getDownloadAppVersion();
         if (downloadVersion > currentVersion) {
@@ -119,8 +121,6 @@ public class RecorderActivity extends MyActivity {
             } else {
                 showUpdateDialog();
             }
-        } else {
-            badgeView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -176,7 +176,7 @@ public class RecorderActivity extends MyActivity {
     }
 
     private void showForceUpdateDialog() {
-        new ConfirmPopWindow(this)
+        ForceUpdateDialog.getInstant("需要更新至最新版本才能正常使用，否则将退出程序。请点击更新！")
                 .setDialogDismiss(new IDialogDismiss() {
                     @Override
                     public void onDismiss(Result result, Object... values) {
@@ -193,7 +193,7 @@ public class RecorderActivity extends MyActivity {
                         }
                     }
                 })
-                .toConfirm("需要更新至最新版本才能正常使用，否则将退出程序。请点击更新！");
+                .show(getSupportFragmentManager(),"showforceupdatedialog");
     }
 
     private void initialBroadcastReceiver() {
