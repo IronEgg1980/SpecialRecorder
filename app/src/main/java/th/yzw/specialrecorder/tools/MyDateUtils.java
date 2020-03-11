@@ -32,14 +32,6 @@ public final class MyDateUtils {
     public static String[] getMonthStartAndEnd(long date) {
         String[] times = new String[2];
         long[] _times = getMonthStartAndEndLong(date);
-//        c.setTimeInMillis(date);
-//        c.set(Calendar.DAY_OF_MONTH, 1);
-//        c.set(Calendar.HOUR_OF_DAY, 0);
-//        c.set(Calendar.MINUTE, 0);
-//        c.set(Calendar.SECOND, 0);
-//        c.set(Calendar.MILLISECOND, 0);
-//        long start = c.getTimeInMillis();
-//        long end = start + c.getActualMaximum(Calendar.DAY_OF_MONTH) * ONE_DAY_MILLIS - 1;
         times[0] = String.valueOf(_times[0]);
         times[1] = String.valueOf(_times[1]);
         return times;
@@ -62,13 +54,6 @@ public final class MyDateUtils {
     public static String[] getDayStartAndEnd(long date) {
         String[] times = new String[2];
         long[] _times = getDayStartAndEndLong(date);
-//        c.setTimeInMillis(date);
-//        c.set(Calendar.HOUR_OF_DAY, 0);
-//        c.set(Calendar.MINUTE, 0);
-//        c.set(Calendar.SECOND, 0);
-//        c.set(Calendar.MILLISECOND, 0);
-//        long start = c.getTimeInMillis();
-//        long end = start + ONE_DAY_MILLIS - 1;
         times[0] = String.valueOf(_times[0]);
         times[1] = String.valueOf(_times[1]);
         return times;
@@ -93,15 +78,6 @@ public final class MyDateUtils {
     public static String[] getYearStartAndEnd(long date) {
         String[] times = new String[2];
         long[] _times = getYearStartAndEndLong(date);
-//        c.setTimeInMillis(date);
-//        c.set(Calendar.MONTH, 0);
-//        c.set(Calendar.DAY_OF_MONTH, 1);
-//        c.set(Calendar.HOUR_OF_DAY, 0);
-//        c.set(Calendar.MINUTE, 0);
-//        c.set(Calendar.SECOND, 0);
-//        c.set(Calendar.MILLISECOND, 0);
-//        long start = c.getTimeInMillis();
-//        long end = start + c.getActualMaximum(Calendar.DAY_OF_YEAR) * ONE_DAY_MILLIS - 1;
         times[0] = String.valueOf(_times[0]);
         times[1] = String.valueOf(_times[1]);
         return times;

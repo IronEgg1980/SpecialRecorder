@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import th.yzw.specialrecorder.ActivityManager;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ItemStatisticalInformationOperator;
 import th.yzw.specialrecorder.JSON.ItemStatisticJSONHelper;
@@ -60,7 +61,6 @@ public class ChartActivity extends MyActivity {
     private TextView phoneIdTV;
     private int selectTimesColor, totalQuantityColor;
     private String phoneId;
-    //    private ToastFactory toastFactory;
     private List<ItemStatisticalInformation> ordredDataList;
     private RadioButton isSortBySelectTimesBT;
     private InfoPopWindow infoPopWindow;

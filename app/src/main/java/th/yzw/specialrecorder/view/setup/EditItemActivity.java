@@ -1,13 +1,16 @@
 package th.yzw.specialrecorder.view.setup;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,8 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.hjq.permissions.Permission;
-
 import org.json.JSONException;
 
 import java.io.File;
@@ -41,6 +42,7 @@ import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ItemNameOperator;
 import th.yzw.specialrecorder.DAO.MyDBHelper;
 import th.yzw.specialrecorder.JSON.ItemNameJSONHelper;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.MyClickListener;
@@ -50,15 +52,15 @@ import th.yzw.specialrecorder.model.ItemName;
 import th.yzw.specialrecorder.tools.DataTool;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.MenuPopWindow;
+import th.yzw.specialrecorder.view.merge_data.MergeDataActivity;
 
 //import java.io.File;
 
-public class EditItemActivity extends AppCompatActivity {
+public class EditItemActivity extends MyActivity {
     class EditItemSetupAdapter extends RecyclerView.Adapter<EditItemSetupAdapter.ViewHolder> {
         class ViewHolder extends RecyclerView.ViewHolder {
             public TextView nameTextView, itemTypeTextView, itemFormalationTextView, isOftenUseTextView;
@@ -289,39 +291,37 @@ public class EditItemActivity extends AppCompatActivity {
     }
 
     private void exportFile() {
-        if (mItemNameList != null && mItemNameList.size() > 0) {
-            PermissionHelper helper = new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-                @Override
-                public void hasPermission(boolean flag) {
-                    if(flag) {
-                        final int currentVersion = AppSetupOperator.getItemVersion() + 1;
-                        File path = new File(FileTools.ITEMNAME_EXPORT_DIR);
-                        if (!path.exists())
-                            path.mkdir();
-                        for (File file : path.listFiles()) {
-                            if (file.isFile())
-                                file.delete();
-                        }
-                        String fileName = "UpdateFileVersion_" + currentVersion + ".itemupdate";
-                        try {
-                            File file = new File(path, fileName);
-                            String s = new ItemNameJSONHelper().getUpdateFileJSONString(currentVersion);
-                            FileTools.writeDecryptFile(s, file);
-                            AppSetupOperator.setItemVersion(currentVersion);
-                            sendEmail(currentVersion, file);
-                            infoPopWindow.show("已导出文件至" + file.getAbsolutePath());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
-                        }
-                    }
-                }
-            });
-            helper.request(Permission.Group.STORAGE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            export();
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,111);
         }
+    }
+
+    private void export(){
+            final int currentVersion = AppSetupOperator.getItemVersion() + 1;
+            File path = new File(FileTools.ITEMNAME_EXPORT_DIR);
+            if (!path.exists())
+                path.mkdir();
+            for (File file : path.listFiles()) {
+                if (file.isFile())
+                    file.delete();
+            }
+            String fileName = "UpdateFileVersion_" + currentVersion + ".itemupdate";
+            try {
+                File file = new File(path, fileName);
+                String s = new ItemNameJSONHelper().getUpdateFileJSONString(currentVersion);
+                FileTools.writeDecryptFile(s, file);
+                AppSetupOperator.setItemVersion(currentVersion);
+                sendEmail(currentVersion, file);
+                infoPopWindow.show("已导出文件至" + file.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                infoPopWindow.show("解析数据失败！原因为：" + e.getMessage());
+            }
     }
 
     private File getShareFile(boolean isOldData) {
@@ -380,4 +380,24 @@ public class EditItemActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(Intent.createChooser(intent, "发送给："));
     }
+
+    @Override
+    protected void onPermissionGranted(int requestCode) {
+        export();
+    }
+
+    @Override
+    protected void onPermissionDenied(int requestCode) {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK){
+                            ActivityCompat.requestPermissions(EditItemActivity.this,PERMISSION_GROUP_STORAGE,111);
+                        }
+                    }
+                })
+                .toConfirm("由于您拒绝授予读取存储权限，该功能无法使用！\n请点击【确定】授予权限。");
+    }
+
 }

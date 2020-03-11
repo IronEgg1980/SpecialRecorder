@@ -1,5 +1,6 @@
 package th.yzw.specialrecorder.view.setup;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -7,12 +8,14 @@ import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -23,9 +26,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +44,6 @@ import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
@@ -73,7 +72,7 @@ public class SetupActivity extends MyActivity {
     private LinearLayout othersSetupUpdate;
     private LinearLayout cleaningApp;
     private LinearLayout aboutApp;
-    private TextView coloseApp;
+    private TextView closeApp;
     private RadioButton infoLocationNone;
     private RadioButton infoLocationButton;
     private RadioButton infoLocationTop;
@@ -90,6 +89,13 @@ public class SetupActivity extends MyActivity {
     private Vibrator vibrator;
     private boolean isHideMode;
     private BroadcastReceiver receiver;
+
+    final private int REQUEST_CODE_CLEARAPP = 111;
+    final private int REQUEST_CODE_CLEARBACKFILES = 222;
+    final private int REQUEST_CODE_BACKUP = 333;
+    final private int REQUEST_CODE_RESTORE = 444;
+    final private int REQUEST_CODE_UPDATEITEM = 555;
+    final private int REQUEST_CODE_UPDATEAPP = 666;
 
     private void initialView() {
         infoPopWindow = new InfoPopWindow(this);
@@ -117,7 +123,7 @@ public class SetupActivity extends MyActivity {
         dataSafeAlarm = findViewById(R.id.data_safe_alarm);
         othersSetupPwd = findViewById(R.id.others_setup_pwd);
         othersSetupUpdate = findViewById(R.id.others_setup_update);
-        coloseApp = findViewById(R.id.coloseApp);
+        closeApp = findViewById(R.id.coloseApp);
         othersSetupUpdateItems = findViewById(R.id.others_setup_updateItems);
         cleaningApp = findViewById(R.id.others_setup_cleaning);
         appUpdatedFlagTV = findViewById(R.id.appUpdatedFlag);
@@ -198,19 +204,19 @@ public class SetupActivity extends MyActivity {
         dataSafeBackup.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                backupData(v);
+                backup();
             }
         });
         dataSafeRestore.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                restoreData(v);
+                restoreData();
             }
         });
         dataSafeClearFiles.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                clearBackupDirectory(v);
+                clearBackupDirectory();
             }
         });
         othersSetupPwd.setOnClickListener(new NoDoubleClickListener() {
@@ -237,7 +243,7 @@ public class SetupActivity extends MyActivity {
                 cleaningApp();
             }
         });
-        coloseApp.setOnClickListener(new NoDoubleClickListener() {
+        closeApp.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 ActivityManager.closeAll();
@@ -454,82 +460,70 @@ public class SetupActivity extends MyActivity {
     }
 
     private void cleaningApp() {
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if (flag) {
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        new ConfirmPopWindow(SetupActivity.this).setDialogDismiss(new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(Result result, Object... values) {
-                                if (result == Result.OK) {
-                                    FileTools.cleanApp(Objects.requireNonNull(SetupActivity.this));
-                                    AppSetupOperator.setDownloadAppVersion(1);
-                                    AppSetupOperator.setForceUpdate(false);
-                                    new ToastFactory(SetupActivity.this).showCenterToast("已清理");
-                                }
-                            }
-                        }).toConfirm("是否清理所有数据文件、项目更新文件、App升级文件？");
-                    } else {
-                        infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                new ConfirmPopWindow(SetupActivity.this).setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OK) {
+                            FileTools.cleanApp(Objects.requireNonNull(SetupActivity.this));
+                            AppSetupOperator.setDownloadAppVersion(1);
+                            AppSetupOperator.setForceUpdate(false);
+                            new ToastFactory(SetupActivity.this).showCenterToast("已清理");
+                        }
                     }
-                }
+                }).toConfirm("是否清理所有数据文件、项目更新文件、App升级文件？");
+            } else {
+                infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
             }
-        }).request(Permission.Group.STORAGE);
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_CLEARAPP);
+        }
     }
 
-    public void clearBackupDirectory(View view) {
-        new PermissionHelper(SetupActivity.this, SetupActivity.this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if(flag) {
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        new ConfirmPopWindow(SetupActivity.this).setDialogDismiss(new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(Result result, Object... values) {
-                                if (result == Result.OK) {
-                                    clearBackupFiles();
-                                }
-                            }
-                        }).toConfirm("清除所有备份文件后将不能恢复，是否继续？");
-                    } else {
-                        infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
+    public void clearBackupDirectory() {
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                new ConfirmPopWindow(SetupActivity.this).setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OK) {
+                            clearBackupFiles();
+                        }
                     }
-                }
+                }).toConfirm("清除所有备份文件后将不能恢复，是否继续？");
+            } else {
+                infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
             }
-        }).request(Permission.Group.STORAGE);
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_CLEARBACKFILES);
+        }
     }
 
     private void backup() {
-        File path = new File(FileTools.BACKUP_DIR);
-        if (!path.exists() && !path.mkdirs()) {
-            infoPopWindow.show("创建目录失败！请重试一次…");
-            return;
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File path = new File(FileTools.BACKUP_DIR);
+            if (!path.exists() && !path.mkdirs()) {
+                infoPopWindow.show("创建目录失败！请重试一次…");
+                return;
+            }
+            loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
+            loadingDialog.setCancelClick(null);
+            loadingDialog.setCancelable(false);
+            DataBackupAndRestore dataBackuper = new DataBackupAndRestore(this, "backup");
+            dataBackuper.setOnFinish(new IDialogDismiss() {
+                @Override
+                public void onDismiss(Result result, Object... values) {
+                    loadingDialog.dismiss();
+                    String s = (String) values[0];
+                    new ToastFactory(SetupActivity.this).showCenterToast(s);
+                }
+            });
+            loadingDialog.show(getSupportFragmentManager(), "loading");
+            dataBackuper.execute();
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_BACKUP);
         }
-        loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
-        loadingDialog.setCancelClick(null);
-        loadingDialog.setCancelable(false);
-        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(this, "backup");
-        dataBackuper.setOnFinish(new IDialogDismiss() {
-            @Override
-            public void onDismiss(Result result, Object... values) {
-                loadingDialog.dismiss();
-                String s = (String) values[0];
-                new ToastFactory(SetupActivity.this).showCenterToast(s);
-            }
-        });
-        loadingDialog.show(getSupportFragmentManager(), "loading");
-        dataBackuper.execute();
-    }
-
-    public void backupData(View view) {
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if(flag)
-                     backup();
-            }
-        }).request(Permission.Group.STORAGE);
     }
 
     private void restore() {
@@ -572,32 +566,29 @@ public class SetupActivity extends MyActivity {
         }).toConfirm("注意：【恢复数据】操作将会清除现有数据，恢复为已备份的记录。是否确认该操作？");
     }
 
-    private void restoreData(View view) {
+    private void restoreData() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            new PermissionHelper(SetupActivity.this, SetupActivity.this, new PermissionHelper.OnResult() {
-                @Override
-                public void hasPermission(boolean flag) {
-                    if (flag) {
-                        final String[] pathList = FileTools.getFileList(FileTools.BACKUP_DIR, ".backup");
-                        if (pathList.length > 0) {
-                            selectedFile = new File(FileTools.BACKUP_DIR, pathList[0]);
-                            final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(SetupActivity.this, pathList, false);
-                            selectItemPopWindow.show(new IDialogDismiss() {
-                                @Override
-                                public void onDismiss(Result result, Object... values) {
-                                    if (result == Result.OK) {
-                                        selectItemPopWindow.isResumeAlpha = false;
-                                        selectedFile = new File(FileTools.BACKUP_DIR, pathList[(int) values[0]]);
-                                        restore();
-                                    }
-                                }
-                            });
-                        } else {
-                            infoPopWindow.show("未找到备份记录！");
-                        }
-                    }
-                }
-            }).request(Permission.Group.STORAGE);
+           if(ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+               final String[] pathList = FileTools.getFileList(FileTools.BACKUP_DIR, ".backup");
+               if (pathList.length > 0) {
+                   selectedFile = new File(FileTools.BACKUP_DIR, pathList[0]);
+                   final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(SetupActivity.this, pathList, false);
+                   selectItemPopWindow.show(new IDialogDismiss() {
+                       @Override
+                       public void onDismiss(Result result, Object... values) {
+                           if (result == Result.OK) {
+                               selectItemPopWindow.isResumeAlpha = false;
+                               selectedFile = new File(FileTools.BACKUP_DIR, pathList[(int) values[0]]);
+                               restore();
+                           }
+                       }
+                   });
+               } else {
+                   infoPopWindow.show("未找到备份记录！");
+               }
+           }else{
+               ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_RESTORE);
+           }
         } else {
             infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
         }
@@ -606,70 +597,50 @@ public class SetupActivity extends MyActivity {
 
     private void updateItemDataClick() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            new PermissionHelper(SetupActivity.this, SetupActivity.this, new PermissionHelper.OnResult() {
-                @Override
-                public void hasPermission(boolean flag) {
-                    if(flag) {
-                        final String[] temp = FileTools.getFileList(FileTools.MICROMSG_DIR, ".itemupdate");
-                        if (temp.length > 0) {
-                            SelectItemPopWindow itemPopWindow = new SelectItemPopWindow(SetupActivity.this, temp, false);
-                            itemPopWindow.show(new IDialogDismiss() {
-                                @Override
-                                public void onDismiss(Result result, Object... values) {
-                                    if (result == Result.OK) {
-                                        File f = new File(FileTools.MICROMSG_DIR, temp[(int) values[0]]);
-                                        loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", true);
-                                        loadingDialog.setCancelClick(null);
-                                        loadingDialog.setCancelable(false);
-                                        ItemUpdater updater = new ItemUpdater(SetupActivity.this, f);
-                                        updater.setOnFinished(new IDialogDismiss() {
-                                            @Override
-                                            public void onDismiss(Result result, Object... values) {
-                                                loadingDialog.dismiss();
-                                                String s = (String) values[0];
-                                                infoPopWindow.show(s);
-                                            }
-                                        });
-                                        loadingDialog.show(getSupportFragmentManager(), "loading");
-                                        updater.execute();
+            if(ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                final String[] temp = FileTools.getFileList(FileTools.MICROMSG_DIR, ".itemupdate");
+                if (temp.length > 0) {
+                    SelectItemPopWindow itemPopWindow = new SelectItemPopWindow(SetupActivity.this, temp, false);
+                    itemPopWindow.show(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if (result == Result.OK) {
+                                File f = new File(FileTools.MICROMSG_DIR, temp[(int) values[0]]);
+                                loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", true);
+                                loadingDialog.setCancelClick(null);
+                                loadingDialog.setCancelable(false);
+                                ItemUpdater updater = new ItemUpdater(SetupActivity.this, f);
+                                updater.setOnFinished(new IDialogDismiss() {
+                                    @Override
+                                    public void onDismiss(Result result, Object... values) {
+                                        loadingDialog.dismiss();
+                                        String s = (String) values[0];
+                                        infoPopWindow.show(s);
                                     }
-                                }
-                            });
-                        } else {
-                            infoPopWindow.show(FileTools.MICROMSG_DIR + "未找到数据文件。");
+                                });
+                                loadingDialog.show(getSupportFragmentManager(), "loading");
+                                updater.execute();
+                            }
                         }
-                    }
+                    });
+                } else {
+                    infoPopWindow.show(FileTools.MICROMSG_DIR + "未找到数据文件。");
                 }
-            }).request(Permission.Group.STORAGE);
+            }else{
+                ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_UPDATEITEM);
+            }
         } else {
             infoPopWindow.show("SD卡不可用，请稍后再试一下看看…");
         }
     }
 
     private void updateAPPClick() {
-        if (!XXPermissions.isHasPermission(SetupActivity.this, Permission.REQUEST_INSTALL_PACKAGES)) {
-            new ConfirmPopWindow(SetupActivity.this).setDialogDismiss(new IDialogDismiss() {
-                @Override
-                public void onDismiss(Result result, Object... values) {
-                    if (result == Result.OK) {
-                        new PermissionHelper(SetupActivity.this, SetupActivity.this, new PermissionHelper.OnResult() {
-                            @Override
-                            public void hasPermission(boolean flag) {
-                                if(flag)
-                                    updateAPPClick();
-                            }
-                        }).request(Permission.REQUEST_INSTALL_PACKAGES);
-                    }
-                }
-            }).toConfirm("请授予安装未知来源软件的权限。");
-        } else {
-            new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-                @Override
-                public void hasPermission(boolean flag) {
-                    if(flag)
-                        openUpdateAppDialog();
-                }
-            }).request(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
+        if(hasInstallPermission()){
+            if(ActivityCompat.checkSelfPermission(SetupActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                openUpdateAppDialog();
+            }else{
+                ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE, REQUEST_CODE_UPDATEAPP);
+            }
         }
     }
 
@@ -767,5 +738,52 @@ public class SetupActivity extends MyActivity {
         });
         loadingDialog.show(getSupportFragmentManager(), "loading");
         updater.execute();
+    }
+
+    @Override
+    protected void onPermissionGranted(int requestCode) {
+        switch (requestCode){
+            case REQUEST_CODE_CLEARAPP:
+                cleaningApp();
+                break;
+            case REQUEST_CODE_CLEARBACKFILES:
+                clearBackupDirectory();
+                break;
+            case REQUEST_CODE_BACKUP:
+                backup();
+                break;
+            case REQUEST_CODE_RESTORE:
+                restoreData();
+                break;
+            case REQUEST_CODE_UPDATEAPP:
+                updateAPPClick();
+                break;
+            case REQUEST_CODE_UPDATEITEM:
+                updateItemDataClick();
+                break;
+            case REQUST_CODE_INSTALL:
+                updateAPPClick();
+                break;
+            default:
+                new ToastFactory(this).showCenterToast("已获得授权。");
+        }
+    }
+
+    @Override
+    protected void onPermissionDenied(int requestCode) {
+        if(requestCode==REQUST_CODE_INSTALL){
+            new InfoPopWindow(this).show("由于您拒绝授权，更新程序失败！");
+        }else{
+            new ConfirmPopWindow(this)
+                    .setDialogDismiss(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if(result == Result.OK){
+                                ActivityCompat.requestPermissions(SetupActivity.this,PERMISSION_GROUP_STORAGE,999);
+                            }
+                        }
+                    })
+                    .toConfirm("由于您拒绝授予读取存储权限，该功能无法使用！\n请点击【确定】授予权限。");
+        }
     }
 }

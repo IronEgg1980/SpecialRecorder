@@ -1,9 +1,12 @@
 package th.yzw.specialrecorder.view.show_all_data;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,8 +22,6 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.hjq.permissions.Permission;
-
 import org.json.JSONException;
 
 import java.io.File;
@@ -32,6 +33,7 @@ import th.yzw.specialrecorder.ActivityManager;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.ShowDataOperator;
 import th.yzw.specialrecorder.JSON.ShowDataJSONHelper;
+import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
@@ -39,7 +41,6 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.ShowDataEntity;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
@@ -47,7 +48,7 @@ import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
 
-public class ShowDataActivity extends AppCompatActivity {
+public class ShowDataActivity extends MyActivity {
     String TAG = "殷宗旺";
 
     private String[] pathList;
@@ -107,65 +108,58 @@ public class ShowDataActivity extends AppCompatActivity {
     }
 
     private void readFile(final String _fileName) {
-        new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if (flag) {
-                    ShowDataOperator.deleAll(_fileName);
-                    if (list == null)
-                        list = new ArrayList<>();
-                    list.clear();
-                    new EnterPWDPopWindow(ShowDataActivity.this, "验证密码", "请输入密码")
-                            .setIcon(getDrawable(R.drawable.ic_lock_24dp))
-                            .setDialogDismiss(new IDialogDismiss() {
-                                @Override
-                                public void onDismiss(Result result, Object... values) {
-                                    if (result == Result.OK) {
-                                        String pwd = (String) values[0];
-                                        openFile(_fileName, pwd);
-                                    } else {
-                                        setFileName("none");
-                                        showInfo();
-                                    }
-                                }
-                            }).show();
-                }
-            }
-        }).request(Permission.Group.STORAGE);
+        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+            ShowDataOperator.deleAll(_fileName);
+            if (list == null)
+                list = new ArrayList<>();
+            list.clear();
+            new EnterPWDPopWindow(ShowDataActivity.this, "验证密码", "请输入密码")
+                    .setIcon(getDrawable(R.drawable.ic_lock_24dp))
+                    .setDialogDismiss(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if (result == Result.OK) {
+                                String pwd = (String) values[0];
+                                openFile(_fileName, pwd);
+                            } else {
+                                setFileName("none");
+                                showInfo();
+                            }
+                        }
+                    }).show();
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,2004);
+        }
     }
 
     private void clear() {
-        new ConfirmPopWindow(this)
-                .setDialogDismiss(new IDialogDismiss() {
-                    @Override
-                    public void onDismiss(Result result, Object... values) {
-                        if (result == Result.OK) {
-                            new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
-                                @Override
-                                public void hasPermission(boolean flag) {
-                                    if (flag) {
-                                        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                                            path = new File(FileTools.MICROMSG_DIR);
-                                            if (!path.exists()) {
-                                                infoPopWindow.show("未找到文件目录");
-                                                return;
-                                            }
-                                            File file = new File(path, mFileName);
-                                            file.delete();
-                                            ShowDataOperator.deleAll(mFileName);
-                                            if (list == null)
-                                                list = new ArrayList<>();
-                                            list.clear();
-                                            setFileName("none");
-                                            showInfo();
-                                            infoPopWindow.show("已删除文件");
-                                        }
-                                    }
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            new ConfirmPopWindow(this)
+                    .setDialogDismiss(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if (result == Result.OK) {
+                                path = new File(FileTools.MICROMSG_DIR);
+                                if (!path.exists()) {
+                                    infoPopWindow.show("未找到文件目录");
+                                    return;
                                 }
-                            }).request(Permission.Group.STORAGE);
+                                File file = new File(path, mFileName);
+                                file.delete();
+                                ShowDataOperator.deleAll(mFileName);
+                                if (list == null)
+                                    list = new ArrayList<>();
+                                list.clear();
+                                setFileName("none");
+                                showInfo();
+                                infoPopWindow.show("已删除文件");
+                            }
                         }
-                    }
-                }).toConfirm("是否删除数据文件【 " + mFileName + " 】？");
+                    }).toConfirm("是否删除数据文件【 " + mFileName + " 】？");
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,2003);
+        }
     }
 
     private void updateList(String _fileName) {
@@ -295,28 +289,25 @@ public class ShowDataActivity extends AppCompatActivity {
     }
 
     private void delFiles() {
-        new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if (flag) {
-                    File path = null;
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        path = new File(FileTools.MICROMSG_DIR);
-                        if (!path.exists()) {
-                            infoPopWindow.show("未找到文件目录");
-                            return;
-                        }
-                    }
-                    FileTools.deleAllFiles(path, ".total");
-                    ShowDataOperator.deleAll();
-                    if (list == null)
-                        list = new ArrayList<>();
-                    list.clear();
-                    setFileName("none");
-                    infoPopWindow.show("已清除所有文件");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File path = null;
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                path = new File(FileTools.MICROMSG_DIR);
+                if (!path.exists()) {
+                    infoPopWindow.show("未找到文件目录");
+                    return;
                 }
             }
-        }).request(Permission.Group.STORAGE);
+            FileTools.deleAllFiles(path, ".total");
+            ShowDataOperator.deleAll();
+            if (list == null)
+                list = new ArrayList<>();
+            list.clear();
+            setFileName("none");
+            infoPopWindow.show("已清除所有文件");
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, 2001);
+        }
     }
 
     private void showSelectItem(int position) {
@@ -416,43 +407,70 @@ public class ShowDataActivity extends AppCompatActivity {
     }
 
     protected void selectFile() {
-        new PermissionHelper(ShowDataActivity.this, ShowDataActivity.this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if (flag) {
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        path = new File(FileTools.MICROMSG_DIR);
-                        if (path.exists()) {
-                            pathList = FileTools.getFileList(path, ".total");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                path = new File(FileTools.MICROMSG_DIR);
+                if (path.exists()) {
+                    pathList = FileTools.getFileList(path, ".total");
+                }
+                if (pathList != null && pathList.length > 0) {
+                    final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(ShowDataActivity.this, pathList, false);
+                    selectItemPopWindow.show(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if (result == Result.OK) {
+                                mFileName = pathList[(int) values[0]];
+                                updateList(mFileName);
+                                if (list.size() == 0) {
+                                    readFile(mFileName);
+                                    selectItemPopWindow.isResumeAlpha = false;
+                                } else
+                                    showInfo();
+                            }
                         }
-                        if (pathList != null && pathList.length > 0) {
-                            final SelectItemPopWindow selectItemPopWindow = new SelectItemPopWindow(ShowDataActivity.this, pathList, false);
-                            selectItemPopWindow.show(new IDialogDismiss() {
-                                @Override
-                                public void onDismiss(Result result, Object... values) {
-                                    if (result == Result.OK) {
-                                        mFileName = pathList[(int) values[0]];
-                                        updateList(mFileName);
-                                        if (list.size() == 0) {
-                                            readFile(mFileName);
-                                            selectItemPopWindow.isResumeAlpha = false;
-                                        } else
-                                            showInfo();
-                                    }
-                                }
-                            });
-                        } else {
-                            infoPopWindow.show("未找到数据文件！");
-                        }
-                    }
+                    });
+                } else {
+                    infoPopWindow.show("未找到数据文件！");
                 }
             }
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, 2000);
         }
-        ).request(Permission.Group.STORAGE);
     }
 
     protected void editData(final int position) {
         ShowDataEntity r = list.get(position);
         editPopWindow.setData(r.getName(), r.getCount()).show();
+    }
+
+    @Override
+    protected void onPermissionGranted(int requestCode) {
+        switch (requestCode){
+            case 2000:
+                selectFile();
+                break;
+            case 2001:
+                delFiles();
+                break;
+            case 2003:
+                clear();
+                break;
+            default:
+                new ToastFactory(this).showCenterToast("已获取存储权限。");
+        }
+    }
+
+    @Override
+    protected void onPermissionDenied(int requestCode) {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if (result == Result.OK) {
+                            ActivityCompat.requestPermissions(ShowDataActivity.this, PERMISSION_GROUP_STORAGE, 2002);
+                        }
+                    }
+                })
+                .toConfirm("如需使用该功能，请授予使用存储权限。");
     }
 }

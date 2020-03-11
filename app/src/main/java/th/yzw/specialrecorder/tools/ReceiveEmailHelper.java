@@ -28,8 +28,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 public final class ReceiveEmailHelper {
-    private final String username = "specialrecorder@163.com";
-    private final String password = "Erke4187657";
+    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String password = EncryptAndDecrypt.decryptPassword("gk1tDlze8Q0B9pZeRRK4iA==");
 
     private static ReceiveEmailHelper emailHelper = null;
     public static ReceiveEmailHelper getInstance(){

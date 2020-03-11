@@ -1,5 +1,6 @@
 package th.yzw.specialrecorder.view.merge_data;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -7,28 +8,23 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.TextView;
-
-import com.hjq.permissions.Permission;
 
 import org.json.JSONException;
 
@@ -56,8 +52,8 @@ import th.yzw.specialrecorder.model.ShowDataEntity;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.MyDateUtils;
+import th.yzw.specialrecorder.tools.OpenPermissionSetting;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
@@ -109,6 +105,9 @@ public class MergeDataActivity extends MyActivity {
 
     }
 
+    private final int CLEAR_FILES_REQUESTCODE = 111;
+    private final int IMPORT_FILES_REQUESTCODE = 222;
+    private final int SHARE_REQUESTCODE = 333;
     private MergeDataWatingDialog dataWatingDialog;
     private TextView dateTextView;
     private View mergeDataBegin;
@@ -118,7 +117,7 @@ public class MergeDataActivity extends MyActivity {
     private View shareData;
     private TextView textView1, textView2, textView3, textView4;
     private String phoneId;
-    private SimpleDateFormat format,fileNameFormater;
+    private SimpleDateFormat format, fileNameFormater;
     private List<SumTotalRecord> list;
     private MyAdapter adapter;
     private long mergeMonth;
@@ -446,13 +445,11 @@ public class MergeDataActivity extends MyActivity {
 
     // 清空接收到的文件
     public void clearReceivedFiles() {
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if(flag)
-                    clear();
-            }
-        }).request(Permission.Group.STORAGE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            clear();
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, CLEAR_FILES_REQUESTCODE);
+        }
     }
 
     private void importFile(final String[] fileList) {
@@ -494,13 +491,11 @@ public class MergeDataActivity extends MyActivity {
 
     //导入数据
     public void importFileClick() {
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if(flag)
-                    importFile(FileTools.getMergeFileList());
-            }
-        }).request(Permission.Group.STORAGE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            importFile(FileTools.getMergeFileList());
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, CLEAR_FILES_REQUESTCODE);
+        }
     }
 
     private void importThisData() {
@@ -581,13 +576,11 @@ public class MergeDataActivity extends MyActivity {
             infoPopWindow.show("列表内没有数据！\n请先合并数据，全部完成后再发送。");
             return;
         }
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if (flag)
-                    share();
-            }
-        }).request(Permission.Group.STORAGE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            share();
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, CLEAR_FILES_REQUESTCODE);
+        }
     }
 
     //生成加密的分享文件
@@ -625,4 +618,36 @@ public class MergeDataActivity extends MyActivity {
             return null;
         }
     }
+
+    @Override
+    protected void onPermissionGranted(int requestCode) {
+        switch (requestCode) {
+            case CLEAR_FILES_REQUESTCODE:
+                clearReceivedFiles();
+                break;
+            case IMPORT_FILES_REQUESTCODE:
+                importFileClick();
+                break;
+            case SHARE_REQUESTCODE:
+                shareData();
+                break;
+            default:
+                new ToastFactory(this).showCenterToast("已获取权限，请继续操作。");
+        }
+    }
+
+    @Override
+    protected void onPermissionDenied(int requestCode) {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK){
+                            ActivityCompat.requestPermissions(MergeDataActivity.this,PERMISSION_GROUP_STORAGE,999);
+                        }
+                    }
+                })
+                .toConfirm("由于您拒绝授予读取存储权限，该功能无法使用！\n请点击【确定】授予权限。");
+    }
+
 }

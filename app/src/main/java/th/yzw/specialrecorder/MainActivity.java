@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,7 +47,8 @@ import th.yzw.specialrecorder.view.show_all_data.ShowDataActivity;
 
 public class MainActivity extends MyActivity {
 
-    //    String TAG = "殷宗旺";
+
+    private String TAG = "殷宗旺";
     private int[] idNum = {R.id.txt0,
             R.id.txt1, R.id.txt2, R.id.txt3,
             R.id.txt4, R.id.txt5, R.id.txt6,

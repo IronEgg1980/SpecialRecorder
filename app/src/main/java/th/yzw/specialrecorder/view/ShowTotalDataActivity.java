@@ -1,17 +1,20 @@
 package th.yzw.specialrecorder.view;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -22,15 +25,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.CycleInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.hjq.permissions.Permission;
 
 import org.json.JSONException;
 
@@ -57,7 +54,6 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
-import th.yzw.specialrecorder.tools.PermissionHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.HeadPaddingItemDecoration;
@@ -65,6 +61,7 @@ import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
 import th.yzw.specialrecorder.view.common.ToastFactory;
+import th.yzw.specialrecorder.view.setup.EditItemActivity;
 
 public class ShowTotalDataActivity extends MyActivity {
     protected class ShowTotalAdapter extends RecyclerView.Adapter<ShowTotalAdapter.ViewHolder> {
@@ -344,13 +341,11 @@ public class ShowTotalDataActivity extends MyActivity {
             infoPopWindow.show("该时间段内没有汇总数据！");
             return;
         }
-        new PermissionHelper(this, this, new PermissionHelper.OnResult() {
-            @Override
-            public void hasPermission(boolean flag) {
-                if(flag)
-                     share();
-            }
-        }).request(Permission.Group.STORAGE);
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+            share();
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,1002);
+        }
     }
 
     private void clearSameFile(String fileName) {
@@ -396,4 +391,22 @@ public class ShowTotalDataActivity extends MyActivity {
         }
     }
 
+    @Override
+    protected void onPermissionGranted(int requestCode) {
+        share();
+    }
+
+    @Override
+    protected void onPermissionDenied(int requestCode) {
+        new ConfirmPopWindow(this)
+                .setDialogDismiss(new IDialogDismiss() {
+                    @Override
+                    public void onDismiss(Result result, Object... values) {
+                        if(result == Result.OK){
+                            shareData();
+                        }
+                    }
+                })
+                .toConfirm("由于您拒绝授予读取存储权限，该功能无法使用！\n请点击【确定】授予权限。");
+    }
 }
