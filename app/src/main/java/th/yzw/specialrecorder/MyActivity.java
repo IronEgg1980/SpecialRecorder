@@ -111,9 +111,4 @@ public abstract class MyActivity extends AppCompatActivity {
         ActivityManager.add(this);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityManager.remove(this);
-    }
 }

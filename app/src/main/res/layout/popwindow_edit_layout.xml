@@ -83,17 +83,17 @@
         <ImageView
             android:id="@+id/num1_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_1" />
+            android:src="@drawable/num_1" />
 
         <ImageView
             android:id="@+id/num2_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_2" />
+            android:src="@drawable/num_2" />
 
         <ImageView
             android:id="@+id/num3_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_3" />
+            android:src="@drawable/num_3" />
     </LinearLayout>
 
     <LinearLayout
@@ -104,17 +104,17 @@
         <ImageView
             android:id="@+id/num4_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_4" />
+            android:src="@drawable/num_4" />
 
         <ImageView
             android:id="@+id/num5_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_5" />
+            android:src="@drawable/num_5" />
 
         <ImageView
             android:id="@+id/num6_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_6" />
+            android:src="@drawable/num_6" />
     </LinearLayout>
 
     <LinearLayout
@@ -125,17 +125,17 @@
         <ImageView
             android:id="@+id/num7_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_7" />
+            android:src="@drawable/num_7" />
 
         <ImageView
             android:id="@+id/num8_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_8" />
+            android:src="@drawable/num_8" />
 
         <ImageView
             android:id="@+id/num9_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_9" />
+            android:src="@drawable/num_9" />
     </LinearLayout>
 
     <LinearLayout
@@ -146,16 +146,16 @@
         <ImageView
             android:id="@+id/num0_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/num_0" />
+            android:src="@drawable/num_0" />
 
         <ImageView
             android:id="@+id/cancel_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/cancel" />
+            android:src="@drawable/cancel" />
 
         <ImageView
             android:id="@+id/ok_IV"
             style="@style/NumImageView"
-            android:src="@mipmap/confirm" />
+            android:src="@drawable/confirm" />
     </LinearLayout>
 </RelativeLayout>

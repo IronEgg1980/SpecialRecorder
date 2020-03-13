@@ -195,6 +195,14 @@ public final class AppSetupOperator {
         saveSetupValue("showgroupbuttonstatus",b);
     }
 
+    public static int getTipsTimes(){
+        return getSetupValue("tipstimes",5);
+    }
+
+    public static void setTipsTimes(int value){
+        saveSetupValue("tipstimes",value);
+    }
+
     //    private static SharedPreferences sharedPreferences;
 
 

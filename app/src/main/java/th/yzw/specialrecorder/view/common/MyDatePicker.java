@@ -61,7 +61,7 @@ public class MyDatePicker extends LinearLayout {
         dateTextNormalColor = typedArray.getColor(R.styleable.MyDatePicker_dateTextNormalColor, Color.BLACK);
         dateTextSelectedColor = typedArray.getColor(R.styleable.MyDatePicker_dateTextSelectedColor, Color.WHITE);
         dateNormalBG = typedArray.getColor(R.styleable.MyDatePicker_dateNormalBG, Color.TRANSPARENT);
-        dateSelectedBG = typedArray.getColor(R.styleable.MyDatePicker_dateSelectedBG, Color.parseColor("#0e7772"));
+        dateSelectedBG = typedArray.getColor(R.styleable.MyDatePicker_dateSelectedBG,context.getColor(R.color.colorPrimary));
         selectedBGDrawable = typedArray.getDrawable(R.styleable.MyDatePicker_dateSelectedDrawable);
         typedArray.recycle();
         initial();

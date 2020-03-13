@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:background="@drawable/button_normal"
-            android:drawableStart="@mipmap/date"
+            android:drawableStart="@drawable/date"
             android:drawablePadding="12dp"
             android:gravity="center_vertical"
             android:paddingStart="12dp"

@@ -39,16 +39,21 @@ import th.yzw.specialrecorder.view.setup.ShowAppUpdateInfomationDialog;
 import th.yzw.specialrecorder.view.show_details.ShowDetailsActivity;
 
 public class RecorderActivity extends MyActivity {
-    private String TAG = "殷宗旺";
-
     private FragmentManager fragmentManager;
     private long firstTouch;
-    private android.support.v7.widget.Toolbar toolbar;
     private BroadcastReceiver receiver;
     private ToastFactory toastFactory;
     private DrawerLayout drawerLayout;
     private TextView badgeView;
+    private int tipTimes;
 
+    private void showTips(){
+        if(tipTimes > 0){
+            tipTimes--;
+            AppSetupOperator.setTipsTimes(tipTimes);
+            toastFactory.showLongToast("点击左上角图标或右滑以打开菜单");
+        }
+    }
 
     private void initialView() {
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -201,7 +206,6 @@ public class RecorderActivity extends MyActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 showUpdateInfo();
-                Log.d(TAG, "onReceive: recoderactivity");
             }
         };
         Broadcasts.bindBroadcast(this, receiver, Broadcasts.APP_UPDATEFILE_DOWNLOAD_SUCCESS);
@@ -211,8 +215,8 @@ public class RecorderActivity extends MyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder);
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.menu_right);
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.menu);
         setTitle("首页");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
@@ -225,8 +229,11 @@ public class RecorderActivity extends MyActivity {
         firstTouch = 0;
         fragmentManager = getSupportFragmentManager();
         toastFactory = new ToastFactory(RecorderActivity.this);
+        tipTimes = AppSetupOperator.getTipsTimes();
+
         initialView();
         initialBroadcastReceiver();
+        showTips();
     }
 
     @Override

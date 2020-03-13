@@ -66,7 +66,6 @@ public class MainActivity extends MyActivity {
     @Override
     protected void onDestroy() {
         Broadcasts.unBindBroadcast(MainActivity.this, receiver);
-        ActivityManager.closeAll();
         super.onDestroy();
     }
 

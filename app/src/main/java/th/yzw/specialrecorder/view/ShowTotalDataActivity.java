@@ -123,6 +123,8 @@ public class ShowTotalDataActivity extends MyActivity {
     private File path, cacheDir;
     private String phoneId;
     private View changeDateBT,deleBT,shareBT;
+    private int REQUEST_CODE_SHARE = 11,REQUEST_CODE_BACKUP = 22;
+
 
     private Animator buttonClickAnima(View view){
         ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-30f);
@@ -159,31 +161,35 @@ public class ShowTotalDataActivity extends MyActivity {
     }
 
     private void backup() {
-        File path = new File(FileTools.BACKUP_DIR);
-        if (!path.exists() && !path.mkdirs()) {
-            infoPopWindow.show("创建目录失败！请重试一次…");
-            return;
-        }
-        final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
-        loadingDialog.setCancelClick(null);
-        loadingDialog.setCancelable(false);
-        DataBackupAndRestore dataBackuper = new DataBackupAndRestore(this, "backup");
-        dataBackuper.setOnFinish(new IDialogDismiss() {
-            @Override
-            public void onDismiss(Result result, Object... values) {
-                loadingDialog.dismiss();
-                if (result == Result.OK) {
-                    RecordEntityOperator.deleAllBetweenDate(start, end);
-                    adapter.updateList(start, end);
-                    new ToastFactory(ShowTotalDataActivity.this).showCenterToast("备份后删除数据成功");
-                } else {
-                    String s = (String) values[0];
-                    infoPopWindow.show(s);
-                }
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+            File path = new File(FileTools.BACKUP_DIR);
+            if (!path.exists() && !path.mkdirs()) {
+                infoPopWindow.show("创建目录失败！请重试一次…");
+                return;
             }
-        });
-        loadingDialog.show(getSupportFragmentManager(), "loading");
-        dataBackuper.execute();
+            final LoadingDialog loadingDialog = LoadingDialog.newInstant("备份数据", "准备中...", true);
+            loadingDialog.setCancelClick(null);
+            loadingDialog.setCancelable(false);
+            DataBackupAndRestore dataBackuper = new DataBackupAndRestore(this, "backup");
+            dataBackuper.setOnFinish(new IDialogDismiss() {
+                @Override
+                public void onDismiss(Result result, Object... values) {
+                    loadingDialog.dismiss();
+                    if (result == Result.OK) {
+                        RecordEntityOperator.deleAllBetweenDate(start, end);
+                        adapter.updateList(start, end);
+                        new ToastFactory(ShowTotalDataActivity.this).showCenterToast("备份后删除数据成功");
+                    } else {
+                        String s = (String) values[0];
+                        infoPopWindow.show(s);
+                    }
+                }
+            });
+            loadingDialog.show(getSupportFragmentManager(), "loading");
+            dataBackuper.execute();
+        }else{
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_BACKUP);
+        }
     }
 
     private void showConfirmDeleDialog() {
@@ -264,7 +270,7 @@ public class ShowTotalDataActivity extends MyActivity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        shareData();
+                        share();
                     }
                 });
                 animator.start();
@@ -316,35 +322,31 @@ public class ShowTotalDataActivity extends MyActivity {
 
     // 分享数据
     private void share() {
-        OtherTools.checkFileUriExposure();
-        Uri fileUri = null;
-        File file = getShareFile();
-        if (file == null) {
-            infoPopWindow.show("获取文件失败！");
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= 24) {
-            fileUri = FileProvider.getUriForFile(this, "th.yzw.specialrecorder.fileprovider", file);
-        } else {
-            fileUri = Uri.fromFile(file);
-        }
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(intent, "发送给："));
-    }
-
-    private void shareData() {
         if (adapter.getItemCount() == 0) {
             infoPopWindow.show("该时间段内没有汇总数据！");
             return;
         }
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-            share();
+            OtherTools.checkFileUriExposure();
+            Uri fileUri = null;
+            File file = getShareFile();
+            if (file == null) {
+                infoPopWindow.show("获取文件失败！");
+                return;
+            }
+            if (Build.VERSION.SDK_INT >= 24) {
+                fileUri = FileProvider.getUriForFile(this, "th.yzw.specialrecorder.fileprovider", file);
+            } else {
+                fileUri = Uri.fromFile(file);
+            }
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, "发送给："));
         }else{
-            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,1002);
+            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_SHARE);
         }
     }
 
@@ -393,7 +395,13 @@ public class ShowTotalDataActivity extends MyActivity {
 
     @Override
     protected void onPermissionGranted(int requestCode) {
-        share();
+        if(requestCode == REQUEST_CODE_SHARE) {
+            share();
+        }else if(requestCode == REQUEST_CODE_BACKUP){
+            backup();
+        }else{
+            new ToastFactory(this).showCenterToast("已获得存储权限。");
+        }
     }
 
     @Override
@@ -403,7 +411,7 @@ public class ShowTotalDataActivity extends MyActivity {
                     @Override
                     public void onDismiss(Result result, Object... values) {
                         if(result == Result.OK){
-                            shareData();
+                            ActivityCompat.requestPermissions(ShowTotalDataActivity.this,PERMISSION_GROUP_STORAGE,33);
                         }
                     }
                 })

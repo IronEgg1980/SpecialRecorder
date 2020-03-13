@@ -50,7 +50,7 @@ public class TipsTextView extends AppCompatTextView {
             preTime = time;
             endIndex ++;
             if(endIndex == mText.length())
-                count = 200;
+                count = 100;
             if (endIndex > mText.length()) {
                 endIndex = 1;
             }
@@ -59,21 +59,5 @@ public class TipsTextView extends AppCompatTextView {
         canvas.drawText(s,getWidth() / 2,getBaseline(),mPaint);
         count--;
         invalidate();
-//        if(count > 0){
-//            long time = System.currentTimeMillis();
-//            if(time - preTime > 300){
-//                preTime = time;
-//                endIndex ++;
-//                if (endIndex > mText.length()) {
-//                    endIndex = 1;
-//                    count--;
-//                }
-//            }
-//            String s = mText.toString().substring(0,endIndex);
-//            canvas.drawText(s,getWidth() / 2,getBaseline(),mPaint);
-//            invalidate();
-//        }else{
-//            super.onDraw(canvas);
-//        }
     }
 }

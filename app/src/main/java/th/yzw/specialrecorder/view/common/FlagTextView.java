@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
+import th.yzw.specialrecorder.R;
+
 public class FlagTextView extends AppCompatTextView {
     private boolean isShowLeftTopFlag = false;
     private boolean isShowRightBottomFlag = false;
@@ -40,25 +42,18 @@ public class FlagTextView extends AppCompatTextView {
         invalidate();
     }
 
-    private void initialPaint(int width){
+    private void initialPaint(){
         if(flagBgPaint == null){
             flagBgPaint = new Paint();
-            flagBgPaint.setColor(Color.RED);
+            flagBgPaint.setColor(getContext().getColor(R.color.colorAccent));
             flagBgPaint.setStyle(Paint.Style.FILL);
         }
-//        if(flagTextPaint == null){
-//            flagTextPaint = new Paint();
-//            flagTextPaint.setColor(Color.WHITE);
-//            flagTextPaint.setStyle(Paint.Style.FILL);
-//            flagTextPaint.setStrokeWidth(15);
-//            flagTextPaint.setTextSize(30);
-//        }
     }
 
     private void drawLeftTopFlag(Canvas canvas){
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        initialPaint(width);
+        initialPaint();
         canvas.save();
 
         Path path = new Path();
@@ -74,7 +69,7 @@ public class FlagTextView extends AppCompatTextView {
     private void drawRightBottomFlag(Canvas canvas){
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        initialPaint(width);
+        initialPaint();
         canvas.save();
 
         Path path = new Path();

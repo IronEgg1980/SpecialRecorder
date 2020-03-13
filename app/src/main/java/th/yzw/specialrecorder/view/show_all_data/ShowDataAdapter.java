@@ -76,20 +76,20 @@ public class ShowDataAdapter extends RecyclerView.Adapter<ShowDataAdapter.ViewHo
         if (isDone) {
             viewHolder.tv1.setPaintFlags(viewHolder.tv1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             viewHolder.tv2.setPaintFlags(viewHolder.tv2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            viewHolder.tv1.setTextColor(mContext.getResources().getColor(R.color.black_overlay));
-            viewHolder.tv2.setTextColor(mContext.getResources().getColor(R.color.black_overlay));
+            viewHolder.tv1.setTextColor(mContext.getColor(R.color.black_overlay));
+            viewHolder.tv2.setTextColor(mContext.getColor(R.color.black_overlay));
             viewHolder.tv1.setTextSize(14);
             viewHolder.tv2.setTextSize(14);
         }else{
             viewHolder.tv1.setPaintFlags(viewHolder.tv1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             viewHolder.tv2.setPaintFlags(viewHolder.tv2.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             viewHolder.tv1.setTextColor(Color.BLACK);
-            viewHolder.tv2.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+            viewHolder.tv2.setTextColor(mContext.getColor(R.color.colorAccent));
             viewHolder.tv1.setTextSize(18);
             viewHolder.tv2.setTextSize(18);
         }
         if(b){
-            viewHolder.root.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+            viewHolder.root.setBackgroundColor(mContext.getColor(R.color.colorAccent));
             viewHolder.tv1.setTextColor(Color.WHITE);
             viewHolder.tv1.setTextSize(18);
             viewHolder.tv2.setTextColor(Color.WHITE);

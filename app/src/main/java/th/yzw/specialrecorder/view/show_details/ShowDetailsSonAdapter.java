@@ -107,7 +107,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     private void showMenu(SonViewHolder sonViewHolder) {
         DetailsItemGroupView view = sonViewHolder.root;
         int[] location = view.getClickPosition();
-        menuPopWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - menuWidth / 2, location[1] - menuHeight * 6 / 5);
+        menuPopWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - menuWidth / 2, location[1] - menuHeight - view.getHeight() / 2);
     }
 
     protected void editData() {
