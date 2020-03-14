@@ -35,15 +35,11 @@
 
     <TextView
         android:id="@+id/confirmTV"
-        android:layout_width="72dp"
-        android:layout_height="wrap_content"
+        style="@style/TextViewBT"
         android:layout_below="@id/linearLayout"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:text="关闭"
-        android:textColor="@color/colorAccent" />
+        android:layout_marginBottom="8dp"
+        android:text="关\t\t闭" />
 </RelativeLayout>

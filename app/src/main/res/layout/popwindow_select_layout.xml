@@ -39,26 +39,11 @@
 
         <TextView
             android:id="@+id/cancelTV"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="关闭"
-            android:textColor="@color/colorAccent" />
+           style="@style/CancelTextViewBT" />
 
         <TextView
             android:id="@+id/confirmTV"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="确定"
-            android:textColor="@color/colorAccent" />
+            style="@style/ConfirmTextViewBT" />
     </LinearLayout>
 
 </RelativeLayout>

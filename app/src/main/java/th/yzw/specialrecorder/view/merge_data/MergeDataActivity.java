@@ -207,7 +207,7 @@ public class MergeDataActivity extends MyActivity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        importThisDataClick(mergeDataImportrecord);
+                        importThisDataClick();
                     }
                 });
                 animator.start();
@@ -499,7 +499,7 @@ public class MergeDataActivity extends MyActivity {
     }
 
     private void importThisData() {
-        DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(this);
+        final DateRangePopWindow dateRangePopWindow = new DateRangePopWindow(this);
         dateRangePopWindow.show(mergeDataImportrecord, new OnSelectDateRangeDismiss() {
             @Override
             public void onDissmiss(boolean isConfirm, long... timeInMillis) {
@@ -508,7 +508,7 @@ public class MergeDataActivity extends MyActivity {
                     long end = timeInMillis[1];
                     List<SumTotalRecord> temp = SumTotalOperator.getSumData(start, end);
                     if (temp == null || temp.size() == 0) {
-                        infoPopWindow.show("该时间段内没有数据，请重新选择！");
+                        new ToastFactory(MergeDataActivity.this).showCenterToast("所选时间段内没有数据，请重新选择！");
                         updateList();
                         return;
                     }
@@ -526,7 +526,7 @@ public class MergeDataActivity extends MyActivity {
         });
     }
 
-    private void importThisDataClick(View view) {
+    private void importThisDataClick() {
         final ImportedFile localData = ImportFileOperator.findSingleByPhoneId(phoneId);
         if (localData != null) {
             new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {

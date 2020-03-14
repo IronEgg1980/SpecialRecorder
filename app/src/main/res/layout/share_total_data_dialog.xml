@@ -37,10 +37,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingRight="12dp"
-        android:paddingBottom="16dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -49,21 +46,10 @@
 
         <TextView
             android:id="@+id/cancel"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="取消"
-            android:textColor="@color/colorAccent" />
+            style="@style/CancelTextViewBT" />
 
         <TextView
             android:id="@+id/confirm"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="确定"
-            android:textColor="@color/colorAccent" />
+            style="@style/ConfirmTextViewBT" />
     </LinearLayout>
 </LinearLayout>

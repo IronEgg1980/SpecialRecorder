@@ -19,7 +19,7 @@
 
         <LinearLayout
             android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
@@ -39,7 +39,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
@@ -48,15 +48,19 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
                 android:id="@+id/endDateTV"
-                android:text="2020-12-12"
+                android:text="请在日历上选择"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>
         <View
@@ -68,80 +72,23 @@
             android:background="@android:color/darker_gray"/>
         <th.yzw.specialrecorder.view.common.MyDatePicker
             android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/date"
             app:dateTextNormalColor="@color/textColor"
             app:dateSelectedBG="@color/colorPrimary"/>
-
-        <!--    <LinearLayout-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:orientation="horizontal">-->
-
-        <!--        <TextView-->
-        <!--            android:gravity="center"-->
-        <!--            android:layout_marginStart="16dp"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:textColor="@android:color/darker_gray"-->
-        <!--            android:text="开始日期"/>-->
-        <!--        <DatePicker-->
-        <!--            android:calendarTextColor="@color/textColor"-->
-        <!--            android:calendarViewShown="false"-->
-        <!--            android:datePickerMode="spinner"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="140dp"-->
-        <!--            android:id="@+id/start_date"/>-->
-        <!--    </LinearLayout>-->
-        <!--    <LinearLayout-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:orientation="horizontal">-->
-
-        <!--        <TextView-->
-        <!--            android:textColor="@android:color/darker_gray"-->
-        <!--            android:gravity="center"-->
-        <!--            android:layout_marginStart="16dp"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="结束日期"/>-->
-        <!--        <DatePicker-->
-        <!--            android:calendarTextColor="@color/textColor"-->
-        <!--            android:calendarViewShown="false"-->
-        <!--            android:datePickerMode="spinner"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="140dp"-->
-        <!--            android:id="@+id/end_date"-->
-        <!--            android:textSize="16sp"/>-->
-        <!--    </LinearLayout>-->
         <LinearLayout
-            android:padding="12dp"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
-            <TextView
                 android:id="@+id/cancel"
-                android:layout_marginRight="8dp"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:gravity="center"
-                android:text="取消"/>
+                style="@style/CancelTextViewBT"
+                android:layout_marginEnd="64dp"/>
             <TextView
                 android:id="@+id/confirm"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:text="确定"/>
+                style="@style/ConfirmTextViewBT"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

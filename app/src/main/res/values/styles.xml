@@ -81,6 +81,28 @@
         <item name="android:paddingRight">@dimen/switch_paddingLR</item>
     </style>
 
+    <style name="TextViewBT">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <style name="CancelTextViewBT" parent="TextViewBT">
+        <item name="android:text">取\t\t消</item>
+        <item name="android:drawableStart">@drawable/button_cancel</item>
+    </style>
+
+    <style name="ConfirmTextViewBT" parent="TextViewBT">
+        <item name="android:text">确\t\t定</item>
+        <item name="android:drawableStart">@drawable/button_confirm</item>
+    </style>
+
     <style name="CommonDialogAnim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_anim_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_anim_exit</item>
