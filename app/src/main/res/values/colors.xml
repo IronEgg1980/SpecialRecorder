@@ -18,11 +18,11 @@
 <!--    <color name="black_overlay">#66555555</color>-->
 <!--    <color name="activityBG">#0000</color>-->
 <!--    <color name="detailsBG">?android:attr/colorBackground</color>-->
-    <color name="colorPrimary">#4c96dd</color>
-    <color name="colorPrimaryAlpha">#104c96dd</color>
-    <color name="colorPrimaryDark">#4c96dd</color>
-    <color name="colorAccent">#f2801d</color>
-    <color name="alphaAccent">#dff2801d</color>
+    <color name="colorPrimary">#007192</color>
+    <color name="colorPrimaryAlpha">#15007192</color>
+    <color name="colorPrimaryDark">#007192</color>
+    <color name="colorAccent">#df6f34</color>
+    <color name="alphaAccent">#dfdf6f34</color>
     <color name="pop2_gb">#8f000000</color>
     <color name="pop2_center">#af000000</color>
     <color name="button_background">@color/colorPrimaryAlpha</color>
