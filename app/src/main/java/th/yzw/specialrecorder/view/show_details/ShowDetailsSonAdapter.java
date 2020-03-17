@@ -98,7 +98,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         menuPopWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - menuWidth / 2, location[1] - menuHeight - view.getHeight() / 2);
     }
 
-    protected void editData() {
+    private void editData() {
         if(editPopWindow == null){
             editPopWindow = new EditPopWindow(mActivity, true);
             editPopWindow.setDialogDismiss(new IDialogDismiss() {
