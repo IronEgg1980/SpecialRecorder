@@ -2,11 +2,11 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/select_popwindow_item_tv"
     android:layout_width="wrap_content"
-    android:layout_height="56dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
-    android:drawablePadding="12dp"
-    android:gravity="center_vertical"
+    android:drawablePadding="8dp"
     android:text="菜单名称"
-    android:textColor="@color/white"
-    android:textSize="16sp"/>
+    android:textColor="@color/white"/>

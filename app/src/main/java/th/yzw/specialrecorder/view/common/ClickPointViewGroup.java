@@ -1,26 +1,26 @@
-package th.yzw.specialrecorder.view.show_details;
+package th.yzw.specialrecorder.view.common;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-public class DetailsItemGroupView extends RelativeLayout {
+public class ClickPointViewGroup extends RelativeLayout {
     private int[] clickPosition = new int[2];
 
     public int[] getClickPosition() {
         return clickPosition;
     }
 
-    public DetailsItemGroupView(Context context) {
+    public ClickPointViewGroup(Context context) {
         super(context);
     }
 
-    public DetailsItemGroupView(Context context, AttributeSet attrs) {
+    public ClickPointViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DetailsItemGroupView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ClickPointViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

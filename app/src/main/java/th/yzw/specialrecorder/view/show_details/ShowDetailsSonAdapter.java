@@ -23,6 +23,7 @@ import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.RecordEntity;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.ClickPointViewGroup;
 import th.yzw.specialrecorder.view.common.EditPopWindow;
 import th.yzw.specialrecorder.view.common.MenuPopWindow;
 
@@ -32,8 +33,9 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     private int preIndex,fatherIndex = -1;
     private Context mContext;
     private ShowDetailsFatherAdapter fatherAdapter;
-    private MenuPopWindow menuPopWindow;
-    private EditPopWindow editPopWindow;
+    private MenuPopWindow menuPopWindow = null;
+    private EditPopWindow editPopWindow = null;
+    private ConfirmPopWindow confirmPopWindow = null;
     private int menuWidth,menuHeight;
 
     public void setFatherIndex(int fatherIndex) {
@@ -46,47 +48,6 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
         this.mActivity = activity;
         this.fatherAdapter = fatherAdapter;
         this.preIndex = -1;
-        this.editPopWindow = new EditPopWindow(activity, true);
-        this.editPopWindow.setDialogDismiss(new IDialogDismiss() {
-            @Override
-            public void onDismiss(Result result, Object... values) {
-                if (result == Result.OK && preIndex != -1) {
-                    RecordEntity r = list.get(preIndex);
-                    int value = (int) values[0];
-                    int changeValue = value - r.getCount();
-                    RecordEntityOperator.update(r, value);
-                    ItemStatisticalInformationOperator.update(r.getName(), changeValue);
-                    r.setSelected(false);
-                    notifyItemChanged(preIndex);
-                    preIndex = -1;
-                }
-            }
-        });
-        String[] menuitem = {"修改", "删除"};
-        Drawable[] icons = new Drawable[2];
-        icons[0] = context.getDrawable(R.drawable.ic_edit_18dp);
-        icons[1] = context.getDrawable(R.drawable.ic_delete_24dp);
-        menuPopWindow = new MenuPopWindow(activity, menuitem, icons);
-        menuPopWindow.setClickListener(new MyClickListener() {
-            @Override
-            public void OnClick(View view, Object o) {
-                int index = (int) o;
-                if (index == 0)
-                    editData();
-                else
-                    delData();
-            }
-        });
-        menuPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                click(preIndex);
-            }
-        });
-        View view1 = menuPopWindow.getContentView();
-        view1.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        menuWidth = view1.getMeasuredWidth();
-        menuHeight = view1.getMeasuredHeight();
     }
 
 
@@ -105,36 +66,83 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     }
 
     private void showMenu(SonViewHolder sonViewHolder) {
-        DetailsItemGroupView view = sonViewHolder.root;
+        ClickPointViewGroup view = sonViewHolder.root;
         int[] location = view.getClickPosition();
+        if(menuPopWindow == null){
+            String[] menuitem = {"修改", "删除"};
+            Drawable[] icons = new Drawable[]{mContext.getDrawable(R.drawable.ic_edit_18dp),mContext.getDrawable(R.drawable.ic_delete_24dp)};
+            menuPopWindow = new MenuPopWindow(mActivity, menuitem, icons);
+            menuPopWindow.setClickListener(new MyClickListener() {
+                @Override
+                public void OnClick(View view, Object o) {
+                    int index = (int) o;
+                    if (index == 0)
+                        editData();
+                    else
+                        delData();
+                }
+            });
+            menuPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    click(preIndex);
+                }
+            });
+            View view1 = menuPopWindow.getContentView();
+            int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+            int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+            view1.measure(w,h);
+            menuWidth = view1.getMeasuredWidth();
+            menuHeight = view1.getMeasuredHeight();
+        }
         menuPopWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - menuWidth / 2, location[1] - menuHeight - view.getHeight() / 2);
     }
 
     protected void editData() {
+        if(editPopWindow == null){
+            editPopWindow = new EditPopWindow(mActivity, true);
+            editPopWindow.setDialogDismiss(new IDialogDismiss() {
+                @Override
+                public void onDismiss(Result result, Object... values) {
+                    if (result == Result.OK && preIndex != -1) {
+                        RecordEntity recordEntity = mList.get(preIndex);
+                        int value = (int) values[0];
+                        int changeValue = value - recordEntity.getCount();
+                        RecordEntityOperator.update(recordEntity, value);
+                        ItemStatisticalInformationOperator.update(recordEntity.getName(), changeValue);
+                        recordEntity.setSelected(false);
+                        notifyItemChanged(preIndex);
+                        preIndex = -1;
+                    }
+                }
+            });
+        }
         RecordEntity r = mList.get(preIndex);
         editPopWindow.setData(r.getName(),r.getCount()).show();
     }
 
-    protected void delData() {
-        final RecordEntity r = mList.get(preIndex);
-        new ConfirmPopWindow(mActivity)
-                .setDialogDismiss(new IDialogDismiss() {
-                    @Override
-                    public void onDismiss(Result result, Object... values) {
-                        if (result == Result.OK) {
-                            RecordEntityOperator.del(r);
-                            ItemStatisticalInformationOperator.del(r.getName(), r.getCount());
-                            mList.remove(preIndex);
-                            if (getItemCount() > 0) {
-                                fatherAdapter.flushCurrent(fatherIndex);
-                                preIndex = -1;
-                            } else {
-                                fatherAdapter.noData(fatherIndex);
+    private void delData() {
+        if(confirmPopWindow == null){
+            confirmPopWindow = new ConfirmPopWindow(mActivity)
+                    .setDialogDismiss(new IDialogDismiss() {
+                        @Override
+                        public void onDismiss(Result result, Object... values) {
+                            if (result == Result.OK) {
+                                RecordEntity r = mList.get(preIndex);
+                                RecordEntityOperator.del(r);
+                                ItemStatisticalInformationOperator.del(r.getName(), r.getCount());
+                                mList.remove(preIndex);
+                                if (getItemCount() > 0) {
+                                    fatherAdapter.flushCurrent(fatherIndex);
+                                    preIndex = -1;
+                                } else {
+                                    fatherAdapter.noData(fatherIndex);
+                                }
                             }
                         }
-                    }
-                })
-                .toConfirm("是否删除【" + r.getName() + "】的记录？");
+                    });
+        }
+        confirmPopWindow.toConfirm("是否删除【" + mList.get(preIndex).getName() + "】的记录？");
     }
 
     @NonNull
@@ -171,7 +179,7 @@ public class ShowDetailsSonAdapter extends RecyclerView.Adapter<ShowDetailsSonAd
     }
 
     protected class SonViewHolder extends RecyclerView.ViewHolder {
-        private DetailsItemGroupView root;
+        private ClickPointViewGroup root;
         private TextView showItemName;
         private TextView showItemCount;
 

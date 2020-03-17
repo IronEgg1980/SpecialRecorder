@@ -6,11 +6,16 @@
         android:background="@android:color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/TitleTextView"
-            android:drawableRight="@drawable/ic_expand_more_cyan_600_24dp"
-            android:text="项目管理" />
+        <th.yzw.specialrecorder.view.common.ClickPointViewGroup
+            android:id="@+id/itemGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/title"
+                style="@style/TitleTextView"
+                android:drawableRight="@drawable/ic_expand_more_cyan_600_24dp"
+                android:text="项目管理" />
+        </th.yzw.specialrecorder.view.common.ClickPointViewGroup>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

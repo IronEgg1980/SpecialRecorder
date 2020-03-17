@@ -6,8 +6,8 @@ android {
         applicationId "th.yzw.specialrecorder"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 201
-        versionName '20200314 NewColor'
+        versionCode 202
+        versionName '20200316-Spring'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

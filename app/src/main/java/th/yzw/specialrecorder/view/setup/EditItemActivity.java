@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,20 +11,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -54,10 +49,10 @@ import th.yzw.specialrecorder.tools.DataTool;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
+import th.yzw.specialrecorder.view.common.ClickPointViewGroup;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.MenuPopWindow;
-import th.yzw.specialrecorder.view.merge_data.MergeDataActivity;
 
 //import java.io.File;
 
@@ -76,6 +71,7 @@ public class EditItemActivity extends MyActivity {
                 isOftenUseTextView = itemView.findViewById(R.id.item_name_ifOftenUse);
             }
         }
+
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -126,6 +122,8 @@ public class EditItemActivity extends MyActivity {
     private String[] itemTypeList, itemFormalationList;
     private List<ItemName> mItemNameList;
     private InfoPopWindow infoPopWindow;
+    private String[] titleMenuItem = {"发送数据文件", "发送旧版数据文件", "导出数据文件"};
+    private MenuPopWindow titleMenu = null,itemTypeMenu = null,itemFormalationMenu = null;
 
     private void initialView() {
         infoPopWindow = new InfoPopWindow(this);
@@ -140,33 +138,33 @@ public class EditItemActivity extends MyActivity {
                 addItemName(v);
             }
         });
-        TextView title = findViewById(R.id.title);
-        title.setOnClickListener(new NoDoubleClickListener() {
+        final ClickPointViewGroup titleGroup = findViewById(R.id.itemGroup);
+        titleGroup.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(EditItemActivity.this, v);
-                Menu menu = popupMenu.getMenu();
-                menu.add(1, 1, 1, "发送数据文件");
-                menu.add(1, 2, 2, "发送旧版数据文件");
-                menu.add(1, 3, 3, "导出数据文件");
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case 1://发送数据文件
-                                outputData(getShareFile(false));
-                                break;
-                            case 2://发送旧版数据文件
-                                outputData(getShareFile(true));
-                                break;
-                            case 3://导出数据文件
-                                exportFile();
-                                break;
+            public void onClick(View v) {
+                int[] location = titleGroup.getClickPosition();
+                if (titleMenu == null) {
+                    titleMenu = new MenuPopWindow(EditItemActivity.this, titleMenuItem, null);
+                    titleMenu.setClickListener(new MyClickListener() {
+                        @Override
+                        public void OnClick(View view, Object o) {
+                            int index = (int) o;
+                            switch (index) {
+                                case 0://发送数据文件
+                                    outputData(getShareFile(false));
+                                    break;
+                                case 1://发送旧版数据文件
+                                    outputData(getShareFile(true));
+                                    break;
+                                case 2://导出数据文件
+                                    exportFile();
+                                    break;
+                            }
                         }
-                        return true;
-                    }
-                });
-                popupMenu.show();
+                    });
+                    titleMenu.removeDivider();
+                }
+                titleMenu.showAtLocation(titleGroup, Gravity.NO_GRAVITY, location[0], location[1]);
             }
         });
         itemtypeTextView = findViewById(R.id.itemtypeTextView);
@@ -206,29 +204,33 @@ public class EditItemActivity extends MyActivity {
 
     private void showSelectDialog(final int mode) {
         if (mode == 1) {
-            MenuPopWindow menuPopWindow = new MenuPopWindow(this, itemTypeList, null);
-            menuPopWindow.setClickListener(new MyClickListener() {
-                @Override
-                public void OnClick(View view, Object o) {
-                    int index = (int) o;
-                    itemType = (byte) (index + 1);
-                    itemtypeTextView.setText(itemTypeList[index]);
-                    editText.setError(null);
-                }
-            });
-            menuPopWindow.showAsDropDown(itemtypeTextView);
+            if(itemTypeMenu == null) {
+                itemTypeMenu = new MenuPopWindow(this, itemTypeList, null);
+                itemTypeMenu.setClickListener(new MyClickListener() {
+                    @Override
+                    public void OnClick(View view, Object o) {
+                        int index = (int) o;
+                        itemType = (byte) (index + 1);
+                        itemtypeTextView.setText(itemTypeList[index]);
+                        editText.setError(null);
+                    }
+                });
+            }
+            itemTypeMenu.showAsDropDown(itemtypeTextView);
         } else {
-            MenuPopWindow menuPopWindow = new MenuPopWindow(this, itemFormalationList, null);
-            menuPopWindow.setClickListener(new MyClickListener() {
-                @Override
-                public void OnClick(View view, Object o) {
-                    int index = (int) o;
-                    itemFormalation = (byte) (index + 1);
-                    itemformalationTextView.setText(itemFormalationList[index]);
-                    editText.setError(null);
-                }
-            });
-            menuPopWindow.showAsDropDown(itemformalationTextView);
+            if(itemFormalationMenu == null) {
+                itemFormalationMenu = new MenuPopWindow(this, itemFormalationList, null);
+                itemFormalationMenu.setClickListener(new MyClickListener() {
+                    @Override
+                    public void OnClick(View view, Object o) {
+                        int index = (int) o;
+                        itemFormalation = (byte) (index + 1);
+                        itemformalationTextView.setText(itemFormalationList[index]);
+                        editText.setError(null);
+                    }
+                });
+            }
+            itemFormalationMenu.showAsDropDown(itemformalationTextView);
         }
     }
 
