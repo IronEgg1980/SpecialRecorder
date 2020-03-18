@@ -648,15 +648,14 @@ public class SetupActivity extends MyActivity {
         long currentVersion = AppSetupOperator.getLastAppVersion();
         long downloadVersion = AppSetupOperator.getDownloadAppVersion();
         if (downloadVersion > currentVersion) {
-            String filePath = getFilesDir().getAbsolutePath() + File.separator + "UpdateFiles" + File.separator + "VersionCode" + downloadVersion;
-            ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = ShowAppUpdateInfomationDialog.newInstant(filePath);
+//            String filePath = getFilesDir().getAbsolutePath() + File.separator + "UpdateFiles" + File.separator + "VersionCode" + downloadVersion;
+//            ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = ShowAppUpdateInfomationDialog.newInstant(filePath);
+            ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = new ShowAppUpdateInfomationDialog();
             showAppUpdateInfomationDialog.setOnDismiss(new IDialogDismiss() {
                 @Override
                 public void onDismiss(Result result, Object... values) {
                     if (result == Result.OK) {
-                        String zipFilePath = (String) values[0];
-                        File zipFile = new File(zipFilePath);
-                        updateAppByEmail(zipFile);
+                        updateAppByEmail();
                     }
                 }
             });
@@ -710,10 +709,19 @@ public class SetupActivity extends MyActivity {
         }
     }
 
-    private void updateAppByEmail(File zipFile) {
+    private void updateAppByEmail() {
+//        File zipFile = FileTools.getAppUpdateFile(getFilesDir().getAbsolutePath() + File.separator + "UpdateFiles" +
+//                File.separator + "VersionCode" +
+//                AppSetupOperator.getDownloadAppVersion());
+        File zipFile = FileTools.getAppUpdateFile();
+        if (zipFile == null) {
+            new ToastFactory(this).showCenterToast("未找到升级文件！");
+            AppSetupOperator.setForceUpdate(false);
+            return;
+        }
         loadingDialog = LoadingDialog.newInstant("正在更新", "正在打开文件...", false);
         loadingDialog.setCancelable(false);
-        final AppUpdater updater = new AppUpdater(this, zipFile);
+        final AppUpdater updater = new AppUpdater(this,zipFile);
         loadingDialog.setCancelClick(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

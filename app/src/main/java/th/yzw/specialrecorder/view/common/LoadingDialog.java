@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +78,14 @@ public class LoadingDialog extends DialogFragment {
             this.mInitialContent = "开始查找文件...";
             this.hideCancelButton = false;
         }
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(this, tag);
+        // 这里吧原来的commit()方法换成了commitAllowingStateLoss()
+        ft.commitAllowingStateLoss();
     }
 
     public void setCancelClick(View.OnClickListener cancelClick) {

@@ -26,12 +26,12 @@ public class InfoPopWindow extends PopupWindow {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.PopWindowAnim);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                darkenBackground(1f);
-            }
-        });
+    }
+
+    @Override
+    public void dismiss() {
+        darkenBackground(1f);
+        super.dismiss();
     }
 
     private void createView(){

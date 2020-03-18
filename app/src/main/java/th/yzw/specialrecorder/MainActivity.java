@@ -227,8 +227,7 @@ public class MainActivity extends MyActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActivityManager.add(this);
-        FileTools.initialAPPFile();
+        FileTools.initialAPPFile(this);
         initialView();
         initialNumClick();
         initialReceive();

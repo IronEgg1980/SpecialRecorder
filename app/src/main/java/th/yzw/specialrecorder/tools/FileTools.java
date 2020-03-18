@@ -36,6 +36,8 @@ public final class FileTools {
     public static final String BACKUP_DIR = APP_EXTERNAL_DIR + "/MyBackup";
     public static final String ITEMNAME_EXPORT_DIR = APP_EXTERNAL_DIR + "/Export";
     public static final String TEMP_DIR = APP_EXTERNAL_DIR + "/temp";
+    public static String appCache ;
+    public static String appFilesPath;
 
     public static String[] getMergeFileList() {
         File path = new File(MICROMSG_DIR);
@@ -65,6 +67,15 @@ public final class FileTools {
     public static String[] getFileList(String pathname, String endName) {
         File path = new File(pathname);
         return getFileList(path, endName);
+    }
+
+    public static File getAppUpdateFile() {
+        File[] files = readEmailFile();
+        if (files != null && files.length == 2) {
+            return files[1];
+        } else {
+            return null;
+        }
     }
 
     public static boolean createPath(String path) {
@@ -212,7 +223,7 @@ public final class FileTools {
                     break;
                 }
             } else {
-                File apkFile = new File(TEMP_DIR, "update.apk");
+                File apkFile = new File(appCache, "update.apk");
                 if (apkFile.exists())
                     apkFile.delete();
                 int bufferLength = 1024 * 8;
@@ -329,38 +340,33 @@ public final class FileTools {
         return builder.toString().trim();
     }
 
-    public static File[] readEmailFile(String cachePath) {
-        File dir = new File(cachePath);
+    public static File[] readEmailFile() {
+        String filePath = appFilesPath +  File.separator +
+                "UpdateFiles" + File.separator +
+                "VersionCode" + AppSetupOperator.getDownloadAppVersion();
+        File dir = new File(filePath);
         if (dir.exists()) {
             File[] result = new File[2];
             for (File file : dir.listFiles()) {
                 String fileName = file.getName();
                 if ("release.zip".equalsIgnoreCase(fileName)) {
                     FileOutputStream outputStream = null;
+                    byte[] buffer = new byte[1024 * 8];
+                    int count;
                     try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file))) {
                         ZipEntry zipEntry;
                         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                             String name = zipEntry.getName();
                             if ("content.txt".equalsIgnoreCase(name)) {
-                                File textFile = new File(cachePath, name);
-                                outputStream = new FileOutputStream(textFile);
-                                byte[] buffer = new byte[1024 * 8];
-                                int count;
-                                while ((count = zipInputStream.read(buffer)) != -1) {
-                                    outputStream.write(buffer, 0, count);
-                                    outputStream.flush();
-                                }
-                                result[0] = textFile;
+                                result[0] = new File(appCache, name);
+                                outputStream = new FileOutputStream(result[0]);
                             } else {
-                                File updateFile = new File(cachePath, name);
-                                outputStream = new FileOutputStream(updateFile);
-                                byte[] buffer = new byte[1024 * 8];
-                                int count;
-                                while ((count = zipInputStream.read(buffer)) != -1) {
-                                    outputStream.write(buffer, 0, count);
-                                    outputStream.flush();
-                                }
-                                result[1] = updateFile;
+                                result[1] = new File(appCache, name);
+                                outputStream = new FileOutputStream(result[1]);
+                            }
+                            while ((count = zipInputStream.read(buffer)) != -1) {
+                                outputStream.write(buffer, 0, count);
+                                outputStream.flush();
                             }
                         }
                     } catch (IOException e) {
@@ -375,11 +381,6 @@ public final class FileTools {
                     }
                     break;
                 }
-//                    if (fileName.contains("content.txt")) {
-//                        result[0] = file;
-//                    } else {
-//                        result[1] = file;
-//                    }
             }
             return result;
         } else {
@@ -397,8 +398,10 @@ public final class FileTools {
         FileTools.clearFilesAndDir(new File(EXTERNAL_STORAGE_DIR, "ExportItemNameFile"));
     }
 
-    public static void initialAPPFile() {
+    public static void initialAPPFile(Context context) {
         createPath(TEMP_DIR);
         clearFiles(TEMP_DIR);
+        appCache = context.getCacheDir().getAbsolutePath();
+        appFilesPath = context.getFilesDir().getAbsolutePath();
     }
 }

@@ -92,7 +92,7 @@ public class AppUpdater extends AsyncTask<Void, Integer, Void> {
         }
         if (isCanceled)
             return null;
-        updateFile = new File(FileTools.TEMP_DIR, "update.apk");
+        updateFile = new File(FileTools.appCache, "update.apk");
         if (updateFile.exists()) {
             publishProgress(3);
             sleep(1000);

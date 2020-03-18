@@ -65,7 +65,7 @@ public class ForceUpdateDialog extends DialogFragment {
         textView.setText(mMessage);
         view.findViewById(R.id.thirdTV).setVisibility(View.INVISIBLE);
         TextView cancelTV = view.findViewById(R.id.cancelTV);
-        cancelTV.setText("退出");
+        cancelTV.setText("退\t\t出");
         cancelTV.setOnClickListener(new NoDoubleClickListener(){
             @Override
             public void onNoDoubleClick(View v) {
@@ -74,7 +74,7 @@ public class ForceUpdateDialog extends DialogFragment {
             }
         });
         TextView confirmTV = view.findViewById(R.id.confirmTV);
-        confirmTV.setText("更新");
+        confirmTV.setText("更\t\t新");
         confirmTV.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

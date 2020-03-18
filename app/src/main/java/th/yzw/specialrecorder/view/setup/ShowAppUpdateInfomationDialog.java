@@ -27,6 +27,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import th.yzw.specialrecorder.Broadcasts;
+import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
@@ -34,39 +35,25 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.tools.FileTools;
 
 public class ShowAppUpdateInfomationDialog extends DialogFragment {
-    public static ShowAppUpdateInfomationDialog newInstant(String path) {
-        ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = new ShowAppUpdateInfomationDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString("path", path);
-        showAppUpdateInfomationDialog.setArguments(bundle);
-        return showAppUpdateInfomationDialog;
-    }
+//    public static ShowAppUpdateInfomationDialog newInstant(String path) {
+//        ShowAppUpdateInfomationDialog showAppUpdateInfomationDialog = new ShowAppUpdateInfomationDialog();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("path", path);
+//        showAppUpdateInfomationDialog.setArguments(bundle);
+//        return showAppUpdateInfomationDialog;
+//    }
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            switch (msg.what) {
-                case 0:
-                    changeInformation("正在查询文件信息...");
-                    break;
-                case 1:
-                    String info = bundle.getString("content");
-//                    updateFile = new File(bundle.getString("file"));
-                    changeInformation(info);
-                    confirm.setEnabled(true);
-                    break;
-                case 2:
-                    String info2 = "查询失败！原因：\n" + bundle.getString("error");
-                    changeInformation(info2);
-                    break;
-                case 3:
-                    changeInformation("没有找到更新文件。");
-                    break;
-            }
-            return true;
-        }
-    });
+    private IDialogDismiss onDismiss;
+    private BroadcastReceiver receiver;
+    private TextView dialogAppupdateContentTextview;
+    private TextView confirm;
+    private String zipFilePath = "";
+    private Result result;
+    private Handler handler;
+
+    public void setOnDismiss(IDialogDismiss onDismiss) {
+        this.onDismiss = onDismiss;
+    }
 
     private void initialBroadcastReceiver() {
         receiver = new BroadcastReceiver() {
@@ -78,18 +65,44 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
         Broadcasts.bindBroadcast(getContext(), receiver, Broadcasts.APP_UPDATEFILE_DOWNLOAD_SUCCESS);
     }
 
+    private void initialHandler(){
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                Bundle bundle = msg.getData();
+                switch (msg.what) {
+                    case 0:
+                        changeInformation("正在查询文件信息...");
+                        break;
+                    case 1:
+                        String info = bundle.getString("content");
+                        changeInformation(info);
+                        confirm.setEnabled(true);
+                        break;
+                    case 2:
+                        String info2 = "查询失败！原因：\n" + bundle.getString("error");
+                        changeInformation(info2);
+                        break;
+                    case 3:
+                        changeInformation("没有找到更新文件。");
+                        break;
+                }
+                return true;
+            }
+        });
+    }
 
     private void readEmailFile() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 handler.sendEmptyMessage(0);
-                File[] files = FileTools.readEmailFile(cachePath);
+                File[] files = FileTools.readEmailFile();
                 if (files != null && files.length == 2) {
                     try {
                         File textFile = files[0];
                         File zipFile = files[1];
-                        if (textFile != null && zipFile !=null) {
+                        if (textFile != null && zipFile != null) {
                             String content = FileTools.readContentText(textFile);
                             zipFilePath = zipFile.getAbsolutePath();
                             Bundle bundle = new Bundle();
@@ -98,38 +111,24 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
                             handlerMSG.what = 1;
                             handlerMSG.setData(bundle);
                             handler.sendMessage(handlerMSG);
-                        }else{
+                        } else {
                             handler.sendEmptyMessage(3);
                         }
                     } catch (IOException | NullPointerException e) {
                         Bundle bundle1 = new Bundle();
-                        bundle1.putString("error","读取文件失败！\n"+ e.getMessage());
+                        bundle1.putString("error", "读取文件失败！\n" + e.getMessage());
                         Message handlerMSG = new Message();
                         handlerMSG.what = 2;
                         handlerMSG.setData(bundle1);
                         handler.sendMessage(handlerMSG);
                         e.printStackTrace();
                     }
-                }else{
+                } else {
                     handler.sendEmptyMessage(3);
                 }
             }
         }).start();
     }
-
-    private IDialogDismiss onDismiss;
-    private BroadcastReceiver receiver;
-
-    public void setOnDismiss(IDialogDismiss onDismiss) {
-        this.onDismiss = onDismiss;
-    }
-
-    private TextView dialogAppupdateContentTextview;
-    TextView confirm;
-    private String cachePath;
-    private String zipFilePath = "";
-    private Result result;
-
 
     private void initialView(View view) {
         dialogAppupdateContentTextview = view.findViewById(R.id.dialog_appupdate_content_textview);
@@ -160,10 +159,11 @@ public class ShowAppUpdateInfomationDialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        cachePath = "";
-        if (bundle != null)
-            cachePath = bundle.getString("path");
+//        Bundle bundle = getArguments();
+//        cachePath = "";
+//        if (bundle != null)
+//            cachePath = bundle.getString("path");
+        initialHandler();
         initialBroadcastReceiver();
     }
 
