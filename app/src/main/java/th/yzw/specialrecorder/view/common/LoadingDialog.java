@@ -84,7 +84,7 @@ public class LoadingDialog extends DialogFragment {
     public void show(FragmentManager manager, String tag) {
         FragmentTransaction ft = manager.beginTransaction();
         ft.add(this, tag);
-        // 这里吧原来的commit()方法换成了commitAllowingStateLoss()
+        // 原来的commit()方法换成了commitAllowingStateLoss()
         ft.commitAllowingStateLoss();
     }
 
