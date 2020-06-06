@@ -20,9 +20,10 @@ import javax.mail.internet.MimeMultipart;
 
 public final class SendEmailHelper {
     private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String password = EncryptAndDecrypt.decryptPassword("gk1tDlze8Q0B9pZeRRK4iA==");
+    private final String password = "DZKVHRBZQVGJVEAN";
     private final String fromAdress = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
     private final String toAdress = EncryptAndDecrypt.decryptPassword("XfVPYKaepUXyJL0k75Xim05AZesPPOf7");
+
     /**
      * 创建发送邮件会话
      *
@@ -84,19 +85,19 @@ public final class SendEmailHelper {
      * @param content    文字内容
      * @param attachList 附件列表
      */
-    public void sendMultiEmail(String subject, String content, boolean hasCC, File...attachList) throws IOException, MessagingException {
+    public void sendMultiEmail(String subject, String content, boolean hasCC, File... attachList) throws IOException, MessagingException {
         Session session = getSendSession();
         // 创建MimeMessage实例对象
         MimeMessage message = new MimeMessage(session);
         // 设置主题 
         message.setSubject(subject);
         // 设置发送人
-        message.setFrom(new InternetAddress(fromAdress,"specialrecorder","utf-8"));
+        message.setFrom(new InternetAddress(fromAdress, "specialrecorder", "utf-8"));
         // 设置收件人  
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAdress,"yinzongwang","utf-8"));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAdress, "yinzongwang", "utf-8"));
         // 设置抄送 
-        if(hasCC)
-            message.setRecipient(Message.RecipientType.CC, new InternetAddress(fromAdress,"specialrecorder","utf-8"));
+        if (hasCC)
+            message.setRecipient(Message.RecipientType.CC, new InternetAddress(fromAdress, "specialrecorder", "utf-8"));
         // message.setRecipient(RecipientType.CC, new InternetAddress("xyang0917@gmail.com","王五_gmail",charset));  
         // 设置密送 
         // message.setRecipient(RecipientType.BCC, new InternetAddress("xyang0917@qq.com", "赵六_QQ", charset));  
@@ -132,11 +133,11 @@ public final class SendEmailHelper {
         message.setSentDate(new Date());
         //设置附件格式
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-//       mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-//       mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-//       mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
         mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-//       mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
         CommandMap.setDefaultCommandMap(mc);
         // 获得Transport实例对象 
         Transport transport = session.getTransport();

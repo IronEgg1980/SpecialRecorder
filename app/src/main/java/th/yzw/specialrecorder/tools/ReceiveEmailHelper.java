@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,11 +30,12 @@ import javax.mail.internet.MimeUtility;
 
 public final class ReceiveEmailHelper {
     private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String password = EncryptAndDecrypt.decryptPassword("gk1tDlze8Q0B9pZeRRK4iA==");
+    private final String password = "DZKVHRBZQVGJVEAN";
 
     private static ReceiveEmailHelper emailHelper = null;
-    public static ReceiveEmailHelper getInstance(){
-        if(emailHelper == null)
+
+    public static ReceiveEmailHelper getInstance() {
+        if (emailHelper == null)
             emailHelper = new ReceiveEmailHelper();
         return emailHelper;
     }
@@ -44,7 +46,7 @@ public final class ReceiveEmailHelper {
      *
      * @return 接收邮件会话实例
      */
-    public Session getReceiveSession() {
+    public Session getReceiveSessionByPop3() {
         String protocol = "pop3";
         String host = "pop3.163.com";
         String port = "110";
@@ -57,6 +59,19 @@ public final class ReceiveEmailHelper {
         return Session.getInstance(props);
     }
 
+    public Session getReceiveSessionBySmtp() {
+        String protocol = "smtp";
+        String host = "smtp.163.com";
+        String port = "25";
+        // 准备连接服务器的会话信息
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", protocol); // 协议
+        props.setProperty("mail.smtp.port", port); // 端口
+        props.setProperty("mail.smtp.host", host); // smtp服务器
+        // 创建Session实例对象
+        return Session.getInstance(props);
+    }
+
     /**
      * 得到收件箱实例
      *
@@ -64,7 +79,7 @@ public final class ReceiveEmailHelper {
      * @throws MessagingException
      */
     public Store getInbox() throws MessagingException {
-        Store store = getReceiveSession().getStore("pop3");
+        Store store = getReceiveSessionByPop3().getStore("pop3");
         store.connect(username, password);
         return store;
     }
@@ -171,7 +186,7 @@ public final class ReceiveEmailHelper {
         if (pattern == null || "".equals(pattern))
             pattern = "yyyy年MM月dd日 E HH:mm ";
 
-        return new SimpleDateFormat(pattern).format(receivedDate);
+        return new SimpleDateFormat(pattern, Locale.CHINA).format(receivedDate);
     }
 
     /**
@@ -196,10 +211,10 @@ public final class ReceiveEmailHelper {
                     flag = isContainAttachment(bodyPart);
                 } else {
                     String contentType = bodyPart.getContentType();
-                    if (contentType.indexOf("application") != -1) {
+                    if (contentType.contains("application")) {
                         flag = true;
                     }
-                    if (contentType.indexOf("name") != -1) {
+                    if (contentType.contains("name")) {
                         flag = true;
                     }
                 }
@@ -249,9 +264,9 @@ public final class ReceiveEmailHelper {
         String[] headers = msg.getHeader("X-Priority");
         if (headers != null) {
             String headerPriority = headers[0];
-            if (headerPriority.indexOf("1") != -1 || headerPriority.indexOf("High") != -1)
+            if (headerPriority.contains("1") || headerPriority.contains("High"))
                 priority = "紧急";
-            else if (headerPriority.indexOf("5") != -1 || headerPriority.indexOf("Low") != -1)
+            else if (headerPriority.contains("5") || headerPriority.contains("Low"))
                 priority = "低";
             else
                 priority = "普通";
@@ -359,13 +374,13 @@ public final class ReceiveEmailHelper {
                 //某一个邮件体也有可能是由多个邮件体组成的复杂体
                 String disp = bodyPart.getDisposition();
                 if (disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT) || disp.equalsIgnoreCase(Part.INLINE))) {
-                    new FileTools().saveFile( bodyPart.getInputStream(), destDir, decodeText(bodyPart.getFileName()), fileList);
+                    FileTools.saveFile(bodyPart.getInputStream(), destDir, decodeText(bodyPart.getFileName()), fileList);
                 } else if (bodyPart.isMimeType("multipart/*")) {
                     saveAttachment(bodyPart, destDir, fileList);
                 } else {
                     String contentType = bodyPart.getContentType();
                     if (contentType.contains("name") || contentType.contains("application")) {
-                        new FileTools().saveFile(bodyPart.getInputStream(), destDir, decodeText(bodyPart.getFileName()), fileList);
+                        FileTools.saveFile(bodyPart.getInputStream(), destDir, decodeText(bodyPart.getFileName()), fileList);
                     }
                 }
             }
