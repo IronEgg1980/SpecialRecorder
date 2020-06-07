@@ -282,7 +282,7 @@ public class EditItemActivity extends MyActivity {
                 try {
                     String title = "itemupdateversion_" + currentVersion;
                     String content = "ItemName升级文件，当前版本号：" + currentVersion;
-                    new SendEmailHelper().sendMultiEmail(title, content, true, file);
+                    new SendEmailHelper().sendMultiEmail(EditItemActivity.this, title, content, true, file);
                 } catch (MessagingException | IOException e) {
                     e.printStackTrace();
                 }

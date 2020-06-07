@@ -243,7 +243,6 @@ public class RecorderActivity extends MyActivity {
 
         initialView();
         initialBroadcastReceiver();
-        showTips();
     }
 
     @Override
@@ -256,6 +255,7 @@ public class RecorderActivity extends MyActivity {
             fragment = new TouchInputDataFragment();
         }
         fragmentManager.beginTransaction().replace(R.id.framelayout, fragment).commit();
+        showTips();
         if (updateInfomationNotShown) {
             updateInfomationNotShown = false;
             showUpdateInfo();

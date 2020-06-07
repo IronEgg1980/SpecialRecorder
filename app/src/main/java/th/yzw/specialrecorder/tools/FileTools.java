@@ -20,13 +20,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.JSON.AppUpdateJSONHelper;
+import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
+import th.yzw.specialrecorder.interfaces.IDialogDismiss;
+import th.yzw.specialrecorder.interfaces.Result;
+import th.yzw.specialrecorder.model.SumTotalRecord;
 
 public final class FileTools {
     
@@ -245,6 +251,35 @@ public final class FileTools {
             e.printStackTrace();
         }
         return isUpdated;
+    }
+
+    //生成加密的分享文件
+    public static File getShareFile(List<SumTotalRecord> recordEntityList, IDialogDismiss callback) {
+        FileTools.clearFiles(appCache);
+        long currentTime = System.currentTimeMillis();
+        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
+        String fileName = "SendBy" + randomText + ".data";
+        clearSameFile(fileName);
+        try {
+            File file = new File(appCache, fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            String s = new SumTotalJSONHelper().getSharedJSON(recordEntityList);
+            FileTools.writeDecryptFile(s, file);
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+            callback.onDismiss(Result.CANCEL,"写入文件出错！原因为：" + e.getLocalizedMessage());
+//            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
+            return null;
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+            callback.onDismiss(Result.CANCEL, "生成文件出错！原因为：" +ex.getLocalizedMessage());
+//            infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
+            return null;
+        }
     }
 
     public static void writeTxtFile(String content, String path, String fileName) throws IOException {

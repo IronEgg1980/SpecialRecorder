@@ -1,5 +1,7 @@
 package th.yzw.specialrecorder.tools;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,7 +31,9 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 public final class ReceiveEmailHelper {
-    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private static final String TAG = "殷宗旺";
+//    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String username = "specialrecorder@163.com";
     private final String password = "DZKVHRBZQVGJVEAN";
 
     private static ReceiveEmailHelper emailHelper = null;

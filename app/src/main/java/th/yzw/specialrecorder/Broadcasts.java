@@ -15,6 +15,9 @@ public final class Broadcasts {
     public final static String DISMISS_DIALOG = "th.yzw.broadcast.closedialog";
     public final static String ITEMNAME_UPDATE_FINISH = "th.yzw.specialrecorder.ITEMNAME_UPDATE_FINISH";
     public final static String ITEMNAME_UPDATE_FAIL = "th.yzw.specialrecorder.ITEMNAME_UPDATE_FAIL";
+    public final static String NET_DISCONNECTED = "th.yzw.specialrecorder.NET_DISCONNECTED";
+    public final static String EMAIL_SEND_SUCCESS = "th.yzw.specialrecorder.EMAIL_SEND_SUCCESS";
+    public final static String EMAIL_SEND_FAIL = "th.yzw.specialrecorder.EMAIL_SEND_FAIL";
 
     public static void sendBroadcast(Context context, String action){
         Intent intent = new Intent();
@@ -43,6 +46,14 @@ public final class Broadcasts {
 
     public static void sendChangeTextBroadcast(Context context,String messge){
         sendBroadcast(context,CHANGE_LOADING_TEXT,messge);
+    }
+
+    public static void sendEmailSendResultBroadcast(Context context,boolean isSuccess){
+        if(isSuccess){
+            sendBroadcast(context,EMAIL_SEND_SUCCESS);
+        }else{
+            sendBroadcast(context,EMAIL_SEND_FAIL);
+        }
     }
 
     public static void bindBroadcast(Context context, BroadcastReceiver receiver,String...action){

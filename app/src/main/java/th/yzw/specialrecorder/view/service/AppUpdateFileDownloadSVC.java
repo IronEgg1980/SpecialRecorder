@@ -40,7 +40,7 @@ public final class AppUpdateFileDownloadSVC extends IntentService {
                 String from = receiveEmailHelper.getFrom(msg);
                 if (title.contains("appupdate") && from.contains("yinzongwang")) {
                     int index = title.lastIndexOf("_") + 1;
-                    long emailAppVersion = Long.valueOf(title.substring(index));
+                    long emailAppVersion = Long.parseLong(title.substring(index));
                     long downloadVersion = AppSetupOperator.getDownloadAppVersion();
                     if (emailAppVersion > downloadVersion) {
                         String filePath = getFilesDir().getAbsolutePath() + File.separator + "UpdateFiles" + File.separator + "VersionCode" + emailAppVersion;

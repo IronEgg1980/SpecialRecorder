@@ -1,5 +1,8 @@
 package th.yzw.specialrecorder.tools;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -12,17 +15,27 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.event.ConnectionAdapter;
+import javax.mail.event.ConnectionEvent;
+import javax.mail.event.ConnectionListener;
+import javax.mail.event.TransportAdapter;
+import javax.mail.event.TransportEvent;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import th.yzw.specialrecorder.Broadcasts;
+
 public final class SendEmailHelper {
-    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    //    private final String TAG = "殷宗旺";
+    //    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String username = "specialrecorder@163.com";
     private final String password = "DZKVHRBZQVGJVEAN";
-    private final String fromAdress = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String toAdress = EncryptAndDecrypt.decryptPassword("XfVPYKaepUXyJL0k75Xim05AZesPPOf7");
+    private final String fromAdress = "specialrecorder@163.com";
+    //    private final String toAdress = EncryptAndDecrypt.decryptPassword("XfVPYKaepUXyJL0k75Xim05AZesPPOf7");
+    private final String toAdress = "yinzongwang@163.com";
 
     /**
      * 创建发送邮件会话
@@ -85,7 +98,7 @@ public final class SendEmailHelper {
      * @param content    文字内容
      * @param attachList 附件列表
      */
-    public void sendMultiEmail(String subject, String content, boolean hasCC, File... attachList) throws IOException, MessagingException {
+    public void sendMultiEmail(final Context context, String subject, String content, boolean hasCC, File... attachList) throws IOException, MessagingException {
         Session session = getSendSession();
         // 创建MimeMessage实例对象
         MimeMessage message = new MimeMessage(session);
@@ -141,8 +154,20 @@ public final class SendEmailHelper {
         CommandMap.setDefaultCommandMap(mc);
         // 获得Transport实例对象 
         Transport transport = session.getTransport();
+        transport.addTransportListener(new TransportAdapter() {
+            @Override
+            public void messageDelivered(TransportEvent e) {
+                Broadcasts.sendEmailSendResultBroadcast(context, true);
+            }
+
+            @Override
+            public void messageNotDelivered(TransportEvent e) {
+                Broadcasts.sendEmailSendResultBroadcast(context, false);
+            }
+        });
         // 打开连接 
         transport.connect(username, password);
+
         // 将message对象传递给transport对象，将邮件发送出去 
         transport.sendMessage(message, message.getAllRecipients());
         // 关闭连接 

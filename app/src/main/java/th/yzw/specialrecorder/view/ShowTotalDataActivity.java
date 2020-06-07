@@ -5,19 +5,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,11 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,12 +32,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import javax.mail.MessagingException;
+
+import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.DataBackupAndRestore;
 import th.yzw.specialrecorder.DAO.RecordEntityOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
-import th.yzw.specialrecorder.JSON.SumTotalJSONHelper;
 import th.yzw.specialrecorder.MyActivity;
 import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
@@ -54,14 +50,14 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
+import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
-import th.yzw.specialrecorder.view.common.HeadPaddingItemDecoration;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
 import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
 import th.yzw.specialrecorder.view.common.ToastFactory;
-import th.yzw.specialrecorder.view.setup.EditItemActivity;
+import th.yzw.specialrecorder.view.common.WaitingDialog;
 
 public class ShowTotalDataActivity extends MyActivity {
     protected class ShowTotalAdapter extends RecyclerView.Adapter<ShowTotalAdapter.ViewHolder> {
@@ -71,8 +67,8 @@ public class ShowTotalDataActivity extends MyActivity {
             for (SumTotalRecord record : temp) {
                 record.setPhoneId(phoneId);
                 calendar.setTimeInMillis(start);
-                calendar.add(Calendar.DAY_OF_MONTH,28);
-                calendar.add(Calendar.MILLISECOND,-1);
+                calendar.add(Calendar.DAY_OF_MONTH, 28);
+                calendar.add(Calendar.MILLISECOND, -1);
                 record.setMonth(calendar.getTimeInMillis());
                 recordEntityList.add(record);
             }
@@ -102,6 +98,7 @@ public class ShowTotalDataActivity extends MyActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView name, count;
             RelativeLayout root;
+
             ViewHolder(View itemView) {
                 super(itemView);
                 name = itemView.findViewById(R.id.show_item_name);
@@ -111,6 +108,8 @@ public class ShowTotalDataActivity extends MyActivity {
         }
     }
 
+    private final String TAG = "殷宗旺";
+    private final String net_error_message = "发送数据需要使用网络，请打开WIFI或移动数据（流量使用大约0.01-0.03M，请放心使用）";
     private InfoPopWindow infoPopWindow;
     private List<SumTotalRecord> recordEntityList;
     private TextView showTotalNodata;
@@ -120,14 +119,16 @@ public class ShowTotalDataActivity extends MyActivity {
     private Calendar calendar;
     private SimpleDateFormat format;
     private ShowTotalAdapter adapter;
-    private File path, cacheDir;
+    //    private File path, cacheDir;
     private String phoneId;
-    private View changeDateBT,deleBT,shareBT;
-    private int REQUEST_CODE_SHARE = 11,REQUEST_CODE_BACKUP = 22;
+    private View changeDateBT, deleBT, shareBT;
+    private int REQUEST_CODE_SHARE = 11, REQUEST_CODE_BACKUP = 22;
+    private WaitingDialog waitingDialog;
+    private BroadcastReceiver receiver;
 
-
-    private Animator buttonClickAnima(View view){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-30f);
+    @NonNull
+    private Animator buttonClickAnima(View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, -30f);
         animator.setDuration(50);
         animator.setRepeatCount(1);
         animator.setRepeatMode(ValueAnimator.REVERSE);
@@ -161,7 +162,7 @@ public class ShowTotalDataActivity extends MyActivity {
     }
 
     private void backup() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             File path = new File(FileTools.BACKUP_DIR);
             if (!path.exists() && !path.mkdirs()) {
                 infoPopWindow.show("创建目录失败！请重试一次…");
@@ -187,8 +188,8 @@ public class ShowTotalDataActivity extends MyActivity {
             });
             loadingDialog.show(getSupportFragmentManager(), "loading");
             dataBackuper.execute();
-        }else{
-            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_BACKUP);
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, REQUEST_CODE_BACKUP);
         }
     }
 
@@ -280,6 +281,26 @@ public class ShowTotalDataActivity extends MyActivity {
         showTotalFragmentRecycler.setLayoutManager(new LinearLayoutManager(this));
         showTotalFragmentRecycler.setAdapter(adapter);
         showTotalFragmentRecycler.addItemDecoration(new MyDividerItemDecoration());
+        waitingDialog = new WaitingDialog();
+    }
+
+    private void initialBroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                waitingDialog.dismiss();
+                String message = "";
+                if (Objects.equals(intent.getAction(), Broadcasts.NET_DISCONNECTED)) {
+                    message = net_error_message;
+                } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_FAIL)) {
+                    message = "发送失败！";
+                } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_SUCCESS)) {
+                    message = "发送成功！";
+                }
+                infoPopWindow.show(message);
+            }
+        };
+        Broadcasts.bindBroadcast(this, receiver, Broadcasts.NET_DISCONNECTED, Broadcasts.EMAIL_SEND_FAIL, Broadcasts.EMAIL_SEND_SUCCESS);
     }
 
     @Override
@@ -310,8 +331,9 @@ public class ShowTotalDataActivity extends MyActivity {
         phoneId = AppSetupOperator.getPhoneId();
         adapter = new ShowTotalAdapter();
         adapter.updateList(start, end);
-        cacheDir = getCacheDir();
+//        cacheDir = getCacheDir();
         initialView();
+        initialBroadcastReceiver();
     }
 
     @Override
@@ -322,84 +344,120 @@ public class ShowTotalDataActivity extends MyActivity {
 
     // 分享数据
     private void share() {
-        if (adapter.getItemCount() == 0) {
+        if (recordEntityList.isEmpty()) {
             infoPopWindow.show("该时间段内没有汇总数据！");
             return;
         }
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+        if (!OtherTools.isNetworkConnected(this)) {
+            infoPopWindow.show(net_error_message);
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             OtherTools.checkFileUriExposure();
-            Uri fileUri = null;
-            File file = getShareFile();
+//            Uri fileUri = null;
+            final File file = FileTools.getShareFile(recordEntityList, new IDialogDismiss() {
+                @Override
+                public void onDismiss(Result result, Object... values) {
+                    if (result == Result.CANCEL) {
+                        infoPopWindow.show((String) values[0]);
+                    }
+                }
+            });
             if (file == null) {
-                infoPopWindow.show("获取文件失败！");
                 return;
             }
-            if (Build.VERSION.SDK_INT >= 24) {
-                fileUri = FileProvider.getUriForFile(this, "th.yzw.specialrecorder.fileprovider", file);
-            } else {
-                fileUri = Uri.fromFile(file);
-            }
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("*/*");
-            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(Intent.createChooser(intent, "发送给："));
-        }else{
-            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,REQUEST_CODE_SHARE);
-        }
-    }
-
-    private void clearSameFile(String fileName) {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            path = new File(Environment.getExternalStorageDirectory() + "/tencent/MicroMsg/download/");
-            if (!path.exists()) {
-                path = new File("/tencent/MicroMsg/download/");
-            }
-        }
-        if (path.exists()) {
-            File file = new File(path, fileName);
-            if (file.exists())
-                file.delete();
+            String fileName = file.getName();
+            fileName = fileName.substring(0, fileName.indexOf("."));
+            final String content = "My appid is " + AppSetupOperator.getPhoneId() +
+                    " , this is my data between " + format.format(start) +
+                    " and " + format.format(end) +
+                    ". Please receive it!";
+            final String finalFileName = fileName;
+            waitingDialog.show(getSupportFragmentManager(), "waiting");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new SendEmailHelper().sendMultiEmail(ShowTotalDataActivity.this, finalFileName, content, false, file);
+                    } catch (IOException | MessagingException e) {
+                        e.printStackTrace();
+                        Broadcasts.sendBroadcast(ShowTotalDataActivity.this, Broadcasts.NET_DISCONNECTED);
+                    }
+                }
+            }).start();
+//            if (Build.VERSION.SDK_INT >= 24) {
+//                fileUri = FileProvider.getUriForFile(this, "th.yzw.specialrecorder.fileprovider", file);
+//            } else {
+//                fileUri = Uri.fromFile(file);
+//            }
+//            Intent intent = new Intent(Intent.ACTION_SEND);
+//            intent.setType("*/*");
+//            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+//            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(Intent.createChooser(intent, "发送给："));
         } else {
-            path.mkdirs();
-        }
-    }
-
-    //生成加密的分享文件
-    private File getShareFile() {
-        FileTools.clearFiles(cacheDir);
-        long currentTime = System.currentTimeMillis();
-        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
-        String fileName = "SendBy" + randomText + ".data";
-        clearSameFile(fileName);
-        try {
-            File file = new File(cacheDir, fileName);
-            if (file.exists()) {
-                file.delete();
-            }
-            file.createNewFile();
-            String s = new SumTotalJSONHelper().getSharedJSON(recordEntityList);
-            FileTools.writeDecryptFile(s, file);
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();
-            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
-            return null;
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-            infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
-            return null;
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, REQUEST_CODE_SHARE);
         }
     }
 
     @Override
+    protected void onDestroy() {
+        // 注销该广播接收器
+        Broadcasts.unBindBroadcast(this, receiver);
+        super.onDestroy();
+    }
+
+//    private void clearSameFile(String fileName) {
+//        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+//            path = new File(Environment.getExternalStorageDirectory() + "/tencent/MicroMsg/download/");
+//            if (!path.exists()) {
+//                path = new File("/tencent/MicroMsg/download/");
+//            }
+//        }
+//        if (path.exists()) {
+//            File file = new File(path, fileName);
+//            if (file.exists())
+//                file.delete();
+//        } else {
+//            path.mkdirs();
+//        }
+//    }
+//
+//    //生成加密的分享文件
+//    private File getShareFile() {
+//        FileTools.clearFiles(cacheDir);
+//        long currentTime = System.currentTimeMillis();
+//        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
+//        String fileName = "SendBy" + randomText + ".data";
+//        clearSameFile(fileName);
+//        try {
+//            File file = new File(cacheDir, fileName);
+//            if (file.exists()) {
+//                file.delete();
+//            }
+//            file.createNewFile();
+//            String s = new SumTotalJSONHelper().getSharedJSON(recordEntityList);
+//            FileTools.writeDecryptFile(s, file);
+//            return file;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
+//            return null;
+//        } catch (JSONException ex) {
+//            ex.printStackTrace();
+//            infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
+//            return null;
+//        }
+//    }
+
+    @Override
     protected void onPermissionGranted(int requestCode) {
-        if(requestCode == REQUEST_CODE_SHARE) {
+        if (requestCode == REQUEST_CODE_SHARE) {
             share();
-        }else if(requestCode == REQUEST_CODE_BACKUP){
+        } else if (requestCode == REQUEST_CODE_BACKUP) {
             backup();
-        }else{
+        } else {
             new ToastFactory(this).showCenterToast("已获得存储权限。");
         }
     }
@@ -410,8 +468,8 @@ public class ShowTotalDataActivity extends MyActivity {
                 .setDialogDismiss(new IDialogDismiss() {
                     @Override
                     public void onDismiss(Result result, Object... values) {
-                        if(result == Result.OK){
-                            ActivityCompat.requestPermissions(ShowTotalDataActivity.this,PERMISSION_GROUP_STORAGE,33);
+                        if (result == Result.OK) {
+                            ActivityCompat.requestPermissions(ShowTotalDataActivity.this, PERMISSION_GROUP_STORAGE, 33);
                         }
                     }
                 })
