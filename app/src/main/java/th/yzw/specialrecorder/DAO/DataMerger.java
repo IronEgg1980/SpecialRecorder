@@ -117,15 +117,26 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         perValue = 100.0f / size;
         for (int i = 1; i <= size; i++) {
             publishProgress(JSONTOLIST, i);
-            sleep(50);
+            sleep(30);
         }
         SumTotalOperator.saveAll(list);
+    }
+
+    public DataMerger(Context context,long mergeMonth){
+        this.mContext = context;
+        this.mMergeMonth = mergeMonth;
+        initial();
+        readFiles();
     }
 
     public DataMerger(Context context, List<File> files, long mergeMonth) {
         this.mContext = context;
         this.mMergeMonth = mergeMonth;
         this.mFiles = files;
+        initial();
+    }
+
+    private void initial(){
         this.phoneId = AppSetupOperator.getPhoneId();
         this.badFile = new ArrayList<>();
         this.sameFile = new ArrayList<>();
@@ -134,28 +145,41 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         this.helper = new SumTotalJSONHelper();
     }
 
-    private void oldVersionMerge(String content){
-        ImportedFile importedFile = ImportFileOperator.findSingleByFileName(currentFileName);
-        if (importedFile != null) {
-            sameFile.add(currentFileName);
-            count--;
-            publishProgress(SAMEFILE);
-            sleep(1000);
-        } else {
-            List<SumTotalRecord> tmp = readJsonArrayByOldData(content);
-            if (tmp != null) {
-                SumTotalOperator.saveAll(tmp);
-                String id = ((SumTotalRecord) tmp.get(0)).getPhoneId();
-                importedFile = new ImportedFile(mMergeMonth, id, currentFileName);
-                importedFile.save();
-            } else {
-                badFile.add(currentFileName);
-                count--;
-                publishProgress(BADFILE);
-                sleep(1000);
+    private void readFiles(){
+        mFiles = new ArrayList<>();
+        File dir = new File(FileTools.mergeFileDownloadDir);
+        if(dir.exists() && dir.isDirectory()){
+            File[] files1 = dir.listFiles();
+            for(File file : files1){
+                if(file.isFile() && file.getName().contains("SendBy")&&file.getName().endsWith(".data")){
+                    mFiles.add(file);
+                }
             }
         }
     }
+
+//    private void oldVersionMerge(String content){
+//        ImportedFile importedFile = ImportFileOperator.findSingleByFileName(currentFileName);
+//        if (importedFile != null) {
+//            sameFile.add(currentFileName);
+//            count--;
+//            publishProgress(SAMEFILE);
+//            sleep(1000);
+//        } else {
+//            List<SumTotalRecord> tmp = readJsonArrayByOldData(content);
+//            if (tmp != null) {
+//                SumTotalOperator.saveAll(tmp);
+//                String id = ((SumTotalRecord) tmp.get(0)).getPhoneId();
+//                importedFile = new ImportedFile(mMergeMonth, id, currentFileName);
+//                importedFile.save();
+//            } else {
+//                badFile.add(currentFileName);
+//                count--;
+//                publishProgress(BADFILE);
+//                sleep(1000);
+//            }
+//        }
+//    }
 
     private void newVersionMerge(String content) throws JSONException{
         ArrayMap<String, Object> map = new ArrayMap<>();
@@ -165,7 +189,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
             thisPhoneFile.add(currentFileName);
             count--;
             publishProgress(THISPHONEFILE);
-            sleep(1000);
+            sleep(500);
             return;
         }
         String sendTimeString = String.valueOf(map.get(SumTotalJSONHelper.SENDTIME));
@@ -175,12 +199,12 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
             oldFile.add(currentFileName);
             count--;
             publishProgress(OLDFILE);
-            sleep(1000);
+            sleep(500);
         } else if (importedFile != null) {
             sameFile.add(currentFileName);
             count--;
             publishProgress(SAMEFILE);
-            sleep(1000);
+            sleep(500);
         } else {
             if (list != null && !list.isEmpty()) {
                 saveData(list);
@@ -190,7 +214,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
                 badFile.add(currentFileName);
                 count--;
                 publishProgress(BADFILE);
-                sleep(1000);
+                sleep(500);
             }
         }
     }
@@ -202,21 +226,22 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
             try {
                 currentFileName = file.getName();
                 publishProgress(CHANGEFILE);
-                sleep(1000);
+                sleep(500);
                 if (currentFileName.endsWith(".data")) {
                     String content = FileTools.readEncryptFile(file);
-                    if (currentFileName.contains("SendBy")) {
-                        newVersionMerge(content);
-                    } else if (currentFileName.contains("BySpecialRecorder_")) {
-                        oldVersionMerge(content);
-                    }
+                    newVersionMerge(content);
+//                    if (currentFileName.contains("SendBy")) {
+//                        newVersionMerge(content);
+//                    } else if (currentFileName.contains("BySpecialRecorder_")) {
+//                        oldVersionMerge(content);
+//                    }
                 }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
                 badFile.add(currentFileName);
                 count--;
                 publishProgress(BADFILE);
-                sleep(1000);
+                sleep(500);
             }
         }
         return null;
@@ -255,6 +280,13 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         getMessage();
+        Broadcasts.sendBroadcast(mContext,Broadcasts.DISMISS_DIALOG);
         onFinished.onDismiss(Result.OK, message);
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        Broadcasts.sendBroadcast(mContext,Broadcasts.DISMISS_DIALOG);
     }
 }

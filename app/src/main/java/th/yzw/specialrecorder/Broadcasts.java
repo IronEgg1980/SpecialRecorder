@@ -18,6 +18,8 @@ public final class Broadcasts {
     public final static String NET_DISCONNECTED = "th.yzw.specialrecorder.NET_DISCONNECTED";
     public final static String EMAIL_SEND_SUCCESS = "th.yzw.specialrecorder.EMAIL_SEND_SUCCESS";
     public final static String EMAIL_SEND_FAIL = "th.yzw.specialrecorder.EMAIL_SEND_FAIL";
+    public final static String EMAIL_RECEIVE_SUCCESS = "th.yzw.specialrecorder.EMAIL_RECEIVE_SUCCESS";
+    public final static String EMAIL_RECEIVE_FAIL = "th.yzw.specialrecorder.EMAIL_RECEIVE_FAIL";
 
     public static void sendBroadcast(Context context, String action){
         Intent intent = new Intent();

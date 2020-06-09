@@ -32,9 +32,8 @@ import javax.mail.internet.MimeUtility;
 
 public final class ReceiveEmailHelper {
     private static final String TAG = "殷宗旺";
-//    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String username = "specialrecorder@163.com";
-    private final String password = "DZKVHRBZQVGJVEAN";
+    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String password = EncryptAndDecrypt.decryptPassword("Z+L1spMIPv6uwTKaOAIQjUYYRoAUyprw");
 
     private static ReceiveEmailHelper emailHelper = null;
 

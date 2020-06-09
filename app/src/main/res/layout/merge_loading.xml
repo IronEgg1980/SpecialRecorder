@@ -19,31 +19,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textview1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="正在合并："
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/file_name_tv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:padding="8dp"
+        android:gravity="center_vertical"
         android:maxLines="1"
-        android:text="xxxxxxxxxxx.data"
-        app:autoSizeTextType="uniform"
+        android:padding="8dp"
+        android:text="请等待..."
         app:autoSizeMaxTextSize="16sp"
         app:autoSizeMinTextSize="10sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textview1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <ProgressBar
@@ -65,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="10.9%"
+        android:text="0.0%"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progress" />

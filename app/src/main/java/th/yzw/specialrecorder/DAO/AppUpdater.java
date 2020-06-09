@@ -3,6 +3,7 @@ package th.yzw.specialrecorder.DAO;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONException;
 
@@ -50,9 +51,11 @@ public class AppUpdater extends AsyncTask<Void, Integer, Void> {
                 isupdate = FileTools.unzipAPKFile(zipFile);
             } catch (IOException ioErr) {
                 ioErr.printStackTrace();
+                isCanceled = true;
                 message = "读取文件失败！\n" + ioErr.getMessage();
             } catch (JSONException jsErr) {
                 jsErr.printStackTrace();
+                isCanceled = true;
                 message = "解析文件失败！\n" + jsErr.getMessage();
             }
         }
@@ -96,9 +99,6 @@ public class AppUpdater extends AsyncTask<Void, Integer, Void> {
         if (updateFile.exists()) {
             publishProgress(3);
             sleep(1000);
-        } else {
-            message = "升级文件解压失败，请重试一次。";
-            isCanceled = true;
         }
         return null;
     }

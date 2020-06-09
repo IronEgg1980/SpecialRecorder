@@ -378,7 +378,7 @@ public class ShowTotalDataActivity extends MyActivity {
                 @Override
                 public void run() {
                     try {
-                        new SendEmailHelper().sendMultiEmail(ShowTotalDataActivity.this, finalFileName, content, false, file);
+                        new SendEmailHelper().sendShareDataFile(ShowTotalDataActivity.this, finalFileName, content, file);
                     } catch (IOException | MessagingException e) {
                         e.printStackTrace();
                         Broadcasts.sendBroadcast(ShowTotalDataActivity.this, Broadcasts.NET_DISCONNECTED);
