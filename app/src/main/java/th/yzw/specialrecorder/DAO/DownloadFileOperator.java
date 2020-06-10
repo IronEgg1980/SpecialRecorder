@@ -2,11 +2,11 @@ package th.yzw.specialrecorder.DAO;
 
 import org.litepal.LitePal;
 
-import th.yzw.specialrecorder.model.DownLoadMergeFile;
+import th.yzw.specialrecorder.model.DownLoadFile;
 
 public class DownloadFileOperator {
-    public static DownLoadMergeFile findSingleByFileName(String fileName) {
-        return LitePal.where("filename = ?", fileName).findFirst(DownLoadMergeFile.class);
+    public static DownLoadFile findSingleByFileName(String fileName) {
+        return LitePal.where("filename = ?", fileName).findFirst(DownLoadFile.class);
     }
 
 //    public static void deleAll() {
@@ -14,14 +14,18 @@ public class DownloadFileOperator {
 //    }
 
     public static void deleAllMergeFile() {
-        LitePal.deleteAll(DownLoadMergeFile.class, "filename like 'SendBy%'");
+        LitePal.deleteAll(DownLoadFile.class, "filename like 'SendBy%'");
     }
 
     public static void deleAllTotalFile() {
-        LitePal.deleteAll(DownLoadMergeFile.class, "filename like '%.total'");
+        LitePal.deleteAll(DownLoadFile.class, "filename like '%.total'");
+    }
+
+    public static void deleOne(String fileName){
+        LitePal.deleteAll(DownLoadFile.class,"filename = ?",fileName);
     }
 
     public static boolean isDownload(String fileName) {
-        return LitePal.isExist(DownLoadMergeFile.class, "filename = ?", fileName);
+        return LitePal.isExist(DownLoadFile.class, "filename = ?", fileName);
     }
 }

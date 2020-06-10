@@ -1,6 +1,6 @@
 package th.yzw.specialrecorder.model;
 
-public class DownLoadMergeFile extends BaseModel {
+public class DownLoadFile extends BaseModel {
     private long downloadTime;
     private String fileName;
 

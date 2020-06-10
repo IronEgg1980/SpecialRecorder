@@ -13,7 +13,7 @@ public final class ToastFactory {
     private Toast toast;
     private TextView textView;
     public ToastFactory(Context context){
-        this.toast = new Toast(context);
+        toast = new Toast(context);
         View view = LayoutInflater.from(context).inflate(R.layout.toast_view,null);
         textView = view.findViewById(R.id.textView);
         toast.setView(view);

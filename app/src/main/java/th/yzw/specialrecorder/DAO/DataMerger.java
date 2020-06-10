@@ -222,7 +222,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         count = mFiles.size();
-        for (final File file : mFiles) {
+        for (File file : mFiles) {
             try {
                 currentFileName = file.getName();
                 publishProgress(CHANGEFILE);

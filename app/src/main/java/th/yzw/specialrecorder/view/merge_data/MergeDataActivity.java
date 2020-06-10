@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,8 +187,6 @@ public class MergeDataActivity extends MyActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                waitingDialog.dismiss();
-                String message = "";
                 String action = intent.getAction();
                 if (Broadcasts.EMAIL_RECEIVE_SUCCESS.equals(action)) {
                     if (FileTools.getMergeFileList().length == 0) {
@@ -199,13 +198,15 @@ public class MergeDataActivity extends MyActivity {
                     dataWatingDialog.dismiss();
                     infoPopWindow.show("文件同步失败，请检查网络...\n（说明：需要开启网络访问邮件服务器以同步数据文件，每次同步大约需要使用0.1-0.3M流量，请放心使用。）");
                 } else if (Objects.equals(intent.getAction(), Broadcasts.NET_DISCONNECTED)) {
-                    message = net_error_message;
+                    waitingDialog.dismiss();
+                    infoPopWindow.show(net_error_message);
                 } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_FAIL)) {
-                    message = "发送失败！";
+                    waitingDialog.dismiss();
+                    infoPopWindow.show("发送失败！");
                 } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_SUCCESS)) {
-                    message = "发送成功！";
+                    waitingDialog.dismiss();
+                    infoPopWindow.show("发送成功！");
                 }
-                infoPopWindow.show(message);
             }
         };
         Broadcasts.bindBroadcast(this, receiver,
@@ -547,7 +548,7 @@ public class MergeDataActivity extends MyActivity {
     //导入数据
     public void importFileClick() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            dataWatingDialog.show(getSupportFragmentManager(),"waiting");
+            dataWatingDialog.show(getSupportFragmentManager(), "waiting");
             startService(new Intent(this, DownloadMergeFileSVC.class));
         } else {
             ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, CLEAR_FILES_REQUESTCODE);
@@ -563,7 +564,7 @@ public class MergeDataActivity extends MyActivity {
                     long start = timeInMillis[0];
                     long end = timeInMillis[1];
                     List<SumTotalRecord> temp = SumTotalOperator.getSumData(start, end);
-                    if (temp == null || temp.size() == 0) {
+                    if (temp.isEmpty()) {
                         new ToastFactory(MergeDataActivity.this).showCenterToast("所选时间段内没有数据，请重新选择！");
                         updateList();
                         return;
@@ -600,17 +601,16 @@ public class MergeDataActivity extends MyActivity {
         }
     }
 
-    private void sendShareFile(final String pwd){
+    private void sendShareFile(final String pwd) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 File file = getShareFile(pwd);
                 String title = file.getName();
-                String content = "Dear Leader,this is last month total data file,summery by "+
-                        AppSetupOperator.getPhoneId()+
-                        ". Please download it later.";
                 try {
-                    new SendEmailHelper().sendShareDataFile(MergeDataActivity.this,title,content,file);
+                    String content = "This is total data file in last month,please download it later !" +
+                            OtherTools.getPhoneInformation();
+                    new SendEmailHelper().sendShareDataFile(MergeDataActivity.this, title, content, file);
                 } catch (IOException | MessagingException e) {
                     e.printStackTrace();
                 }
@@ -626,7 +626,7 @@ public class MergeDataActivity extends MyActivity {
                     @Override
                     public void onDismiss(Result result, Object... values) {
                         if (result == Result.OK) {
-                            waitingDialog.show(getSupportFragmentManager(),"loading");
+                            waitingDialog.show(getSupportFragmentManager(), "loading");
                             sendShareFile(OtherTools.getTotalDataFilePWD((String) values[0]));
 //                            Uri fileUri = null;
 //                            if (Build.VERSION.SDK_INT >= 24) {
@@ -661,9 +661,11 @@ public class MergeDataActivity extends MyActivity {
     File getShareFile(String pwd) {
         FileTools.clearFiles(getCacheDir());
         String fileName = fileNameFormater.format(mergeMonth).substring(0, 7) +
-                "(at：" +
+                "(合并于" +
                 fileNameFormater.format(System.currentTimeMillis()) +
-                ").total";
+                ")_"+
+                MyDateUtils.getDateDiff()+
+                ".total";
         File file = new File(getCacheDir(), fileName);
         if (file.exists()) {
             file.delete();

@@ -49,6 +49,7 @@ import th.yzw.specialrecorder.interfaces.OnSelectDateRangeDismiss;
 import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
+import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
@@ -366,19 +367,19 @@ public class ShowTotalDataActivity extends MyActivity {
             if (file == null) {
                 return;
             }
-            String fileName = file.getName();
-            fileName = fileName.substring(0, fileName.indexOf("."));
-            final String content = "My appid is " + AppSetupOperator.getPhoneId() +
-                    " , this is my data between " + format.format(start) +
-                    " and " + format.format(end) +
-                    ". Please receive it!";
-            final String finalFileName = fileName;
+            final String fileName = file.getName();
             waitingDialog.show(getSupportFragmentManager(), "waiting");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        new SendEmailHelper().sendShareDataFile(ShowTotalDataActivity.this, finalFileName, content, file);
+                        String content = "This is my data file between " +
+                                format.format(start) +
+                                " and " +
+                                format.format(end) +
+                                ",please download it!" +
+                                OtherTools.getPhoneInformation();
+                        new SendEmailHelper().sendShareDataFile(ShowTotalDataActivity.this, fileName, content, file);
                     } catch (IOException | MessagingException e) {
                         e.printStackTrace();
                         Broadcasts.sendBroadcast(ShowTotalDataActivity.this, Broadcasts.NET_DISCONNECTED);

@@ -63,6 +63,7 @@ public class SetupActivity extends MyActivity {
     private SwitchCompat showGroupButton;
     private SwitchCompat vibrateOn;
     private SeekBar vibrateLevelSeekbar;
+    private LinearLayout groupLayout;
     private LinearLayout dataSafeBackup;
     private LinearLayout dataSafeRestore;
     private LinearLayout dataSafeClearFiles;

@@ -149,8 +149,7 @@ public final class FileTools {
         return b;
     }
 
-    public static boolean delMergeFiles() {
-        boolean b = false;
+    public static void delMergeFiles() {
         File path = new File(mergeFileDownloadDir);
         if (path.exists() && path.isDirectory()) {
             File[] files = path.listFiles();
@@ -160,7 +159,6 @@ public final class FileTools {
                 }
             }
         }
-        return b;
     }
 
     public static void clearSameFile(String fileName) {
@@ -256,8 +254,7 @@ public final class FileTools {
     //生成加密的分享文件
     public static File getShareFile(List<SumTotalRecord> recordEntityList, IDialogDismiss callback) {
         FileTools.clearFiles(appCache);
-        long currentTime = System.currentTimeMillis();
-        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
+        String randomText = OtherTools.getRandomString(4) + "_" + MyDateUtils.getDateDiff();
         String fileName = "SendBy" + randomText + ".data";
         clearSameFile(fileName);
         try {

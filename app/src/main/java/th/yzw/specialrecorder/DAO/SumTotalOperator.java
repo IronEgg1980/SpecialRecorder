@@ -31,11 +31,11 @@ public final class SumTotalOperator {
         return getSumData(start, end);
     }
 
-    public static void deleAll(){
+    public static void deleAll() {
         LitePal.deleteAll(SumTotalRecord.class);
     }
 
-    public static void deleAll(String phoneId){
+    public static void deleAll(String phoneId) {
         LitePal.deleteAll(SumTotalRecord.class, "phoneid =  ?", phoneId);
     }
 
@@ -45,19 +45,20 @@ public final class SumTotalOperator {
 
     public static List<SumTotalRecord> getSumData(long start, long end) {
         List<SumTotalRecord> list = new ArrayList<>();
-        List<RecordEntity> recordEntities = RecordEntityOperator.findAllBetweenDate(start,end);
+        List<RecordEntity> recordEntities = RecordEntityOperator.findAllBetweenDate(start, end);
         Collections.sort(recordEntities, new Comparator<RecordEntity>() {
             @Override
             public int compare(RecordEntity o1, RecordEntity o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        Map<String,Integer> temp = new LinkedHashMap<>();
-        for(RecordEntity entity:recordEntities){
+        Map<String, Integer> temp = new LinkedHashMap<>();
+        for (RecordEntity entity : recordEntities) {
             String key = entity.getName();
-            temp.put(key,temp.getOrDefault(key,0)+entity.getCount());
+            int i = temp.getOrDefault(key, 0);
+            temp.put(key, (i + entity.getCount()));
         }
-        for(ArrayMap.Entry<String,Integer> entry:temp.entrySet()){
+        for (ArrayMap.Entry<String, Integer> entry : temp.entrySet()) {
             SumTotalRecord record = new SumTotalRecord();
             record.setName(entry.getKey());
             record.setCount(entry.getValue());
@@ -78,7 +79,7 @@ public final class SumTotalOperator {
     }
 
     public static List<SumTotalRecord> getMergeDataAll() {
-        List<SumTotalRecord> list =  new ArrayList<>();
+        List<SumTotalRecord> list = new ArrayList<>();
         Cursor cursor = LitePal.findBySQL("SELECT DISTINCT name,month FROM sumtotalrecord GROUP BY name ORDER BY name");
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -93,7 +94,7 @@ public final class SumTotalOperator {
         return list;
     }
 
-    public static void saveAll(List<SumTotalRecord> list){
+    public static void saveAll(List<SumTotalRecord> list) {
         LitePal.saveAll(list);
     }
 }
