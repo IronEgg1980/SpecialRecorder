@@ -24,15 +24,16 @@ import java.util.Locale;
 import java.util.Objects;
 
 import th.yzw.specialrecorder.Broadcasts;
+import th.yzw.specialrecorder.DAO.DataMerger;
 import th.yzw.specialrecorder.R;
 
 public class MergeDataWatingDialog extends DialogFragment {
     private AppCompatTextView fileNameTv;
-    private TextView finishTextTv,informationTv;
+    private TextView finishTextTv, informationTv;
     private ProgressBar progressBar;
     private BroadcastReceiver receiver;
 
-    private void initialReceiver(){
+    private void initialReceiver() {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -40,36 +41,46 @@ public class MergeDataWatingDialog extends DialogFragment {
                 if (Broadcasts.CHANGE_LOADING_TEXT.equals(action)) {
                     String message = intent.getStringExtra("message");
                     changeInformation(message);
-                }else if(Broadcasts.CHANGE_LOADING_PROGRESS.equals(action)){
-                    int progress = intent.getIntExtra("progress",0);
-                    float value = intent.getFloatExtra("value",0f);
-                    changeProgress(progress,value);
-                }else if(Broadcasts.CHANGE_LOADING_FILENAME.equals(action)){
+                } else if (Broadcasts.CHANGE_LOADING_PROGRESS.equals(action)) {
+                    int progress = intent.getIntExtra("progress", 0);
+                    float value = intent.getFloatExtra("value", 0f);
+                    changeProgress(progress, value);
+                } else if (Broadcasts.CHANGE_LOADING_FILENAME.equals(action)) {
                     String fileName = intent.getStringExtra("message");
-                    changeFile(fileName);
+                    changeFile("正在合并：" + fileName);
+                } else if (Broadcasts.DISMISS_DIALOG.equals(action)) {
+                    changeInformation("");
+                    changeFile("");
+                    dismiss();
                 }
             }
         };
-        String[] actions = {Broadcasts.CHANGE_LOADING_TEXT,Broadcasts.CHANGE_LOADING_PROGRESS,Broadcasts.CHANGE_LOADING_FILENAME};
-        Broadcasts.bindBroadcast(getContext(),receiver,actions);
+        String[] actions = {Broadcasts.CHANGE_LOADING_TEXT,
+                Broadcasts.CHANGE_LOADING_PROGRESS,
+                Broadcasts.CHANGE_LOADING_FILENAME,
+                Broadcasts.DISMISS_DIALOG};
+        Broadcasts.bindBroadcast(getContext(), receiver, actions);
     }
 
-    public void changeProgress(int progress,float value) {
+    public void changeProgress(int progress, float value) {
         if (progressBar != null)
             progressBar.setProgress(progress);
-        if(finishTextTv!=null)
-            finishTextTv.setText(String.format(Locale.CHINA,"%1$.2f%2$s",value,"%"));
+        if (finishTextTv != null)
+            finishTextTv.setText(String.format(Locale.CHINA, "%1$.2f%2$s", value, "%"));
     }
-    public void changeFile(String fileName){
-        if(fileNameTv!=null)
+
+    public void changeFile(String fileName) {
+        if (fileNameTv != null)
             this.fileNameTv.setText(fileName);
         changeInformation("");
-        changeProgress(0,0.00f);
+        changeProgress(0, 0.00f);
     }
-    public void changeInformation(String information){
-        if(informationTv!=null)
+
+    public void changeInformation(String information) {
+        if (informationTv != null)
             informationTv.setText(information);
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -82,17 +93,18 @@ public class MergeDataWatingDialog extends DialogFragment {
             dialog.setCanceledOnTouchOutside(false);
             dialog.setCancelable(false);
             Window window = dialog.getWindow();
-            if (window!=null) {
+            if (window != null) {
                 window.setWindowAnimations(R.style.CommonDialogAnim);
                 window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                window.setLayout(width,height);
+                window.setLayout(width, height);
             }
         }
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.merge_loading,container,false);
+        View view = inflater.inflate(R.layout.merge_loading, container, false);
         fileNameTv = view.findViewById(R.id.file_name_tv);
         finishTextTv = view.findViewById(R.id.finishText);
         informationTv = view.findViewById(R.id.information);
@@ -109,6 +121,6 @@ public class MergeDataWatingDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        Broadcasts.unBindBroadcast(getContext(),receiver);
+        Broadcasts.unBindBroadcast(getContext(), receiver);
     }
 }

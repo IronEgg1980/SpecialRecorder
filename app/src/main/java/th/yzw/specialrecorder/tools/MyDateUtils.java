@@ -14,6 +14,18 @@ public final class MyDateUtils {
         return (time - (time + TimeZone.getDefault().getRawOffset()) % ONE_DAY_MILLIS);
     }
 
+    public static long getDateDiff() {
+        c.set(2020, 5, 1, 0, 0, 0);
+        long time = c.getTimeInMillis();
+        return (System.currentTimeMillis() - time) / 1000;
+    }
+
+    public static long getDateInMillis(long dateDiff) {
+        c.set(2020, 5, 1, 0, 0, 0);
+        long time = c.getTimeInMillis();
+        return time + dateDiff * 1000;
+    }
+
     public static long[] getMonthStartAndEndLong(long date) {
         long[] times = new long[2];
         c.setTimeInMillis(date);

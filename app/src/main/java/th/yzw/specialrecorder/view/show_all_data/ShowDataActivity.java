@@ -1,6 +1,9 @@
 package th.yzw.specialrecorder.view.show_all_data;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,9 +31,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import th.yzw.specialrecorder.ActivityManager;
+import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
+import th.yzw.specialrecorder.DAO.DownloadFileOperator;
 import th.yzw.specialrecorder.DAO.ShowDataOperator;
 import th.yzw.specialrecorder.JSON.ShowDataJSONHelper;
 import th.yzw.specialrecorder.MyActivity;
@@ -38,6 +44,7 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
+import th.yzw.specialrecorder.model.DownLoadFile;
 import th.yzw.specialrecorder.model.ShowDataEntity;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
@@ -47,6 +54,8 @@ import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
+import th.yzw.specialrecorder.view.common.WaitingDialog;
+import th.yzw.specialrecorder.view.service.DownloadMergeFileSVC;
 
 public class ShowDataActivity extends MyActivity {
     String TAG = "殷宗旺";
@@ -68,7 +77,28 @@ public class ShowDataActivity extends MyActivity {
     private EditPopWindow editPopWindow;
     private ShowDataJSONHelper jsonHelper;
     private int currentIndex = -1;
+    private BroadcastReceiver receiver;
+    private WaitingDialog waitingDialog;
 
+    private void initialReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (waitingDialog != null && waitingDialog.isVisible())
+                    waitingDialog.dismiss();
+                String action = intent.getAction();
+                if (Broadcasts.EMAIL_RECEIVE_FAIL.equals(action)) {
+                    infoPopWindow.show("文件同步失败，请检查网络...\n（说明：需要开启网络访问邮件服务器以同步数据文件，每次同步大约需要使用0.1-0.3M流量，请放心使用。）");
+                }
+            }
+        };
+        Broadcasts.bindBroadcast(this, receiver,Broadcasts.EMAIL_RECEIVE_FAIL,Broadcasts.EMAIL_RECEIVE_SUCCESS);
+    }
+
+    private void downloadFile(){
+        waitingDialog.show(getSupportFragmentManager(), "loading");
+        startService(new Intent(ShowDataActivity.this, DownloadMergeFileSVC.class));
+    }
 
     private void setFileName(String _fileName) {
         mFileName = _fileName;
@@ -77,7 +107,7 @@ public class ShowDataActivity extends MyActivity {
 
     private void openFile(String _fileName, String pwd) {
         try {
-            path = new File(FileTools.MICROMSG_DIR);
+            path = new File(FileTools.totalFileDownloadDir);
             if (!path.exists()) {
                 return;
             }
@@ -108,7 +138,7 @@ public class ShowDataActivity extends MyActivity {
     }
 
     private void readFile(final String _fileName) {
-        if(ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             ShowDataOperator.deleAll(_fileName);
             if (list == null)
                 list = new ArrayList<>();
@@ -127,8 +157,8 @@ public class ShowDataActivity extends MyActivity {
                             }
                         }
                     }).show();
-        }else{
-            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,2004);
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, 2004);
         }
     }
 
@@ -140,25 +170,27 @@ public class ShowDataActivity extends MyActivity {
                         @Override
                         public void onDismiss(Result result, Object... values) {
                             if (result == Result.OK) {
-                                path = new File(FileTools.MICROMSG_DIR);
+                                path = new File(FileTools.totalFileDownloadDir);
                                 if (!path.exists()) {
                                     infoPopWindow.show("未找到文件目录");
                                     return;
                                 }
                                 File file = new File(path, mFileName);
-                                file.delete();
-                                ShowDataOperator.deleAll(mFileName);
+                                if (file.delete()) {
+                                    ShowDataOperator.deleAll(mFileName);
+                                    DownloadFileOperator.deleOne(mFileName);
+                                }
                                 if (list == null)
                                     list = new ArrayList<>();
                                 list.clear();
                                 setFileName("none");
                                 showInfo();
-                                infoPopWindow.show("已删除文件");
+                                new ToastFactory(ShowDataActivity.this).showCenterToast("已删除文件");
                             }
                         }
                     }).toConfirm("是否删除数据文件【 " + mFileName + " 】？");
-        }else{
-            ActivityCompat.requestPermissions(this,PERMISSION_GROUP_STORAGE,2003);
+        } else {
+            ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, 2003);
         }
     }
 
@@ -230,10 +262,11 @@ public class ShowDataActivity extends MyActivity {
             menu.add(0, 0, 1, "切换文件");
             menu.add(0, 3, 2, "修改数据");
             menu.add(0, 5, 3, "关闭文件");
-            menu.add(0, 1, 4, "删除文件");
+//            menu.add(0, 1, 4, "删除文件");
             menu.add(0, 4, 5, "重新加载数据");
         } else {
             menu.add(0, 0, 1, "打开文件");
+            menu.add(0,6,2,"同步数据");
         }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -243,10 +276,10 @@ public class ShowDataActivity extends MyActivity {
                     case 0:
                         selectFile();
                         break;
-                    case 1:
-                        clear();
-                        showInfo();
-                        break;
+//                    case 1:
+//                        clear();
+//                        showInfo();
+//                        break;
                     case 2:
                         clearFiles();
                         break;
@@ -267,6 +300,9 @@ public class ShowDataActivity extends MyActivity {
                         break;
                     case 5:
                         closeFile();
+                        break;
+                    case 6:
+                        downloadFile();
                         break;
                 }
                 return true;
@@ -292,19 +328,20 @@ public class ShowDataActivity extends MyActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             File path = null;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                path = new File(FileTools.MICROMSG_DIR);
+                path = new File(FileTools.totalFileDownloadDir);
                 if (!path.exists()) {
                     infoPopWindow.show("未找到文件目录");
                     return;
                 }
             }
-            FileTools.deleAllFiles(path, ".total");
+            FileTools.clearFiles(path);
             ShowDataOperator.deleAll();
+            DownloadFileOperator.deleAllTotalFile();
             if (list == null)
                 list = new ArrayList<>();
             list.clear();
             setFileName("none");
-            infoPopWindow.show("已清除所有文件");
+            new ToastFactory(ShowDataActivity.this).showCenterToast("已清除所有文件");
         } else {
             ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, 2001);
         }
@@ -397,6 +434,8 @@ public class ShowDataActivity extends MyActivity {
                 }
             }
         });
+        waitingDialog = new WaitingDialog();
+        initialReceiver();
     }
 
     @Override
@@ -404,12 +443,13 @@ public class ShowDataActivity extends MyActivity {
         super.onStart();
         updateList(mFileName);
         showInfo();
+        downloadFile();
     }
 
     protected void selectFile() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                path = new File(FileTools.MICROMSG_DIR);
+                path = new File(FileTools.totalFileDownloadDir);
                 if (path.exists()) {
                     pathList = FileTools.getFileList(path, ".total");
                 }
@@ -438,6 +478,12 @@ public class ShowDataActivity extends MyActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        Broadcasts.unBindBroadcast(this, receiver);
+        super.onDestroy();
+    }
+
     protected void editData(final int position) {
         ShowDataEntity r = list.get(position);
         editPopWindow.setData(r.getName(), r.getCount()).show();
@@ -445,16 +491,16 @@ public class ShowDataActivity extends MyActivity {
 
     @Override
     protected void onPermissionGranted(int requestCode) {
-        switch (requestCode){
+        switch (requestCode) {
             case 2000:
                 selectFile();
                 break;
             case 2001:
                 delFiles();
                 break;
-            case 2003:
-                clear();
-                break;
+//            case 2003:
+//                clear();
+//                break;
             default:
                 new ToastFactory(this).showCenterToast("已获取存储权限。");
         }

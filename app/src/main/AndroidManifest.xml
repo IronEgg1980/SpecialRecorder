@@ -74,7 +74,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
         <service android:name=".view.service.AppUpdateFileDownloadSVC" />
-
+        <service android:name=".view.service.DownloadMergeFileSVC" />
         <service android:name=".view.service.ItemNameUpdateByEmailSVC" />
     </application>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

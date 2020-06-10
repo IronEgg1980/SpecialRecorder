@@ -6,20 +6,18 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +33,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import javax.mail.MessagingException;
+
+import th.yzw.specialrecorder.Broadcasts;
 import th.yzw.specialrecorder.DAO.AppSetupOperator;
 import th.yzw.specialrecorder.DAO.DataMerger;
+import th.yzw.specialrecorder.DAO.DownloadFileOperator;
 import th.yzw.specialrecorder.DAO.ImportFileOperator;
 import th.yzw.specialrecorder.DAO.ShowDataOperator;
 import th.yzw.specialrecorder.DAO.SumTotalOperator;
@@ -53,16 +56,17 @@ import th.yzw.specialrecorder.model.ShowDataEntity;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.MyDateUtils;
-import th.yzw.specialrecorder.tools.OpenPermissionSetting;
 import th.yzw.specialrecorder.tools.OtherTools;
+import th.yzw.specialrecorder.tools.SendEmailHelper;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.MyDividerItemDecoration;
-import th.yzw.specialrecorder.view.common.SelectItemPopWindow;
 import th.yzw.specialrecorder.view.common.SelectMonthPopWindow;
 import th.yzw.specialrecorder.view.common.ToastFactory;
+import th.yzw.specialrecorder.view.common.WaitingDialog;
+import th.yzw.specialrecorder.view.service.DownloadMergeFileSVC;
 
 public class MergeDataActivity extends MyActivity {
 
@@ -109,6 +113,7 @@ public class MergeDataActivity extends MyActivity {
     private final int CLEAR_FILES_REQUESTCODE = 111;
     private final int IMPORT_FILES_REQUESTCODE = 222;
     private final int SHARE_REQUESTCODE = 333;
+    private final String net_error_message = "发送数据需要使用网络，请打开WIFI或移动数据（流量使用大约0.01-0.03M，请放心使用）";
     private MergeDataWatingDialog dataWatingDialog;
     private TextView dateTextView;
     private View mergeDataBegin;
@@ -128,6 +133,8 @@ public class MergeDataActivity extends MyActivity {
     private boolean isCreate;
     private InfoPopWindow infoPopWindow;
     private SelectMonthPopWindow selectMonthPopWindow;
+    private BroadcastReceiver receiver;
+    private WaitingDialog waitingDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,6 +174,47 @@ public class MergeDataActivity extends MyActivity {
         });
         initialData();
         initialView();
+        initialReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Broadcasts.unBindBroadcast(this, receiver);
+        super.onDestroy();
+    }
+
+    private void initialReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (Broadcasts.EMAIL_RECEIVE_SUCCESS.equals(action)) {
+                    if (FileTools.getMergeFileList().length == 0) {
+                        dataWatingDialog.dismiss();
+                        infoPopWindow.show("未找到数据文件，请通知相关人员发送文件...");
+                    } else
+                        importFile();
+                } else if (Broadcasts.EMAIL_RECEIVE_FAIL.equals(action)) {
+                    dataWatingDialog.dismiss();
+                    infoPopWindow.show("文件同步失败，请检查网络...\n（说明：需要开启网络访问邮件服务器以同步数据文件，每次同步大约需要使用0.1-0.3M流量，请放心使用。）");
+                } else if (Objects.equals(intent.getAction(), Broadcasts.NET_DISCONNECTED)) {
+                    waitingDialog.dismiss();
+                    infoPopWindow.show(net_error_message);
+                } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_FAIL)) {
+                    waitingDialog.dismiss();
+                    infoPopWindow.show("发送失败！");
+                } else if (Objects.equals(intent.getAction(), Broadcasts.EMAIL_SEND_SUCCESS)) {
+                    waitingDialog.dismiss();
+                    infoPopWindow.show("发送成功！");
+                }
+            }
+        };
+        Broadcasts.bindBroadcast(this, receiver,
+                Broadcasts.EMAIL_RECEIVE_FAIL,
+                Broadcasts.EMAIL_RECEIVE_SUCCESS,
+                Broadcasts.NET_DISCONNECTED,
+                Broadcasts.EMAIL_SEND_FAIL,
+                Broadcasts.EMAIL_SEND_SUCCESS);
     }
 
     private Animator buttonClickAnima(View view) {
@@ -266,6 +314,7 @@ public class MergeDataActivity extends MyActivity {
         mergeDataRecyclerView.addItemDecoration(new MyDividerItemDecoration());
         changeButtonStatus(hasData);
         infoPopWindow = new InfoPopWindow(this);
+        waitingDialog = new WaitingDialog();
     }
 
     private void playAnimation() {
@@ -428,13 +477,12 @@ public class MergeDataActivity extends MyActivity {
 
     private void clear() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            if (!FileTools.isMicroMsgPathExist())
-                infoPopWindow.show("未找到数据文件目录");
             new ConfirmPopWindow(this).setDialogDismiss(new IDialogDismiss() {
                 @Override
                 public void onDismiss(Result result, Object... value) {
                     if (result == Result.OK) {
                         FileTools.delMergeFiles();
+                        DownloadFileOperator.deleAllMergeFile();
                         new ToastFactory(MergeDataActivity.this).showCenterToast("数据文件已清理干净");
                     }
                 }
@@ -453,47 +501,55 @@ public class MergeDataActivity extends MyActivity {
         }
     }
 
-    private void importFile(final String[] fileList) {
-        if (fileList == null || fileList.length == 0) {
-            infoPopWindow.show(FileTools.MICROMSG_DIR + " 目录内没有找到数据文件");
-            return;
-        }
-        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, fileList, true);
-        popWindow.show(new IDialogDismiss() {
+    private void importFile() {
+        dataMerger = new DataMerger(MergeDataActivity.this, mergeMonth);
+        dataMerger.setOnFinished(new IDialogDismiss() {
             @Override
-            public void onDismiss(Result result, Object... values) {
-                if (result == Result.OK) {
-                    if (values.length > 0) {
-                        List<File> list = new ArrayList<>();
-                        for (Object value : values) {
-                            String name = fileList[(int) value];
-                            list.add(new File(FileTools.MICROMSG_DIR, name));
-                        }
-                        dataMerger = new DataMerger(MergeDataActivity.this, list, mergeMonth);
-                        dataMerger.setOnFinished(new IDialogDismiss() {
-                            @Override
-                            public void onDismiss(Result result1, Object... values) {
-                                dataWatingDialog.changeInformation("");
-                                dataWatingDialog.changeFile("");
-                                dataWatingDialog.dismiss();
-                                infoPopWindow.show((String) values[0]);
-//                                dialogFactory.showInfoDialog((String) values[0]);
-                                updateList();
-                            }
-                        });
-                        dataWatingDialog.show(getSupportFragmentManager(), "loading");
-                        dataMerger.execute();
-                    } else
-                        new ToastFactory(MergeDataActivity.this).showCenterToast("未选择数据文件");
-                }
+            public void onDismiss(Result result1, Object... values) {
+                infoPopWindow.show((String) values[0]);
+                updateList();
             }
         });
+        dataMerger.execute();
     }
+
+//    private void importFile(final String[] fileList) {
+//        if (fileList == null || fileList.length == 0) {
+//            infoPopWindow.show(FileTools.MICROMSG_DIR + " 目录内没有找到数据文件");
+//            return;
+//        }
+//        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, fileList, true);
+//        popWindow.show(new IDialogDismiss() {
+//            @Override
+//            public void onDismiss(Result result, Object... values) {
+//                if (result == Result.OK) {
+//                    if (values.length > 0) {
+//                        List<File> list = new ArrayList<>();
+//                        for (Object value : values) {
+//                            String name = fileList[(int) value];
+//                            list.add(new File(FileTools.MICROMSG_DIR, name));
+//                        }
+//                        dataMerger = new DataMerger(MergeDataActivity.this, list, mergeMonth);
+//                        dataMerger.setOnFinished(new IDialogDismiss() {
+//                            @Override
+//                            public void onDismiss(Result result1, Object... values) {
+//                                infoPopWindow.show((String) values[0]);
+//                                updateList();
+//                            }
+//                        });
+//                        dataMerger.execute();
+//                    } else
+//                        new ToastFactory(MergeDataActivity.this).showCenterToast("未选择数据文件");
+//                }
+//            }
+//        });
+//    }
 
     //导入数据
     public void importFileClick() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            importFile(FileTools.getMergeFileList());
+            dataWatingDialog.show(getSupportFragmentManager(), "waiting");
+            startService(new Intent(this, DownloadMergeFileSVC.class));
         } else {
             ActivityCompat.requestPermissions(this, PERMISSION_GROUP_STORAGE, CLEAR_FILES_REQUESTCODE);
         }
@@ -508,7 +564,7 @@ public class MergeDataActivity extends MyActivity {
                     long start = timeInMillis[0];
                     long end = timeInMillis[1];
                     List<SumTotalRecord> temp = SumTotalOperator.getSumData(start, end);
-                    if (temp == null || temp.size() == 0) {
+                    if (temp.isEmpty()) {
                         new ToastFactory(MergeDataActivity.this).showCenterToast("所选时间段内没有数据，请重新选择！");
                         updateList();
                         return;
@@ -545,6 +601,23 @@ public class MergeDataActivity extends MyActivity {
         }
     }
 
+    private void sendShareFile(final String pwd) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = getShareFile(pwd);
+                String title = file.getName();
+                try {
+                    String content = "This is total data file in last month,please download it later !" +
+                            OtherTools.getPhoneInformation();
+                    new SendEmailHelper().sendShareDataFile(MergeDataActivity.this, title, content, file);
+                } catch (IOException | MessagingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     private void share() {
         OtherTools.checkFileUriExposure();
         new EnterPWDPopWindow(this, "发送数据", "请设置密码")
@@ -553,20 +626,20 @@ public class MergeDataActivity extends MyActivity {
                     @Override
                     public void onDismiss(Result result, Object... values) {
                         if (result == Result.OK) {
-                            Uri fileUri = null;
-                            String pwd = OtherTools.getTotalDataFilePWD((String) values[0]);
-                            File file = getShareFile(pwd);
-                            if (Build.VERSION.SDK_INT >= 24) {
-                                fileUri = FileProvider.getUriForFile(MergeDataActivity.this, "th.yzw.specialrecorder.fileprovider", file);
-                            } else {
-                                fileUri = Uri.fromFile(file);
-                            }
-                            Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("*/*");
-                            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(Intent.createChooser(intent, "发送给："));
+                            waitingDialog.show(getSupportFragmentManager(), "loading");
+                            sendShareFile(OtherTools.getTotalDataFilePWD((String) values[0]));
+//                            Uri fileUri = null;
+//                            if (Build.VERSION.SDK_INT >= 24) {
+//                                fileUri = FileProvider.getUriForFile(MergeDataActivity.this, "th.yzw.specialrecorder.fileprovider", file);
+//                            } else {
+//                                fileUri = Uri.fromFile(file);
+//                            }
+//                            Intent intent = new Intent(Intent.ACTION_SEND);
+//                            intent.setType("*/*");
+//                            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+//                            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI"));
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            startActivity(Intent.createChooser(intent, "发送给："));
                         }
                     }
                 }).show();
@@ -588,14 +661,11 @@ public class MergeDataActivity extends MyActivity {
     File getShareFile(String pwd) {
         FileTools.clearFiles(getCacheDir());
         String fileName = fileNameFormater.format(mergeMonth).substring(0, 7) +
-                "(汇总时间：" +
+                "(合并于" +
                 fileNameFormater.format(System.currentTimeMillis()) +
-                ").total";
-        if (FileTools.isMicroMsgPathExist()) {
-            File microMsgFile = new File(FileTools.MICROMSG_DIR, fileName);
-            if (microMsgFile.exists())
-                microMsgFile.delete();
-        }
+                ")_"+
+                MyDateUtils.getDateDiff()+
+                ".total";
         File file = new File(getCacheDir(), fileName);
         if (file.exists()) {
             file.delete();
@@ -611,7 +681,6 @@ public class MergeDataActivity extends MyActivity {
         } catch (IOException e) {
             e.printStackTrace();
             infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
-//            dialogFactory.showInfoDialog("写入文件出错！原因为：" + e.getMessage());
             return null;
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -643,8 +712,8 @@ public class MergeDataActivity extends MyActivity {
                 .setDialogDismiss(new IDialogDismiss() {
                     @Override
                     public void onDismiss(Result result, Object... values) {
-                        if(result == Result.OK){
-                            ActivityCompat.requestPermissions(MergeDataActivity.this,PERMISSION_GROUP_STORAGE,999);
+                        if (result == Result.OK) {
+                            ActivityCompat.requestPermissions(MergeDataActivity.this, PERMISSION_GROUP_STORAGE, 999);
                         }
                     }
                 })

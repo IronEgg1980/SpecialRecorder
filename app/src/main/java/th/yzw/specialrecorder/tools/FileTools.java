@@ -35,18 +35,21 @@ import th.yzw.specialrecorder.interfaces.Result;
 import th.yzw.specialrecorder.model.SumTotalRecord;
 
 public final class FileTools {
-    
+
     public static final String EXTERNAL_STORAGE_DIR = Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String APP_EXTERNAL_DIR = EXTERNAL_STORAGE_DIR + "/th.yzw.recorder";
     public static final String MICROMSG_DIR = EXTERNAL_STORAGE_DIR + "/tencent/MicroMsg/download";
     public static final String BACKUP_DIR = APP_EXTERNAL_DIR + "/MyBackup";
     public static final String ITEMNAME_EXPORT_DIR = APP_EXTERNAL_DIR + "/Export";
     public static final String TEMP_DIR = APP_EXTERNAL_DIR + "/temp";
-    public static String appCache ;
+    public static String mergeFileDownloadDir;
+    public static String totalFileDownloadDir;
+    public static String appCache;
     public static String appFilesPath;
 
     public static String[] getMergeFileList() {
-        File path = new File(MICROMSG_DIR);
+//        File path = new File(MICROMSG_DIR);
+        File path = new File(mergeFileDownloadDir);
         return getFileList(path, ".data");
     }
 
@@ -141,26 +144,21 @@ public final class FileTools {
     public static boolean clearFilesAndDir(File dir) {
         boolean b;
         b = clearFiles(dir);
-        if(b)
+        if (b)
             b = dir.delete();// 删除目录本身
         return b;
     }
 
-    public static boolean delMergeFiles() {
-        boolean b = false;
-        File path = new File(MICROMSG_DIR);
-        if (isMicroMsgPathExist()) {
+    public static void delMergeFiles() {
+        File path = new File(mergeFileDownloadDir);
+        if (path.exists() && path.isDirectory()) {
             File[] files = path.listFiles();
             for (File file : files) {
                 if (file.isFile()) {
-                    String name = file.getName();
-                    if (name.endsWith(".data") || (name.startsWith("shared") && name.endsWith(".xls"))) {
-                        b = file.delete();
-                    }
+                    file.delete();
                 }
             }
         }
-        return b;
     }
 
     public static void clearSameFile(String fileName) {
@@ -256,8 +254,7 @@ public final class FileTools {
     //生成加密的分享文件
     public static File getShareFile(List<SumTotalRecord> recordEntityList, IDialogDismiss callback) {
         FileTools.clearFiles(appCache);
-        long currentTime = System.currentTimeMillis();
-        String randomText = OtherTools.getRandomString(4) + "_" + new SimpleDateFormat("yyMMddHHmmss", Locale.CHINA).format(currentTime);
+        String randomText = OtherTools.getRandomString(4) + "_" + MyDateUtils.getDateDiff();
         String fileName = "SendBy" + randomText + ".data";
         clearSameFile(fileName);
         try {
@@ -271,13 +268,11 @@ public final class FileTools {
             return file;
         } catch (IOException e) {
             e.printStackTrace();
-            callback.onDismiss(Result.CANCEL,"写入文件出错！原因为：" + e.getLocalizedMessage());
-//            infoPopWindow.show("写入文件出错！原因为：" + e.getMessage());
+            callback.onDismiss(Result.CANCEL, "写入文件出错！原因为：" + e.getLocalizedMessage());
             return null;
         } catch (JSONException ex) {
             ex.printStackTrace();
-            callback.onDismiss(Result.CANCEL, "生成文件出错！原因为：" +ex.getLocalizedMessage());
-//            infoPopWindow.show("生成文件出错！原因为：" + ex.getMessage());
+            callback.onDismiss(Result.CANCEL, "生成文件出错！原因为：" + ex.getLocalizedMessage());
             return null;
         }
     }
@@ -332,7 +327,6 @@ public final class FileTools {
         return readEncryptFile(new FileInputStream(file));
     }
 
-
     public static String readEncryptFile(InputStream inputStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         byte[] head = new byte[12];
@@ -376,7 +370,7 @@ public final class FileTools {
     }
 
     public static File[] readEmailFile() {
-        String filePath = appFilesPath +  File.separator +
+        String filePath = appFilesPath + File.separator +
                 "UpdateFiles" + File.separator +
                 "VersionCode" + AppSetupOperator.getDownloadAppVersion();
         File dir = new File(filePath);
@@ -424,13 +418,13 @@ public final class FileTools {
     }
 
     public static void cleanApp(Context context) {
-        FileTools.clearFiles(context.getCacheDir());
-        FileTools.clearFiles(context.getFilesDir());
-        FileTools.clearMicroMSGDownLoadDir();
-        FileTools.clearFiles(ITEMNAME_EXPORT_DIR);
-        FileTools.clearFiles(TEMP_DIR);
-        FileTools.clearFilesAndDir(new File(EXTERNAL_STORAGE_DIR, "MyBackup"));
-        FileTools.clearFilesAndDir(new File(EXTERNAL_STORAGE_DIR, "ExportItemNameFile"));
+        clearFiles(context.getCacheDir());
+        clearFiles(context.getFilesDir());
+        clearMicroMSGDownLoadDir();
+        clearFiles(ITEMNAME_EXPORT_DIR);
+        clearFiles(TEMP_DIR);
+        clearFilesAndDir(new File(EXTERNAL_STORAGE_DIR, "MyBackup"));
+        clearFilesAndDir(new File(EXTERNAL_STORAGE_DIR, "ExportItemNameFile"));
     }
 
     public static void initialAPPFile(Context context) {
@@ -438,5 +432,9 @@ public final class FileTools {
         clearFiles(TEMP_DIR);
         appCache = context.getCacheDir().getAbsolutePath();
         appFilesPath = context.getFilesDir().getAbsolutePath();
+        mergeFileDownloadDir = appFilesPath + File.separator + "merge_files";
+        totalFileDownloadDir = appFilesPath + File.separator + "total_files";
+        createPath(mergeFileDownloadDir);
+        createPath(totalFileDownloadDir);
     }
 }

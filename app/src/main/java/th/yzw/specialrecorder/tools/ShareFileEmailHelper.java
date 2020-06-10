@@ -28,28 +28,27 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-public class MergeFileEmailHelper {
+public class ShareFileEmailHelper {
     private static final String TAG = "殷宗旺";
-    //    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String username = "specialrecorder@163.com";
-    private final String password = "DZKVHRBZQVGJVEAN";
+    private final String receiveEmailUserName = EncryptAndDecrypt.decryptPassword("QSZktAEIl8zrvIkicf96ZvCSm95eZgoaRhhGgBTKmvA=");
+    private final String receiveEmailPassword = EncryptAndDecrypt.decryptPassword("y33XDuNxqMz6ExHbZidQSEYYRoAUyprw");
 
-    public Session getReceiveSessionBySmtp() {
-        String protocol = "smtp";
-        String host = "smtp.163.com";
-        String port = "25";
+    public Session getReceiveSessionByPop3() {
+        String protocol = "pop3";
+        String host = "pop3.163.com";
+        String port = "110";
         // 准备连接服务器的会话信息
         Properties props = new Properties();
         props.setProperty("mail.store.protocol", protocol); // 协议
-        props.setProperty("mail.smtp.port", port); // 端口
-        props.setProperty("mail.smtp.host", host); // smtp服务器
+        props.setProperty("mail.pop3.port", port); // 端口
+        props.setProperty("mail.pop3.host", host); // pop3服务器
         // 创建Session实例对象
         return Session.getInstance(props);
     }
 
     public Store getInbox() throws MessagingException {
-        Store store = getReceiveSessionBySmtp().getStore("smtp");
-        store.connect(username, password);
+        Store store = getReceiveSessionByPop3().getStore("pop3");
+        store.connect(receiveEmailUserName, receiveEmailPassword);
         return store;
     }
 
@@ -189,8 +188,7 @@ public class MergeFileEmailHelper {
         }
     }
 
-    public void saveAttachment(Part part, String destDir) throws UnsupportedEncodingException, MessagingException,
-            FileNotFoundException, IOException {
+    public void saveAttachment(Part part, String destDir) throws  MessagingException,IOException {
         if (part.isMimeType("multipart/*")) {
             Multipart multipart = (Multipart) part.getContent();    //复杂体邮件
             //复杂体邮件包含多个邮件体
@@ -216,8 +214,7 @@ public class MergeFileEmailHelper {
         }
     }
 
-    public void saveAttachment(Part part, String destDir, List<File> fileList) throws UnsupportedEncodingException, MessagingException,
-            FileNotFoundException, IOException {
+    public void saveAttachment(Part part, String destDir, List<File> fileList) throws MessagingException,IOException {
         if (part.isMimeType("multipart/*")) {
             Multipart multipart = (Multipart) part.getContent();    //复杂体邮件
             //复杂体邮件包含多个邮件体
@@ -258,7 +255,7 @@ public class MergeFileEmailHelper {
 
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(username, password);
+            return new PasswordAuthentication(receiveEmailUserName, receiveEmailPassword);
         }
     }
 }

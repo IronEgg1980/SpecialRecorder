@@ -30,12 +30,10 @@ import th.yzw.specialrecorder.Broadcasts;
 
 public final class SendEmailHelper {
     //    private final String TAG = "殷宗旺";
-    //    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
-    private final String username = "specialrecorder@163.com";
-    private final String password = "DZKVHRBZQVGJVEAN";
-    private final String fromAdress = "specialrecorder@163.com";
-    //    private final String toAdress = EncryptAndDecrypt.decryptPassword("XfVPYKaepUXyJL0k75Xim05AZesPPOf7");
-    private final String toAdress = "yinzongwang@163.com";
+    private final String username = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String password = EncryptAndDecrypt.decryptPassword("Z+L1spMIPv6uwTKaOAIQjUYYRoAUyprw");
+    private final String fromAdress = EncryptAndDecrypt.decryptPassword("QSZktAEIl8xySso4XzpNG+TLcvX4suXD");
+    private final String toAdress = EncryptAndDecrypt.decryptPassword("XfVPYKaepUXyJL0k75Xim05AZesPPOf7");
 
     /**
      * 创建发送邮件会话
@@ -171,6 +169,54 @@ public final class SendEmailHelper {
         // 将message对象传递给transport对象，将邮件发送出去 
         transport.sendMessage(message, message.getAllRecipients());
         // 关闭连接 
+        transport.close();
+    }
+
+    /**
+     * 发送带附件邮件
+     *
+     * @param subject    主题
+     * @param content    文字内容
+     * @param attachList 附件列表
+     */
+    public void sendShareDataFile(final Context context, String subject, String content, File... attachList) throws IOException, MessagingException {
+        Session session = getSendSession();
+        MimeMessage message = new MimeMessage(session);
+        message.setSubject(subject);
+        message.setFrom(new InternetAddress(fromAdress, "specialrecorder", "utf-8"));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress("specialrecorder2@163.com", "specialrecorder2", "utf-8"));
+        Multipart mp = new MimeMultipart();
+        MimeBodyPart msgBodyPart = new MimeBodyPart();
+        msgBodyPart.setText(content);
+        mp.addBodyPart(msgBodyPart);
+        for (File file : attachList) {
+            MimeBodyPart fileBodyPart = new MimeBodyPart();
+            fileBodyPart.attachFile(file);
+            mp.addBodyPart(fileBodyPart);
+        }
+        message.setContent(mp);
+        message.setSentDate(new Date());
+        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+        CommandMap.setDefaultCommandMap(mc);
+        Transport transport = session.getTransport();
+        transport.addTransportListener(new TransportAdapter() {
+            @Override
+            public void messageDelivered(TransportEvent e) {
+                Broadcasts.sendEmailSendResultBroadcast(context, true);
+            }
+
+            @Override
+            public void messageNotDelivered(TransportEvent e) {
+                Broadcasts.sendEmailSendResultBroadcast(context, false);
+            }
+        });
+        transport.connect(username, password);
+        transport.sendMessage(message, message.getAllRecipients());
         transport.close();
     }
 }

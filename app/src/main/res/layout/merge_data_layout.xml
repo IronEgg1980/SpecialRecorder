@@ -69,7 +69,7 @@
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
         android:gravity="center"
-        android:text="导入\n本机记录"/>
+        android:text="导入\n本机数据"/>
     <ImageButton
         android:id="@+id/merge_data_importfiles"
         android:layout_width="@dimen/oval_button_radius"
@@ -89,7 +89,7 @@
         android:textColor="@color/itemUnuseTextColor"
         android:textSize="12sp"
         android:gravity="center"
-        android:text="导入\n数据文件"/>
+        android:text="同步\n数据文件"/>
 
     <ImageButton
         android:id="@+id/share_data"

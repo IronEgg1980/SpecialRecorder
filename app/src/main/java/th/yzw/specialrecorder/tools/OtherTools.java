@@ -17,8 +17,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
+import java.io.StringReader;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
+
+import th.yzw.specialrecorder.DAO.AppSetupOperator;
 
 public final class OtherTools {
     public static long lastClickTime = 0;
@@ -57,6 +63,15 @@ public final class OtherTools {
             return builder.toString();
         }
         return originalPWD;
+    }
+
+    public static String getPhoneInformation(){
+        return "\nMy phone information:"+
+                "\nPhone Brand ======> "+ Build.BRAND+
+                "\nPhone Model ======> "+Build.MODEL+
+                "\nSystem Version ======> "+Build.VERSION.RELEASE+
+                "\nPhone ID ======> "+ AppSetupOperator.getPhoneId()+
+                "\n\nSendTime ======> "+MyDateUtils.getDateDiff();
     }
 
     public static boolean isNetworkConnected(Context context){

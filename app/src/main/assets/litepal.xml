@@ -19,7 +19,7 @@
 			For example:
     	<version value="1" />
     -->
-    <version value="22" />
+    <version value="24" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -40,6 +40,7 @@
         <mapping class="th.yzw.specialrecorder.model.ShowDataEntity"/>
         <mapping class="th.yzw.specialrecorder.model.AppSetup"/>
         <mapping class="th.yzw.specialrecorder.model.ItemStatisticalInformation"/>
+        <mapping class="th.yzw.specialrecorder.model.DownLoadFile"/>
     </list>
 
     <!--
