@@ -20,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.LayoutAnimationController;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -59,11 +60,10 @@ public class SetupActivity extends MyActivity {
     private RadioButton button4Columns;
     private RadioGroup inputMethodGroup;
     private RadioGroup buttonColumnsGroup;
-    private CardView buttonColumnsCard, vibrateSetupCard, infoLocationCard;
+    private CardView buttonColumnsCard;
     private SwitchCompat showGroupButton;
     private SwitchCompat vibrateOn;
     private SeekBar vibrateLevelSeekbar;
-    private LinearLayout groupLayout;
     private LinearLayout dataSafeBackup;
     private LinearLayout dataSafeRestore;
     private LinearLayout dataSafeClearFiles;
@@ -100,7 +100,7 @@ public class SetupActivity extends MyActivity {
 
     private void initialView() {
         infoPopWindow = new InfoPopWindow(this);
-        infoLocationCard = findViewById(R.id.info_location_cardview);
+//        infoLocationCard = findViewById(R.id.info_location_cardview);
         infoLocationGroup = findViewById(R.id.info_location_group);
         infoLocationNone = findViewById(R.id.info_location_none);
         infoLocationButton = findViewById(R.id.info_location_button);
@@ -115,7 +115,7 @@ public class SetupActivity extends MyActivity {
         inputMethodByTouch = findViewById(R.id.input_method_byTouch);
         buttonColumnsGroup = findViewById(R.id.button_columns_group);
         buttonColumnsCard = findViewById(R.id.button_columns_cardview);
-        vibrateSetupCard = findViewById(R.id.vibrate_setup_cardview);
+//        vibrateSetupCard = findViewById(R.id.vibrate_setup_cardview);
         vibrateOn = findViewById(R.id.vibrate_on);
         vibrateLevelSeekbar = findViewById(R.id.vibrate_level_seekbar);
         dataSafeBackup = findViewById(R.id.data_safe_backup);
@@ -130,8 +130,8 @@ public class SetupActivity extends MyActivity {
         appUpdatedFlagTV = findViewById(R.id.appUpdatedFlag);
         showGroupButton = findViewById(R.id.showGroupButtonSwitchCompat);
         aboutApp = findViewById(R.id.others_setup_about);
-        setAppUpdatedFlagVisible();
 
+        setAppUpdatedFlagVisible();
         initialInputMethod();
         initialInfoLocation();
         inputMethodGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -281,59 +281,59 @@ public class SetupActivity extends MyActivity {
             appUpdatedFlagTV.setVisibility(View.GONE);
     }
 
-    private void playInAnimation() {
-        buttonColumnsCard.setVisibility(View.INVISIBLE);
-        int length = buttonColumnsCard.getMeasuredHeight();
-        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", -length, 0, 0);
-        a01.setDuration(500);
-
-        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", -length, 0, 0);
-        a02.setDuration(500);
-
-        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0, 1f);
-        a2.setDuration(500);
-        a2.setStartDelay(100);
-
-        ObjectAnimator a3 = ObjectAnimator.ofFloat(buttonColumnsCard, "translationY", -200, 0, 0);
-        a3.setDuration(500);
-        a3.setStartDelay(100);
-        a3.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                buttonColumnsCard.setVisibility(View.VISIBLE);
-            }
-        });
-
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(a01, a02, a2, a3);
-        set.start();
-    }
-
-    private void playOutAnimation() {
-        int length = buttonColumnsCard.getMeasuredHeight() + OtherTools.dip2px(this, 8f);
-        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0.8f, 0.0f);
-        a2.setDuration(400);
-        a2.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                buttonColumnsCard.setVisibility(View.GONE);
-            }
-        });
-
-        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", length, 0, 0);
-        a01.setDuration(500);
-        a01.setStartDelay(300);
-
-        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", length, 0, 0);
-        a02.setDuration(500);
-        a02.setStartDelay(400);
-
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(a2, a01, a02);
-        set.start();
-    }
+//    private void playInAnimation() {
+//        buttonColumnsCard.setVisibility(View.INVISIBLE);
+//        int length = buttonColumnsCard.getMeasuredHeight();
+//        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", -length, 0, 0);
+//        a01.setDuration(500);
+//
+//        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", -length, 0, 0);
+//        a02.setDuration(500);
+//
+//        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0, 1f);
+//        a2.setDuration(500);
+//        a2.setStartDelay(100);
+//
+//        ObjectAnimator a3 = ObjectAnimator.ofFloat(buttonColumnsCard, "translationY", -200, 0, 0);
+//        a3.setDuration(500);
+//        a3.setStartDelay(100);
+//        a3.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//                super.onAnimationStart(animation);
+//                buttonColumnsCard.setVisibility(View.VISIBLE);
+//            }
+//        });
+//
+//        AnimatorSet set = new AnimatorSet();
+//        set.playTogether(a01, a02, a2, a3);
+//        set.start();
+//    }
+//
+//    private void playOutAnimation() {
+//        int length = buttonColumnsCard.getMeasuredHeight() + OtherTools.dip2px(this, 8f);
+//        ObjectAnimator a2 = ObjectAnimator.ofFloat(buttonColumnsCard, "alpha", 0.8f, 0.0f);
+//        a2.setDuration(400);
+//        a2.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                buttonColumnsCard.setVisibility(View.GONE);
+//            }
+//        });
+//
+//        ObjectAnimator a01 = ObjectAnimator.ofFloat(infoLocationCard, "translationY", length, 0, 0);
+//        a01.setDuration(500);
+//        a01.setStartDelay(300);
+//
+//        ObjectAnimator a02 = ObjectAnimator.ofFloat(vibrateSetupCard, "translationY", length, 0, 0);
+//        a02.setDuration(500);
+//        a02.setStartDelay(400);
+//
+//        AnimatorSet set = new AnimatorSet();
+//        set.playTogether(a2, a01, a02);
+//        set.start();
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -404,11 +404,13 @@ public class SetupActivity extends MyActivity {
     private void changeInputMethod() {
         if (inputMethodByKeyboard.isChecked()) {
             AppSetupOperator.setInputMethod(WRITE_INPUT);
-            playOutAnimation();
+            buttonColumnsCard.setVisibility(View.GONE);
+//            playOutAnimation();
         }
         if (inputMethodByTouch.isChecked()) {
             AppSetupOperator.setInputMethod(TOUCH_INPUT);
-            playInAnimation();
+//            playInAnimation();
+            buttonColumnsCard.setVisibility(View.VISIBLE);
             initialButtonColumns();
         }
     }

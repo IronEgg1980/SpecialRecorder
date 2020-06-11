@@ -58,6 +58,7 @@ import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.MyDateUtils;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.tools.SendEmailHelper;
+import th.yzw.specialrecorder.view.common.BaseAdapter;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.DateRangePopWindow;
 import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
@@ -69,47 +70,6 @@ import th.yzw.specialrecorder.view.common.WaitingDialog;
 import th.yzw.specialrecorder.view.service.DownloadMergeFileSVC;
 
 public class MergeDataActivity extends MyActivity {
-
-    protected class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-        class ViewHolder extends RecyclerView.ViewHolder {
-            TextView name, count;
-            View view;
-
-            ViewHolder(View itemView) {
-                super(itemView);
-                view = itemView;
-                name = itemView.findViewById(R.id.show_item_name);
-                count = itemView.findViewById((R.id.show_item_count));
-            }
-        }
-
-        private List<SumTotalRecord> recordEntityList;
-
-        MyAdapter(List<SumTotalRecord> recordEntityList) {
-            this.recordEntityList = recordEntityList;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.merge_data_item, viewGroup, false);
-            final ViewHolder viewHolder = new ViewHolder(view);
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
-            final SumTotalRecord r = recordEntityList.get(i);
-            viewHolder.name.setText(r.getName());
-            viewHolder.count.setText(String.valueOf(r.getCount()));
-        }
-
-        @Override
-        public int getItemCount() {
-            return recordEntityList.size();
-        }
-
-    }
-
     private final int CLEAR_FILES_REQUESTCODE = 111;
     private final int IMPORT_FILES_REQUESTCODE = 222;
     private final int SHARE_REQUESTCODE = 333;
@@ -125,7 +85,7 @@ public class MergeDataActivity extends MyActivity {
     private String phoneId;
     private SimpleDateFormat format, fileNameFormater;
     private List<SumTotalRecord> list;
-    private MyAdapter adapter;
+    private BaseAdapter<SumTotalRecord> adapter;
     private long mergeMonth;
     private boolean hasData;
     private boolean isHideMode;
@@ -309,93 +269,18 @@ public class MergeDataActivity extends MyActivity {
         });
         RecyclerView mergeDataRecyclerView = findViewById(R.id.merge_data_recyclerView);
         mergeDataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MyAdapter(list);
+        adapter = new BaseAdapter<SumTotalRecord>(R.layout.merge_data_item,list) {
+            @Override
+            public void bindData(BaseViewHolder baseViewHolder, SumTotalRecord data) {
+                baseViewHolder.setText(R.id.show_item_name,data.getName());
+                baseViewHolder.setText(R.id.show_item_count,String.valueOf(data.getCount()));
+            }
+        };
         mergeDataRecyclerView.setAdapter(adapter);
         mergeDataRecyclerView.addItemDecoration(new MyDividerItemDecoration());
         changeButtonStatus(hasData);
         infoPopWindow = new InfoPopWindow(this);
         waitingDialog = new WaitingDialog();
-    }
-
-    private void playAnimation() {
-        AccelerateInterpolator interpolator = new AccelerateInterpolator();
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mergeDataImportrecord, "alpha", 0.5f, 1f);
-        animator1.setDuration(500);
-        animator1.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                mergeDataImportrecord.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                textView2.setVisibility(View.VISIBLE);
-            }
-        });
-        ObjectAnimator animator11 = ObjectAnimator.ofFloat(mergeDataImportrecord, "scaleX", 0.4f, 1.1f, 1f);
-        animator11.setDuration(500);
-        animator11.setInterpolator(interpolator);
-        ObjectAnimator animator111 = ObjectAnimator.ofFloat(mergeDataImportrecord, "scaleY", 0.4f, 1.1f, 1f);
-        animator111.setDuration(500);
-        animator111.setInterpolator(interpolator);
-
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(mergeDataImportfiles, "alpha", 0.5f, 1f);
-        animator2.setDuration(500);
-        animator2.setStartDelay(200);
-        animator2.setInterpolator(interpolator);
-        animator2.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                mergeDataImportfiles.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                textView3.setVisibility(View.VISIBLE);
-            }
-        });
-        ObjectAnimator animator22 = ObjectAnimator.ofFloat(mergeDataImportfiles, "scaleY", 0.4f, 1.1f, 1f);
-        animator22.setStartDelay(200);
-        animator22.setDuration(500);
-        animator22.setInterpolator(interpolator);
-        ObjectAnimator animator222 = ObjectAnimator.ofFloat(mergeDataImportfiles, "scaleX", 0.4f, 1.1f, 1f);
-        animator222.setDuration(500);
-        animator222.setStartDelay(200);
-        animator222.setInterpolator(interpolator);
-
-        ObjectAnimator animator3 = ObjectAnimator.ofFloat(shareData, "alpha", 0.5f, 1f);
-        animator3.setDuration(500);
-        animator3.setStartDelay(400);
-        animator3.setInterpolator(interpolator);
-        animator3.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                shareData.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                textView4.setVisibility(View.VISIBLE);
-            }
-        });
-        ObjectAnimator animator33 = ObjectAnimator.ofFloat(shareData, "scaleY", 0.4f, 1.1f, 1f);
-        animator33.setStartDelay(400);
-        animator33.setDuration(500);
-        animator33.setInterpolator(interpolator);
-        ObjectAnimator animator333 = ObjectAnimator.ofFloat(shareData, "scaleX", 0.4f, 1.1f, 1f);
-        animator333.setDuration(500);
-        animator333.setStartDelay(400);
-        animator333.setInterpolator(interpolator);
-
-        AnimatorSet animationSet = new AnimatorSet();
-        animationSet.playTogether(animator1, animator11, animator111, animator2, animator22, animator222, animator3, animator33, animator333);
-        animationSet.start();
     }
 
     private void initialData() {
@@ -424,16 +309,12 @@ public class MergeDataActivity extends MyActivity {
         dateTextView.setText(dateString);
         textView1.setText(title);
         if (flag) {
-            if (isCreate) {
-                mergeDataImportrecord.setVisibility(View.VISIBLE);
-                mergeDataImportfiles.setVisibility(View.VISIBLE);
-                shareData.setVisibility(View.VISIBLE);
-                textView2.setVisibility(View.VISIBLE);
-                textView3.setVisibility(View.VISIBLE);
-                textView4.setVisibility(View.VISIBLE);
-            } else {
-                playAnimation();
-            }
+            mergeDataImportrecord.setVisibility(View.VISIBLE);
+            mergeDataImportfiles.setVisibility(View.VISIBLE);
+            shareData.setVisibility(View.VISIBLE);
+            textView2.setVisibility(View.VISIBLE);
+            textView3.setVisibility(View.VISIBLE);
+            textView4.setVisibility(View.VISIBLE);
         } else {
             mergeDataImportrecord.setVisibility(View.INVISIBLE);
             mergeDataImportfiles.setVisibility(View.INVISIBLE);
@@ -512,38 +393,6 @@ public class MergeDataActivity extends MyActivity {
         });
         dataMerger.execute();
     }
-
-//    private void importFile(final String[] fileList) {
-//        if (fileList == null || fileList.length == 0) {
-//            infoPopWindow.show(FileTools.MICROMSG_DIR + " 目录内没有找到数据文件");
-//            return;
-//        }
-//        SelectItemPopWindow popWindow = new SelectItemPopWindow(this, fileList, true);
-//        popWindow.show(new IDialogDismiss() {
-//            @Override
-//            public void onDismiss(Result result, Object... values) {
-//                if (result == Result.OK) {
-//                    if (values.length > 0) {
-//                        List<File> list = new ArrayList<>();
-//                        for (Object value : values) {
-//                            String name = fileList[(int) value];
-//                            list.add(new File(FileTools.MICROMSG_DIR, name));
-//                        }
-//                        dataMerger = new DataMerger(MergeDataActivity.this, list, mergeMonth);
-//                        dataMerger.setOnFinished(new IDialogDismiss() {
-//                            @Override
-//                            public void onDismiss(Result result1, Object... values) {
-//                                infoPopWindow.show((String) values[0]);
-//                                updateList();
-//                            }
-//                        });
-//                        dataMerger.execute();
-//                    } else
-//                        new ToastFactory(MergeDataActivity.this).showCenterToast("未选择数据文件");
-//                }
-//            }
-//        });
-//    }
 
     //导入数据
     public void importFileClick() {

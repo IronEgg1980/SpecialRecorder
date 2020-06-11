@@ -26,6 +26,7 @@ import th.yzw.specialrecorder.R;
 import th.yzw.specialrecorder.interfaces.IDialogDismiss;
 import th.yzw.specialrecorder.interfaces.NoDoubleClickListener;
 import th.yzw.specialrecorder.interfaces.Result;
+import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
@@ -69,9 +70,8 @@ public class UpdateActivity extends MyActivity {
             @Override
             public void run() {
                 readFile();
-                if(zipFile != null){
+                if(zipFile!=null)
                     handler.sendEmptyMessage(0x01);
-                }
             }
         });
     }
@@ -97,7 +97,7 @@ public class UpdateActivity extends MyActivity {
         FileOutputStream outputStream = null;
         try {
             inputStream = getContentResolver().openInputStream(uri);
-            zipFile = new File(getCacheDir(), "updateApp.tmp");
+            zipFile = new File(FileTools.appCache, "updateApp.tmp");
             outputStream = new FileOutputStream(zipFile);
             int c;
             byte[] buffer = new byte[8 * 1024];

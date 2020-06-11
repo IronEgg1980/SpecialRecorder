@@ -230,6 +230,8 @@ public final class FileTools {
                 File apkFile = new File(appCache, "update.apk");
                 if (apkFile.exists())
                     apkFile.delete();
+                else
+                    apkFile.createNewFile();
                 int bufferLength = 1024 * 8;
                 byte[] buffer = new byte[bufferLength];
                 fileOutputStream = new FileOutputStream(apkFile);

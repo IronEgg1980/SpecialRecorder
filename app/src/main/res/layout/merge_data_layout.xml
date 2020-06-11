@@ -24,93 +24,80 @@
         android:text="2020年12月12日 至 2020年12月12日"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/merge_data_begin"
+        app:layout_constraintStart_toEndOf="@id/linearLayout"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    <ImageButton
-        android:id="@+id/merge_data_begin"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="@dimen/oval_button_radius"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
         android:layout_marginStart="12dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/oval_button_bg"
-        android:src="@mipmap/merge"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
-    <TextView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_begin"
-        android:layout_marginStart="12dp"
-        android:id="@+id/textview1"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="wrap_content"
-        android:textColor="@color/itemUnuseTextColor"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="开始合并"/>
+        app:layout_constraintTop_toBottomOf="@+id/include">
+        <ImageButton
+            android:id="@+id/merge_data_begin"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="@dimen/oval_button_radius"
+            android:background="@drawable/oval_button_bg"
+            android:src="@mipmap/merge"
+             />
+        <TextView
+            android:id="@+id/textview1"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="wrap_content"
+            android:textColor="@color/itemUnuseTextColor"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:text="开始合并"/>
 
-    <ImageButton
-        android:id="@+id/merge_data_importrecord"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="@dimen/oval_button_radius"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:src="@mipmap/mydata"
-        android:background="@drawable/oval_button_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview1" />
-    <TextView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_importrecord"
-        android:layout_marginStart="12dp"
-        android:id="@+id/textview2"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="wrap_content"
-        android:textColor="@color/itemUnuseTextColor"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="导入\n本机数据"/>
-    <ImageButton
-        android:id="@+id/merge_data_importfiles"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="@dimen/oval_button_radius"
-        android:layout_marginStart="12dp"
-        android:background="@drawable/oval_button_bg"
-        android:src="@mipmap/import_file"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview2" />
-    <TextView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/merge_data_importfiles"
-        android:layout_marginStart="12dp"
-        android:id="@+id/textview3"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="wrap_content"
-        android:textColor="@color/itemUnuseTextColor"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="同步\n数据文件"/>
+        <ImageButton
+            android:id="@+id/merge_data_importrecord"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="@dimen/oval_button_radius"
+            android:layout_marginTop="8dp"
+            android:src="@mipmap/mydata"
+            android:background="@drawable/oval_button_bg" />
+        <TextView
+            android:id="@+id/textview2"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="wrap_content"
+            android:textColor="@color/itemUnuseTextColor"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:text="导入\n本机数据"/>
+        <ImageButton
+            android:id="@+id/merge_data_importfiles"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="@dimen/oval_button_radius"
+            android:background="@drawable/oval_button_bg"
+            android:src="@mipmap/import_file" />
+        <TextView
+            android:id="@+id/textview3"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="wrap_content"
+            android:textColor="@color/itemUnuseTextColor"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:text="同步\n数据文件"/>
 
-    <ImageButton
-        android:id="@+id/share_data"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="@dimen/oval_button_radius"
-        android:layout_marginStart="12dp"
-        android:src="@mipmap/send"
-        android:background="@drawable/oval_button_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview3" />
-    <TextView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/share_data"
-        android:layout_marginStart="12dp"
-        android:id="@+id/textview4"
-        android:layout_width="@dimen/oval_button_radius"
-        android:layout_height="wrap_content"
-        android:textColor="@color/itemUnuseTextColor"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="发送数据"/>
+        <ImageButton
+            android:id="@+id/share_data"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="@dimen/oval_button_radius"
+            android:src="@mipmap/send"
+            android:background="@drawable/oval_button_bg"/>
+        <TextView
+            android:id="@+id/textview4"
+            android:layout_width="@dimen/oval_button_radius"
+            android:layout_height="wrap_content"
+            android:textColor="@color/itemUnuseTextColor"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:text="发送数据"/>
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/merge_data_clearfiles"
@@ -146,6 +133,6 @@
         android:paddingEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/merge_data_begin"
+        app:layout_constraintStart_toEndOf="@id/linearLayout"
         app:layout_constraintTop_toBottomOf="@id/dateTextView" />
 </android.support.constraint.ConstraintLayout>

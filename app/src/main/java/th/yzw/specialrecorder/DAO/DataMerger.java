@@ -28,9 +28,9 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
     private final int OLDFILE = 5;
     private final int THISPHONEFILE = 6;
 
-    private List<String> badFile, sameFile, oldFile, thisPhoneFile;
+    private List<String> badFile, sameFile, oldFile, thisPhoneFile,importedFileList;
     private List<File> mFiles;
-    private int count;
+//    private int count;
     private String message, currentFileName, phoneId;
     private IDialogDismiss onFinished;
     private float perValue;
@@ -46,40 +46,42 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
 
     private void getMessage() {
         StringBuilder builder = new StringBuilder();
-        builder.append("成功导入");
-        builder.append(count);
-        builder.append("个文件！\n");
+        builder.append("导入数据完成...\n");
+        if(importedFileList.size() > 0) {
+            builder.append("成功导入")
+                    .append(importedFileList.size())
+                    .append("个文件：\n");
+            for(String s:importedFileList){
+                builder.append(s).append("\n");
+            }
+        }else {
+            builder.append("此次未导入任何文件。\n");
+        }
         if (sameFile.size() > 0) {
-            builder.append("\n跳过");
-            builder.append(sameFile.size());
-            builder.append("个重复文件：");
+            builder.append("\n跳过")
+                    .append(sameFile.size())
+                    .append("个重复文件：\n");
             for (String _s : sameFile) {
                 builder.append(_s);
                 builder.append("\n");
             }
         }
         if (oldFile.size() > 0) {
-            builder.append("\n跳过");
-            builder.append(oldFile.size());
-            builder.append("个过期文件：");
+            builder.append("\n跳过").append(oldFile.size()).append("个过期文件：\n");
             for (String _s : oldFile) {
                 builder.append(_s);
                 builder.append("\n");
             }
         }
         if (badFile.size() > 0) {
-            builder.append("\n跳过");
-            builder.append(badFile.size());
-            builder.append("个损坏文件：");
+            builder.append("\n跳过").append(badFile.size()).append("个损坏文件：\n");
             for (String _s : badFile) {
                 builder.append(_s);
                 builder.append("\n");
             }
         }
         if (thisPhoneFile.size() > 0) {
-            builder.append("\n跳过");
-            builder.append(thisPhoneFile.size());
-            builder.append("个本机文件：");
+            builder.append("\n跳过").append(thisPhoneFile.size()).append("个本机文件：\n");
             for (String _s : thisPhoneFile) {
                 builder.append(_s);
                 builder.append("\n");
@@ -122,7 +124,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         SumTotalOperator.saveAll(list);
     }
 
-    public DataMerger(Context context,long mergeMonth){
+    public DataMerger(Context context, long mergeMonth) {
         this.mContext = context;
         this.mMergeMonth = mergeMonth;
         initial();
@@ -136,7 +138,8 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         initial();
     }
 
-    private void initial(){
+    private void initial() {
+        this.importedFileList = new ArrayList<>();
         this.phoneId = AppSetupOperator.getPhoneId();
         this.badFile = new ArrayList<>();
         this.sameFile = new ArrayList<>();
@@ -145,13 +148,13 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         this.helper = new SumTotalJSONHelper();
     }
 
-    private void readFiles(){
+    private void readFiles() {
         mFiles = new ArrayList<>();
         File dir = new File(FileTools.mergeFileDownloadDir);
-        if(dir.exists() && dir.isDirectory()){
+        if (dir.exists() && dir.isDirectory()) {
             File[] files1 = dir.listFiles();
-            for(File file : files1){
-                if(file.isFile() && file.getName().contains("SendBy")&&file.getName().endsWith(".data")){
+            for (File file : files1) {
+                if (file.isFile() && file.getName().contains("SendBy") && file.getName().endsWith(".data")) {
                     mFiles.add(file);
                 }
             }
@@ -181,13 +184,13 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
 //        }
 //    }
 
-    private void newVersionMerge(String content) throws JSONException{
+    private void newVersionMerge(String content) throws JSONException {
         ArrayMap<String, Object> map = new ArrayMap<>();
         List<SumTotalRecord> list = helper.parseSharedJSON(content, map);
         final String _phoneId = String.valueOf(map.get(SumTotalJSONHelper.PHONEID));
         if (phoneId.equals(_phoneId)) {
             thisPhoneFile.add(currentFileName);
-            count--;
+//            count--;
             publishProgress(THISPHONEFILE);
             sleep(500);
             return;
@@ -197,12 +200,12 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
         ImportedFile importedFile = ImportFileOperator.findSingleByPhoneId(_phoneId);
         if (sendTime < mMergeMonth) {
             oldFile.add(currentFileName);
-            count--;
+//            count--;
             publishProgress(OLDFILE);
             sleep(500);
         } else if (importedFile != null) {
             sameFile.add(currentFileName);
-            count--;
+//            count--;
             publishProgress(SAMEFILE);
             sleep(500);
         } else {
@@ -210,9 +213,10 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
                 saveData(list);
                 importedFile = new ImportedFile(sendTime, _phoneId, currentFileName);
                 importedFile.save();
+                importedFileList.add(currentFileName);
             } else {
                 badFile.add(currentFileName);
-                count--;
+//                count--;
                 publishProgress(BADFILE);
                 sleep(500);
             }
@@ -221,7 +225,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        count = mFiles.size();
+//        count = mFiles.size();
         for (File file : mFiles) {
             try {
                 currentFileName = file.getName();
@@ -239,7 +243,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
                 badFile.add(currentFileName);
-                count--;
+//                count--;
                 publishProgress(BADFILE);
                 sleep(500);
             }
@@ -280,13 +284,13 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         getMessage();
-        Broadcasts.sendBroadcast(mContext,Broadcasts.DISMISS_DIALOG);
+        Broadcasts.sendBroadcast(mContext, Broadcasts.DISMISS_DIALOG);
         onFinished.onDismiss(Result.OK, message);
     }
 
     @Override
     protected void onCancelled() {
         super.onCancelled();
-        Broadcasts.sendBroadcast(mContext,Broadcasts.DISMISS_DIALOG);
+        Broadcasts.sendBroadcast(mContext, Broadcasts.DISMISS_DIALOG);
     }
 }
