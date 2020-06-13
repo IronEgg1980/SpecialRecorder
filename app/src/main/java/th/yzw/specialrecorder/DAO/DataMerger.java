@@ -46,7 +46,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
 
     private void getMessage() {
         StringBuilder builder = new StringBuilder();
-        builder.append("导入数据完成...\n");
+        builder.append("同步数据完成...\n\n此次同步操作");
         if(importedFileList.size() > 0) {
             builder.append("成功导入")
                     .append(importedFileList.size())
@@ -55,7 +55,7 @@ public class DataMerger extends AsyncTask<Void, Integer, Void> {
                 builder.append(s).append("\n");
             }
         }else {
-            builder.append("此次未导入任何文件。\n");
+            builder.append("未导入任何数据文件。\n");
         }
         if (sameFile.size() > 0) {
             builder.append("\n跳过")

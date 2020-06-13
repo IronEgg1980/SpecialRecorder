@@ -37,6 +37,7 @@ import th.yzw.specialrecorder.model.AppSetup;
 import th.yzw.specialrecorder.tools.FileTools;
 import th.yzw.specialrecorder.tools.OtherTools;
 import th.yzw.specialrecorder.view.common.ConfirmPopWindow;
+import th.yzw.specialrecorder.view.common.EnterPWDPopWindow;
 import th.yzw.specialrecorder.view.common.ForceUpdateDialog;
 import th.yzw.specialrecorder.view.common.InfoPopWindow;
 import th.yzw.specialrecorder.view.common.LoadingDialog;
@@ -117,8 +118,21 @@ public class RecorderActivity extends MyActivity {
 
     private void mergeData() {
         drawerLayout.closeDrawers();
-        Intent intent = new Intent(RecorderActivity.this, MergeDataActivity.class);
-        startActivity(intent);
+        EnterPWDPopWindow enterPWDPopWindow = new EnterPWDPopWindow(this,"请输入密码","使用该功能需要密码");
+        enterPWDPopWindow.setDialogDismiss(new IDialogDismiss() {
+            @Override
+            public void onDismiss(Result result, Object... values) {
+                if(result == Result.CANCEL)
+                    return;
+                if("7567814".equals(values[0])){
+                    Intent intent = new Intent(RecorderActivity.this, MergeDataActivity.class);
+                    startActivity(intent);
+                }else{
+                    toastFactory.showCenterToast("密码错误");
+                }
+            }
+        });
+        enterPWDPopWindow.show();
     }
 
     private void setup() {
